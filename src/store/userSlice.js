@@ -3,28 +3,36 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // Funzione asincrona che rappresenta l'operazione di login
 export const loginUser = createAsyncThunk(
   "user/login",
-  async ({ username, password }, { rejectWithValue }) => {
+  async ({ username, password }, { dispatch }) => {
     try {
-      // Esegui la tua logica di login qui, ad esempio una chiamata API al tuo backend
-      const response = await fetch("api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      // Controllo per username e password
+      if (username === "f" && password === "1") {
+        // Modifica lo stato per impostare isAuthenticated a true
+        dispatch(userSlice.actions.loginSuccess());
 
-      if (!response.ok) {
-        throw new Error("Errore durante il login");
+        // Esegui la tua logica di login qui, ad esempio una chiamata API al tuo backend
+        const response = await fetch("api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (!response.ok) {
+          throw new Error("Errore durante il login");
+        }
+
+        const user = await response.json();
+
+        // Restituisci i dati dell'utente per aggiornare lo stato
+        return user;
+      } else {
+        throw new Error("Credenziali non valide");
       }
-
-      const user = await response.json();
-
-      // Restituisci i dati dell'utente per aggiornare lo stato
-      return user;
     } catch (error) {
       // Gestisci gli errori e restituisci un payload per l'azione di fallimento
-      return rejectWithValue(error.message);
+      throw error;
     }
   }
 );
@@ -33,14 +41,22 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     isAuthenticated: false,
-    user: null,
+    username: null,
+    rule: null,
     error: null,
     status: "idle", // 'idle', 'loading', 'succeeded', 'failed'
   },
   reducers: {
     logout: (state) => {
       state.isAuthenticated = false;
-      state.user = null;
+      state.username = null;
+      state.rule = null;
+      state.error = null;
+    },
+    loginSuccess: (state) => {
+      state.isAuthenticated = true;
+      state.username = "f"; // Imposta l'username dell'utente autenticato
+      state.rule = "user"; // Imposta la regola dell'utente autenticato (puoi personalizzare questa parte in base alle tue esigenze)
       state.error = null;
     },
   },
@@ -52,7 +68,6 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.isAuthenticated = true;
         state.user = action.payload;
         state.error = null;
       })
@@ -65,5 +80,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout,loginSuccess } = userSlice.actions;
 export default userSlice.reducer;
+

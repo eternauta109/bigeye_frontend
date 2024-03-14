@@ -14,11 +14,12 @@ const dataInit = {
 const Kanban = () => {
   const { events, upDateEvent } = useEventsStore();
   const managers = cinemaDB[11].managers;
+  const managerNames = managers.map(manager => manager.name);
 
   const [managerData, setManagerData] = useState([]);
 
   useEffect(() => {
-    const updatedManagerData = managers.map((manager) => ({
+    const updatedManagerData = managerNames.map((manager) => ({
       manager: manager,
       data: {
         lanes: [

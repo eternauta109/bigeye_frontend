@@ -14,6 +14,13 @@ export const EventStoreContext = ({ children }) => {
     });
   };
 
+  const setEventType = (eventType) => {
+    deispatchEvent({
+      type: "SET_EVENT_TYPE",
+      payload: eventType,
+    });
+  };
+
   const addTitleInEvent = (title) => {
     deispatchEvent({
       type: "INSERT_TITLE",
@@ -97,6 +104,7 @@ export const EventStoreContext = ({ children }) => {
     events: eventState.events,
     event: eventState.newEvent,
     addEvent,
+    setEventType,
     setManager,
     upDateEvent,
     addTitleInEvent,

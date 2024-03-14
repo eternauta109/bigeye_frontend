@@ -53,8 +53,8 @@ export default function Login() {
   };
 
   useEffect(() => {
-    console.log(user.isAuthenticated);
-    if (user.auth) {
+    console.log("login",user.isAuthenticated);
+    if (user.isAuthenticated) {
       navigate("/calendar");
     }
   }, [user, navigate]);

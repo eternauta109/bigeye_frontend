@@ -39,7 +39,7 @@ function NavBar() {
         navigate("/kanban");
         break;
       case "ShareCalendar":
-        navigate("/");
+        navigate("/calendar");
         break;
 
       default:
