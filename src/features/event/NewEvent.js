@@ -136,6 +136,7 @@ function NewEvent({ handleClose }) {
       addEvent(eventBis);
     }
     initEvent();
+    handleClose()
   };
 
   const handleDivisionChange = (e) => {
