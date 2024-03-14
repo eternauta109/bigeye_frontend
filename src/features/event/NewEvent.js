@@ -129,13 +129,7 @@ function NewEvent({ handleClose }) {
     console.log("UPDATE", upDate);
     if (event.id !== null) {
       console.log("evento.id esistente questo è l evento da aggiornare"+ event);
-      setDateState({
-       
-          startDate: event.start,
-          endDate: event.end,
-          key: "selection",
-        
-      })
+    
       setUpDate(true);
     }
 
@@ -219,7 +213,15 @@ function NewEvent({ handleClose }) {
             setDateState([item.selection]);
           }}
           moveRangeOnFirstSelection={false}
-          ranges={dateState}
+          ranges={
+            upDate && event && event.start && event.end
+              ? {     
+                startDate: new Date(event.start),
+                endDate: new Date(event.end),
+                key: "selection",
+              }
+              : dateState
+          }
         />
         <FormControl fullWidth sx={{ mt: 2 }}>
           <InputLabel id="division">Division</InputLabel>

@@ -5,7 +5,7 @@ import ModalEvent from "../event/ModalEvent";
 import { Container, Grid } from "@mui/material";
 
 import MyCalendar from "./MyCalendar";
-import Promo from "../dashcomp/Promo";
+
 
 const roundButtonStyle = {
   borderRadius: "10%",
@@ -45,9 +45,7 @@ const ShareCalendar = () => {
         justifyContent="center"
         sx={{ mt: 4 }}
       >
-        <Grid container item xs={12} md={9} sx={{ p: 2 }}>
-          <Promo />
-        </Grid>
+     
       </Grid>
       <ModalEvent open={openNewEvent} handleClose={handleCloseNewEvent} />
     </Container>
