@@ -3,61 +3,26 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { DateRange } from "react-date-range";
 import { useDispatch } from "react-redux";
-import { addEvents, removeEvents, updateEvents } from "../../store/eventsSlice";
-import {
-  Box,
+import ToggleEvent from "./ToggleEvent";
+import {addEvents} from "../../store/eventsSlice.js"
+
+import {  
   Typography,
   Container,
   InputLabel,
   MenuItem,
   FormControl,
   Button,
-  OutlinedInput,
-  ToggleButton,
-  ToggleButtonGroup,
+  OutlinedInput,  
   Select,
   TextField,
 } from "@mui/material";
-
-const initialEvent = {
-  id: null,
-  color: null,
-  description: "",
-  division: null,
-  start: "2024-03-11T09:21:17.084Z",
-  end: "2024-03-11T09:21:17.084Z",
-  link: null,
-  note: "",
-  title: "",
-  manager: "",
-  laneId: "lane1",
-};
-
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers-pro";
-import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 
 import { cinemaDB } from "../../database/cinemaDB";
 
 import useEventsStore from "../../store/EventDataContext";
 
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 
-function getStylesManager(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -71,54 +36,42 @@ const MenuProps = {
 };
 
 function NewEvent({ handleClose }) {
-  /*  const [cinemaSelect, setCinemaSelect] = useState([]); */
 
+ 
   const [dateState, setDateState] = useState([
-    {
+    {     
       startDate: new Date(),
-      endDate: null,
+      endDate: new Date(),
       key: "selection",
     },
   ]);
   const [upDate, setUpDate] = useState(false);
-  const [alignment, setAlignment] = React.useState("left");
+
   const dispatch = useDispatch();
 
   const {
     events,
     addEvent,
+    setEventType,
     upDateEvent,
     setDate,
     event,
     initEvent,
     addLink,
     setManager,
-
     addNote,
     addTitleInEvent,
     setDivision,
     addDescriptionInEvent,
   } = useEventsStore();
+
   const managers = cinemaDB[11].managers[0].name;
   console.log(managers);
 
   console.log("events", events);
   console.log("event", event);
 
-  /*   useMemo(() => {
-    console.log(newEvent);
-  }, [newEvent]); */
-
-  /* const handleChangeCinema = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setCinemaSelect(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
- */
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     if (upDate) {
@@ -126,7 +79,7 @@ function NewEvent({ handleClose }) {
       handleClose();
     } else {
       const eventBis = {
-        ...event,
+        ...event,       
         laneId: `lane-${event.manager ? event.manager : managers}`,
         manager: event.manager ? event.manager : managers,
         id: `nota${events.length + 1}`,
@@ -170,9 +123,7 @@ function NewEvent({ handleClose }) {
     setDivision({ division: e.target.value, color: color });
   };
 
-  const handleToggleAlignment = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
+ 
 
   useEffect(() => {
     console.log("UPDATE", upDate);
@@ -214,26 +165,18 @@ function NewEvent({ handleClose }) {
         </Button>
       )}
       <form onSubmit={onSubmit}>
-        <ToggleButtonGroup
-          value={alignment}
-          exclusive
+        <ToggleEvent alignment={event.eventType} setAlignment={setEventType} />
+
+        <TextField
+          fullWidth
+          label="eventType"
+          disabled
+          value={event.eventType}
+          name="eventType"
           sx={{ mb: 2 }}
-          onChange={handleToggleAlignment}
-          aria-label="text alignment"
-        >
-          <ToggleButton value="left" aria-label="left aligned">
-            1
-          </ToggleButton>
-          <ToggleButton value="center" aria-label="centered">
-            2
-          </ToggleButton>
-          <ToggleButton value="right" aria-label="right aligned">
-            3
-          </ToggleButton>
-          <ToggleButton value="justify" aria-label="justified">
-            4
-          </ToggleButton>
-        </ToggleButtonGroup>
+         
+        />
+
 
         <TextField
           fullWidth
@@ -244,6 +187,7 @@ function NewEvent({ handleClose }) {
           sx={{ mb: 2 }}
           onChange={(e) => addTitleInEvent(e.target.value)}
         />
+
         <TextField
           fullWidth
           label="Describe event"
@@ -268,7 +212,13 @@ function NewEvent({ handleClose }) {
             setDateState([item.selection]);
           }}
           moveRangeOnFirstSelection={false}
-          ranges={dateState}
+          ranges={upDate 
+            ? {     
+              startDate: new Date(event.start),
+              endDate: new Date(event.end),
+              key: "selection",
+            }
+            : dateState}
         />
         <FormControl fullWidth sx={{ mt: 2 }}>
           <InputLabel id="division">Division</InputLabel>
@@ -321,11 +271,12 @@ function NewEvent({ handleClose }) {
           <Select
             fullWidth
             labelId="owner"
-            value={event?.manager ? event.manager : managers[0]}
+            value={event?.manager ? event.manager : ""}
             onChange={(e) => setManager(e.target.value)}
             MenuProps={MenuProps}
-            input={<OutlinedInput label="person in charge" />}
+            input={<OutlinedInput label="assign this task to.." />}
           >
+             <MenuItem value="">None</MenuItem>
             {cinemaDB[11].managers.map((el, key) => (
               <MenuItem key={key} value={el.name}>
                 {el.name}

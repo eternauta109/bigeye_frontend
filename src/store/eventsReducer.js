@@ -3,6 +3,7 @@ export const initialEvents = {
   events: [],
   newEvent: {
     id: null,
+    eventType: "evento",
     color: null,
     description: "",
     division: null,
@@ -32,6 +33,16 @@ const eventsReducer = (state, action) => {
     case "GET_EVENTS":
       /* console.log("GET_EVENTS", payload); */
       return { ...state, events: payload.events };
+
+      case "SET_EVENT_TYPE":
+      /*  console.log("insert title", payload); */
+      return {
+        ...state,
+        newEvent: {
+          ...state.newEvent,
+          eventType: payload,
+        },
+      };
     case "INSERT_TITLE":
       /*  console.log("insert title", payload); */
       return {

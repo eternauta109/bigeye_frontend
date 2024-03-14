@@ -9,7 +9,7 @@ import WhatShouldIdo from "./features/whatshould/WhatShoIdido";
 
 import { EventStoreContext } from "./store/EventDataContext";
 import { PromoStoreContext } from "./store/PromoDataContext";
-/* import Kanban from "./features/kanban_board/Kanban"; */
+import Kanban from "./features/kanban_board/Kanban";
 
 export default function App() {
   return (
@@ -19,10 +19,10 @@ export default function App() {
           <div className="App">
             <NavBar />
             <Routes>
-              <Route exact path="/" element={<ShareCalendar />} />
+              <Route exact path="/" element={<Login />} />
               <Route path="/calendar" element={<ShareCalendar />} />
               <Route path="/whatsholdido" element={<WhatShouldIdo />} />
-              {/* <Route path="/kanban" element={<Kanban />} /> */}
+              <Route path="/kanban" element={<Kanban />} /> 
             </Routes>
           </div>
         </PromoStoreContext>
