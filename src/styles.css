@@ -1,0 +1,62 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  text-align: center;
+
+
+}
+
+.App {
+}
+
+.cinemaContainer {
+  padding: 2px;
+  height: 880px;
+  border: 1px solid white;
+  max-width: 100%;
+  overflow: auto;
+}
+
+.calendarContainer {
+  height: 880;
+  background-color: white;
+  color: black;
+  max-width: 100%;
+}
+
+.cinemaTitle {
+  border: 1px solid grey;
+  border-radius: 5px;
+  height: 30px;
+  display: block;
+  margin: 2px;
+}
+
+.form-field {
+  display: block;
+  margin-bottom: 10px; /* opzionale: aggiungi un po' di spazio tra i campi di input */
+}
+
+.eventContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  height: 980;
+  border: 1px solid white;
+  max-width: 100%;
+}
+
+.megaContainer {
+  align-items: stretch;
+  padding: 5px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .cinemas-container {
+    max-height: 300px; /* impostare l'altezza massima desiderata */
+  }
+}
