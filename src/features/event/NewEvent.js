@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { DateRange } from "react-date-range";
 import { useDispatch } from "react-redux";
 import ToggleEvent from "./ToggleEvent";
 import { addEvents } from "../../store/eventsSlice.js"
