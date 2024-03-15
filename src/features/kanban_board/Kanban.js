@@ -4,6 +4,7 @@ import Board from "react-trello";
 import useEventsStore from "../.././store/EventDataContext";
 import { cinemaDB } from "../.././database/cinemaDB";
 import CustomCard from "./CustomCard";
+import { convertCompilerOptionsFromJson } from "typescript";
 
 const dataInit = {
   lanes: [
@@ -14,7 +15,7 @@ const dataInit = {
 const Kanban = () => {
   const { events, upDateEvent } = useEventsStore();
   const managers = cinemaDB[11].managers;
-  const managerNames = managers.map(manager => manager.name);
+  const managerNames = managers.map((manager) => manager.name);
 
   const [managerData, setManagerData] = useState([]);
 
@@ -38,60 +39,36 @@ const Kanban = () => {
                 event.manager === manager && event.laneId === `lane-${manager}`
             ),
           },
-          {
-            id: `lane-${manager}-in-progress`,
-            title: "in progress",
-            label: "",
-            style: {
-              width: 270,
-              backgroundColor: "#F9A825",
-              color: "#fff",
-              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
-            },
-            cards: events.filter(
-              (event) =>
-                event.manager === manager &&
-                event.laneId === `lane-${manager}-in-progress`
-            ),
-          },
-          {
-            id: `lane-${manager}-completed`,
-            title: "Completed",
-            label: "",
-            style: {
-              width: 270,
-              backgroundColor: "#689F38",
-              color: "#fff",
-              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
-            },
-            cards: events.filter(
-              (event) =>
-                event.manager === manager &&
-                event.laneId === `lane-${manager}-completed`
-            ),
-          },
-          {
-            id: `lane-${manager}-blocked`,
-            title: "Blocked",
-            label: "",
-            style: {
-              width: 270,
-              backgroundColor: "#9E9E9E",
-              color: "#fff",
-              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
-            },
-            cards: events.filter(
-              (event) =>
-                event.manager === manager &&
-                event.laneId === `lane-${manager}-blocked`
-            ),
-          },
+          // Aggiungi altre lane qui...
         ],
       },
     }));
-
+    console.log("trello base", updatedManagerData, events)
     setManagerData(updatedManagerData);
   }, [events, managers]);
+
+  const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
+    const sourceManager = sourceLaneId.split("-")[1];
+    const targetManager = targetLaneId.split("-")[1];
+
+    const updatedEvents = events.map((event) => {
+      if (event.id === cardId) {
+        if (sourceManager !== targetManager) {
+          return {
+            ...event,
+            laneId: targetLaneId,
+            manager: targetManager,
+          };
+        } else {
+          return { ...event, laneId: targetLaneId };
+        }
+      } else {
+        return event;
+      }
+    });
+
+    upDateEvent(updatedEvents);
+  };
 
   return (
     <Container>
@@ -102,25 +79,8 @@ const Kanban = () => {
           </Box>
           <Board
             style={{ height: "500px", marginTop: "20px" }}
-            data={data} // Passa direttamente l'oggetto data
-            handleDragEnd={(cardId, sourceLaneId, targetLaneId) => {
-              const sourceManager = sourceLaneId.split("-")[1];
-              const targetManager = targetLaneId.split("-")[1];
-
-              const finder = events.find((event) => event.id === cardId);
-
-              if (sourceManager !== targetManager) {
-                const newEvent = {
-                  ...finder,
-                  laneId: targetLaneId,
-                  manager: targetManager,
-                };
-                upDateEvent(newEvent, cardId);
-              } else {
-                const newEvent = { ...finder, laneId: targetLaneId };
-                upDateEvent(newEvent, cardId);
-              }
-            }}
+            data={data}
+            handleDragEnd={handleDragEnd}
             laneStyle={{
               maxHeight: "450px",
               overflowY: "auto",
@@ -133,3 +93,4 @@ const Kanban = () => {
 };
 
 export default Kanban;
+
