@@ -67,8 +67,8 @@ const eventsReducer = (state, action) => {
         ...state,
         newEvent: {
           ...state.newEvent,
-          start: payload.startDate,
-          end: payload.endDate,
+          start: payload[0],
+          end: payload[1],
         },
       };
 

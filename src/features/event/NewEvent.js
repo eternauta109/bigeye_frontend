@@ -4,16 +4,20 @@ import "react-date-range/dist/theme/default.css";
 import { DateRange } from "react-date-range";
 import { useDispatch } from "react-redux";
 import ToggleEvent from "./ToggleEvent";
-import {addEvents} from "../../store/eventsSlice.js"
+import { addEvents } from "../../store/eventsSlice.js"
+import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
+import '@wojtekmaj/react-datetimerange-picker/dist/DateTimeRangePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 
-import {  
+import {
   Typography,
   Container,
   InputLabel,
   MenuItem,
   FormControl,
   Button,
-  OutlinedInput,  
+  OutlinedInput,
   Select,
   TextField,
 } from "@mui/material";
@@ -37,14 +41,8 @@ const MenuProps = {
 
 function NewEvent({ handleClose }) {
 
- 
-  const [dateState, setDateState] = useState([
-    {     
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
+
+  const [dateRange, setDateRange] = useState([new Date(),new Date()]);
   const [upDate, setUpDate] = useState(false);
 
   const dispatch = useDispatch();
@@ -71,7 +69,7 @@ function NewEvent({ handleClose }) {
   console.log("events", events);
   console.log("event", event);
 
-  
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (upDate) {
@@ -79,7 +77,7 @@ function NewEvent({ handleClose }) {
       handleClose();
     } else {
       const eventBis = {
-        ...event,       
+        ...event,
         laneId: `lane-${event.manager ? event.manager : managers}`,
         manager: event.manager ? event.manager : managers,
         id: `nota${events.length + 1}`,
@@ -91,6 +89,7 @@ function NewEvent({ handleClose }) {
     initEvent();
     handleClose()
   };
+
 
   const handleDivisionChange = (e) => {
     let color;
@@ -123,13 +122,13 @@ function NewEvent({ handleClose }) {
     setDivision({ division: e.target.value, color: color });
   };
 
- 
+
 
   useEffect(() => {
     console.log("UPDATE", upDate);
     if (event.id !== null) {
-      console.log("evento.id esistente questo è l evento da aggiornare"+ event);
-    
+      console.log("evento.id esistente questo è l evento da aggiornare" + event);
+
       setUpDate(true);
     }
 
@@ -175,9 +174,8 @@ function NewEvent({ handleClose }) {
           value={event.eventType}
           name="eventType"
           sx={{ mb: 2 }}
-         
-        />
 
+        />
 
         <TextField
           fullWidth
@@ -201,28 +199,12 @@ function NewEvent({ handleClose }) {
           onChange={(e) => addDescriptionInEvent(e.target.value)}
         />
 
-        <DateRange
-          editableDateInputs={true}
-          onChange={(item) => {
-            console.log(
-              "datetime",
-              item.selection.startDate,
-              item.selection.endDate
-            );
-            setDate(item.selection);
-            setDateState([item.selection]);
-          }}
-          moveRangeOnFirstSelection={false}
-          ranges={
-            upDate && event && event.start && event.end
-              ? {     
-                startDate: new Date(event.start),
-                endDate: new Date(event.end),
-                key: "selection",
-              }
-              : dateState
-          }
+        <DateTimeRangePicker
+          onChange={setDateRange(dateRange)}
+          value={dateRange}
         />
+
+
         <FormControl fullWidth sx={{ mt: 2 }}>
           <InputLabel id="division">Division</InputLabel>
           <Select
@@ -279,7 +261,7 @@ function NewEvent({ handleClose }) {
             MenuProps={MenuProps}
             input={<OutlinedInput label="assign this task to.." />}
           >
-             <MenuItem value="">None</MenuItem>
+            <MenuItem value="">None</MenuItem>
             {cinemaDB[11].managers.map((el, key) => (
               <MenuItem key={key} value={el.name}>
                 {el.name}
