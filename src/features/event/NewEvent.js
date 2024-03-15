@@ -42,7 +42,7 @@ const MenuProps = {
 function NewEvent({ handleClose }) {
 
 
-  const [dateRange, setDateRange] = useState([new Date(),new Date()]);
+  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [upDate, setUpDate] = useState(false);
 
   const dispatch = useDispatch();
@@ -200,8 +200,11 @@ function NewEvent({ handleClose }) {
         />
 
         <DateTimeRangePicker
-          onChange={setDateRange(dateRange)}
-          value={dateRange}
+          onChange={(newDateRange) => {
+            setDateRange(newDateRange);
+            setDate(newDateRange);
+          }}
+          value={upDate ?[event.start, event.end]: dateRange}
         />
 
 
