@@ -9,11 +9,35 @@ import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 
-const ToggleEvent = ({ alignment, setAlignment }) => {
+const ToggleEvent = ({ alignment, setEventType }) => {    
 
 
     const handleToggleAlignment = (event, newAlignment) => {
-        setAlignment(newAlignment);
+        let color="#F39C12";
+        switch (newAlignment) {
+            case "evento":
+              color = "#F39C12";
+              break;
+            case "matineè":
+              color = "#7DCEA0";
+              break;
+            case "prevendite":
+              color = "#BB8FCE";
+              break;
+            case "promo":
+              color = "#AAB7B8";
+              break;
+            case "compleanni":
+              color = "#448AFF";
+              break;
+            case "extra":
+              color = "#EF5350";
+              break;
+            
+            default:
+              throw new Error("no case select division");
+          }
+        setEventType({eventType:newAlignment,colorEventType:color});
     };
 
     return (

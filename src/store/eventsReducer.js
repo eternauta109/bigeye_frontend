@@ -4,7 +4,8 @@ export const initialEvents = {
   newEvent: {
     id: null,
     eventType: "evento",
-    color: null,
+    colorDivision: null,
+    colorEventType: "#F39C12",
     description: "",
     division: null,
     start: new Date(),
@@ -40,7 +41,8 @@ const eventsReducer = (state, action) => {
         ...state,
         newEvent: {
           ...state.newEvent,
-          eventType: payload,
+          eventType: payload.eventType,
+          colorEventType: payload.colorEventType
         },
       };
     case "INSERT_TITLE":

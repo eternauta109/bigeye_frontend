@@ -124,6 +124,8 @@ function NewEvent({ handleClose }) {
 
 
 
+
+
   useEffect(() => {
     console.log("UPDATE", upDate);
     if (event.id !== null) {
@@ -165,7 +167,7 @@ function NewEvent({ handleClose }) {
         </Button>
       )}
       <form onSubmit={onSubmit}>
-        <ToggleEvent alignment={event.eventType} setAlignment={setEventType} />
+        <ToggleEvent alignment={event.eventType} setEventType={setEventType} />
 
         <TextField
           fullWidth
