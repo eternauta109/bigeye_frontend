@@ -1,14 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
+
 import { DateRange } from "react-date-range";
 import { useDispatch } from "react-redux";
 import ToggleEvent from "./ToggleEvent";
-import { addEvents } from "../../store/eventsSlice.js"
-import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
-import '@wojtekmaj/react-datetimerange-picker/dist/DateTimeRangePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import 'react-clock/dist/Clock.css';
+import { addEvents } from "../../store/eventsSlice.js";
+import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
+import "@wojtekmaj/react-datetimerange-picker/dist/DateTimeRangePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
 
 import {
   Typography,
@@ -26,8 +25,6 @@ import { cinemaDB } from "../../database/cinemaDB";
 
 import useEventsStore from "../../store/EventDataContext";
 
-
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -40,8 +37,6 @@ const MenuProps = {
 };
 
 function NewEvent({ handleClose }) {
-
-
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [upDate, setUpDate] = useState(false);
 
@@ -69,7 +64,6 @@ function NewEvent({ handleClose }) {
   console.log("events", events);
   console.log("event", event);
 
-
   const onSubmit = async (e) => {
     e.preventDefault();
     if (upDate) {
@@ -87,9 +81,8 @@ function NewEvent({ handleClose }) {
       addEvent(eventBis);
     }
     initEvent();
-    handleClose()
+    handleClose();
   };
-
 
   const handleDivisionChange = (e) => {
     let color;
@@ -122,14 +115,12 @@ function NewEvent({ handleClose }) {
     setDivision({ division: e.target.value, color: color });
   };
 
-
-
-
-
   useEffect(() => {
     console.log("UPDATE", upDate);
     if (event.id !== null) {
-      console.log("evento.id esistente questo è l evento da aggiornare" + event);
+      console.log(
+        "evento.id esistente questo è l evento da aggiornare" + event
+      );
 
       setUpDate(true);
     }
@@ -176,7 +167,6 @@ function NewEvent({ handleClose }) {
           value={event.eventType}
           name="eventType"
           sx={{ mb: 2 }}
-
         />
 
         <TextField
@@ -206,9 +196,8 @@ function NewEvent({ handleClose }) {
             setDateRange(newDateRange);
             setDate(newDateRange);
           }}
-          value={upDate ?[event.start, event.end]: dateRange}
+          value={upDate ? [event.start, event.end] : dateRange}
         />
-
 
         <FormControl fullWidth sx={{ mt: 2 }}>
           <InputLabel id="division">Division</InputLabel>
