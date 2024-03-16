@@ -146,7 +146,7 @@ function NewEvent({ handleClose }) {
   return (
     <Container
       sx={{
-        height: "700px",
+        height: "600px",
         padding: 2,
 
         mb: 2,

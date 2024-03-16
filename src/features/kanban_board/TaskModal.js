@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Modal, Box } from "@mui/material/";
+import NewTaskForm from "./NewTaskForm";
 
 const style = {
   position: "absolute",
@@ -26,7 +27,7 @@ const TaskModal = ({ open, handleClose }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div>TaskModal</div>
+          <NewTaskForm onHandleClose={handleClose} />
         </Box>
       </Modal>
     </>

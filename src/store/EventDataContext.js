@@ -137,6 +137,7 @@ export const EventStoreContext = ({ children }) => {
     tasks: taskState.tasks,
     totalTask: taskState.totalTask,
     task: taskState.newTask,
+    initialTask,
     addEvent,
     setEventType,
     setManager,
