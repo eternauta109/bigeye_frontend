@@ -1,16 +1,31 @@
 import { createContext, useReducer, useContext } from "react";
 import eventsReducer, { initialEvents } from "./eventsReducer";
+import taskReducer, { initialTask } from "./taskReducer";
 
-export const EventDataContext = createContext(initialEvents);
+export const initialDataContext = {
+  events: initialEvents,
+  tasks: initialTask,
+};
+
+export const EventDataContext = createContext(initialDataContext);
 
 export const EventStoreContext = ({ children }) => {
   const [eventState, deispatchEvent] = useReducer(eventsReducer, initialEvents);
+  const [taskState, taskDispatch] = useReducer(taskReducer, initialTask);
 
   const addEvent = (event) => {
     const updateEvents = eventState.events.concat(event);
     deispatchEvent({
       type: "ADD_EVENT",
       payload: { events: updateEvents },
+    });
+  };
+
+  const addTask = (task) => {
+    const newTask = taskState.tasks.concat(task);
+    taskDispatch({
+      type: "ADD_EVENT",
+      payload: { events: newTask },
     });
   };
 
@@ -103,6 +118,9 @@ export const EventStoreContext = ({ children }) => {
     totalEvent: eventState.totalEvent,
     events: eventState.events,
     event: eventState.newEvent,
+    tasks: taskState.tasks,
+    totalTask: taskState.totalTask,
+    task: taskState.newTask,
     addEvent,
     setEventType,
     setManager,
@@ -116,6 +134,7 @@ export const EventStoreContext = ({ children }) => {
     setEvent,
     addNote,
     setDivision,
+    addTask,
   };
   return (
     <EventDataContext.Provider value={value}>

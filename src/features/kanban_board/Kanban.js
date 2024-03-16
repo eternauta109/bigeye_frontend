@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Box } from "@mui/material";
+import { Container, Typography, Box, Button } from "@mui/material";
 import Board from "react-trello";
 import useEventsStore from "../.././store/EventDataContext";
 import { cinemaDB } from "../.././database/cinemaDB";
@@ -14,7 +14,7 @@ const dataInit = {
 const Kanban = () => {
   const { events, upDateEvent } = useEventsStore();
   const managers = cinemaDB[11].managers;
-  const managerNames = managers.map(manager => manager.name);
+  const managerNames = managers.map((manager) => manager.name);
 
   const [managerData, setManagerData] = useState([]);
 
@@ -89,7 +89,7 @@ const Kanban = () => {
         ],
       },
     }));
-
+    console.log("mappa lane da kanban", updatedManagerData);
     setManagerData(updatedManagerData);
   }, [events, managers]);
 
@@ -97,8 +97,26 @@ const Kanban = () => {
     <Container>
       {managerData.map(({ manager, data }) => (
         <Box key={manager} sx={{ mt: "30px" }}>
-          <Box component="div" sx={{ p: 2, border: "2px dashed grey" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              p: 2,
+              border: "2px dashed grey",
+            }}
+          >
             <Typography>{manager}</Typography>
+            <Button
+              variant="contained"
+              sx={{
+                borderRadius: "50%",
+                backgroundColor: "orang",
+                color: "white",
+              }}
+            >
+              +
+            </Button>
           </Box>
           <Board
             style={{ height: "500px", marginTop: "20px" }}

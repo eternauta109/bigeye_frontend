@@ -11,7 +11,8 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { Link, useNavigate } from "react-router-dom";
 
 const pages = ["ShareCalendar", "KanBanBoard", "what should i do when.."];
@@ -56,7 +57,9 @@ function NavBar() {
     <AppBar position="static" sx={{ mb: "20px", bgcolor: "#689F38" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <RemoveRedEyeIcon
+            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -72,7 +75,7 @@ function NavBar() {
               textDecoration: "none",
             }}
           >
-            KRN
+            BIG-EYE
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -119,7 +122,9 @@ function NavBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <RemoveRedEyeIcon
+            sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
+          />
           <Typography
             variant="h5"
             noWrap
@@ -136,7 +141,7 @@ function NavBar() {
               textDecoration: "none",
             }}
           >
-            KRN
+            BigEye
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (

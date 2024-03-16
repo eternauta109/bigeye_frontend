@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useEffect } from "react";
 
-import { DateRange } from "react-date-range";
-import { useDispatch } from "react-redux";
+/* import { useDispatch } from "react-redux"; */
 import ToggleEvent from "./ToggleEvent";
-import { addEvents } from "../../store/eventsSlice.js";
+/* import { addEvents } from "../../store/eventsSlice.js"; */
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import "@wojtekmaj/react-datetimerange-picker/dist/DateTimeRangePicker.css";
 import "react-calendar/dist/Calendar.css";
@@ -40,7 +39,7 @@ function NewEvent({ handleClose }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [upDate, setUpDate] = useState(false);
 
-  const dispatch = useDispatch();
+  /* const dispatch = useDispatch(); */
 
   const {
     events,
@@ -77,7 +76,7 @@ function NewEvent({ handleClose }) {
         id: `nota${events.length + 1}`,
       };
       console.log("newevent", event);
-      await dispatch(addEvents(eventBis));
+      /* await dispatch(addEvents(eventBis)); */
       addEvent(eventBis);
     }
     initEvent();

@@ -18,7 +18,7 @@ const style = {
 };
 
 const ModalEvent = ({ open, handleClose }) => {
-  const { event,initEvent } = useEventsStore();
+  const { event, initEvent } = useEventsStore();
   return (
     <>
       {event && (
