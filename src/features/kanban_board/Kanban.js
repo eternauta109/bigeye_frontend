@@ -12,12 +12,13 @@ const dataInit = {
 };
 
 const Kanban = () => {
-  const { events, upDateEvent } = useEventsStore();
+  const { tasks, upDateTask } = useEventsStore();
   const managers = cinemaDB[11].managers;
   const managerNames = managers.map((manager) => manager.name);
 
   const [managerData, setManagerData] = useState([]);
 
+  console.log("tasks", tasks);
   useEffect(() => {
     const updatedManagerData = managerNames.map((manager) => ({
       manager: manager,
@@ -33,9 +34,9 @@ const Kanban = () => {
               color: "#fff",
               boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
             },
-            cards: events.filter(
-              (event) =>
-                event.manager === manager && event.laneId === `lane-${manager}`
+            cards: tasks.filter(
+              (task) =>
+                task.manager === manager && task.laneId === `lane-${manager}`
             ),
           },
           {
@@ -48,10 +49,10 @@ const Kanban = () => {
               color: "#fff",
               boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
             },
-            cards: events.filter(
-              (event) =>
-                event.manager === manager &&
-                event.laneId === `lane-${manager}-in-progress`
+            cards: tasks.filter(
+              (task) =>
+                task.manager === manager &&
+                task.laneId === `lane-${manager}-in-progress`
             ),
           },
           {
@@ -64,10 +65,10 @@ const Kanban = () => {
               color: "#fff",
               boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
             },
-            cards: events.filter(
-              (event) =>
-                event.manager === manager &&
-                event.laneId === `lane-${manager}-completed`
+            cards: tasks.filter(
+              (task) =>
+                task.manager === manager &&
+                task.laneId === `lane-${manager}-completed`
             ),
           },
           {
@@ -80,10 +81,10 @@ const Kanban = () => {
               color: "#fff",
               boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
             },
-            cards: events.filter(
-              (event) =>
-                event.manager === manager &&
-                event.laneId === `lane-${manager}-blocked`
+            cards: tasks.filter(
+              (task) =>
+                task.manager === manager &&
+                task.laneId === `lane-${manager}-blocked`
             ),
           },
         ],
@@ -91,7 +92,7 @@ const Kanban = () => {
     }));
     console.log("mappa lane da kanban", updatedManagerData);
     setManagerData(updatedManagerData);
-  }, [events, managers]);
+  }, [tasks, managers]);
 
   return (
     <Container>
@@ -124,19 +125,20 @@ const Kanban = () => {
             handleDragEnd={(cardId, sourceLaneId, targetLaneId) => {
               const sourceManager = sourceLaneId.split("-")[1];
               const targetManager = targetLaneId.split("-")[1];
+              console.log(sourceManager, targetManager);
 
-              const finder = events.find((event) => event.id === cardId);
+              const finder = tasks.find((task) => task.id === cardId);
 
               if (sourceManager !== targetManager) {
-                const newEvent = {
+                const newTask = {
                   ...finder,
                   laneId: targetLaneId,
                   manager: targetManager,
                 };
-                upDateEvent(newEvent, cardId);
+                upDateTask(newTask, cardId);
               } else {
-                const newEvent = { ...finder, laneId: targetLaneId };
-                upDateEvent(newEvent, cardId);
+                const newTask = { ...finder, laneId: targetLaneId };
+                upDateTask(newTask, cardId);
               }
             }}
             laneStyle={{

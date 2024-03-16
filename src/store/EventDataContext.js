@@ -22,10 +22,10 @@ export const EventStoreContext = ({ children }) => {
   };
 
   const addTask = (task) => {
-    const newTask = taskState.tasks.concat(task);
+    const newTasks = taskState.tasks.concat(task);
     taskDispatch({
-      type: "ADD_EVENT",
-      payload: { events: newTask },
+      type: "ADD_TASK",
+      payload: { tasks: newTasks },
     });
   };
 
@@ -114,6 +114,22 @@ export const EventStoreContext = ({ children }) => {
     });
   };
 
+  const getTasks = () => {
+    taskDispatch({
+      type: "GET_TASKS",
+    });
+  };
+
+  const upDateTask = (task, id) => {
+    let updateTasks = taskState.tasks;
+    let updateTask = taskState.tasks.findIndex((e) => e.id === id);
+    updateTasks[updateTask] = task;
+    taskDispatch({
+      type: "UPDATE_TASK",
+      payload: { tasks: updateTasks },
+    });
+  };
+
   const value = {
     totalEvent: eventState.totalEvent,
     events: eventState.events,
@@ -135,6 +151,8 @@ export const EventStoreContext = ({ children }) => {
     addNote,
     setDivision,
     addTask,
+    getTasks,
+    upDateTask,
   };
   return (
     <EventDataContext.Provider value={value}>

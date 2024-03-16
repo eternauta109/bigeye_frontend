@@ -21,15 +21,15 @@ const taskReducer = (state, action) => {
       /* console.log("ADD_EVENT", payload); */
       return {
         ...state,
-        events: payload.events,
-        totalEvent: state.totalEvent + 1,
+        tasks: payload.tasks,
+        totalTask: state.totalTask + 1,
       };
     case "UPDATE_TASK":
       /* console.log("UPDATE_EVENT", payload); */
-      return { ...state, events: payload.events };
+      return { ...state, tasks: payload.tasks };
     case "GET_TASK":
       /* console.log("GET_EVENTS", payload); */
-      return { ...state, events: payload.events };
+      return { ...state, tasks: payload.tasks };
 
     default:
       throw new Error("no case for type", type);

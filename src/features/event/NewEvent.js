@@ -43,8 +43,11 @@ function NewEvent({ handleClose }) {
 
   const {
     events,
+    addTask,
     addEvent,
     setEventType,
+    totalTask,
+    tasks,
     upDateEvent,
     setDate,
     event,
@@ -69,9 +72,20 @@ function NewEvent({ handleClose }) {
       upDateEvent(event, event.id);
       handleClose();
     } else {
+      if (event.manager !== "") {
+        const newTask = {
+          id: `task${tasks.length + 1}`,
+          title: event.title,
+          manager: event.manager,
+          description: event.description,
+          label: event.eventType,
+          laneId: `lane-${event.manager}`,
+        };
+        console.log("new task da calendar", newTask);
+        addTask(newTask);
+      }
       const eventBis = {
         ...event,
-        laneId: `lane-${event.manager ? event.manager : managers}`,
         manager: event.manager ? event.manager : managers,
         id: `nota${events.length + 1}`,
       };
