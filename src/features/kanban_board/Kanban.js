@@ -3,6 +3,7 @@ import { Container, Typography, Box, Button } from "@mui/material";
 import Board from "react-trello";
 import useEventsStore from "../.././store/EventDataContext";
 import { cinemaDB } from "../.././database/cinemaDB";
+import TaskModal from "./TaskModal";
 import CustomCard from "./CustomCard";
 
 const dataInit = {
@@ -13,6 +14,11 @@ const dataInit = {
 
 const Kanban = () => {
   const { tasks, upDateTask } = useEventsStore();
+  const [openNewTask, setOpenNewTask] = useState(false);
+
+  const handleOpenNewTask = () => setOpenNewTask(true);
+  const handleCloseNewTask = () => setOpenNewTask(false);
+
   const managers = cinemaDB[11].managers;
   const managerNames = managers.map((manager) => manager.name);
 
@@ -112,8 +118,12 @@ const Kanban = () => {
               variant="contained"
               sx={{
                 borderRadius: "50%",
-                backgroundColor: "orang",
+                backgroundColor: "orange",
                 color: "white",
+              }}
+              onClick={() => {
+                console.log(manager);
+                handleOpenNewTask();
               }}
             >
               +
@@ -148,6 +158,7 @@ const Kanban = () => {
           />
         </Box>
       ))}
+      <TaskModal open={openNewTask} handleClose={handleCloseNewTask} />
     </Container>
   );
 };
