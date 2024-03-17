@@ -15,7 +15,7 @@ const style = {
   p: 4,
 };
 
-const TaskModal = ({ open, handleClose }) => {
+const TaskModal = ({ manager,open, handleClose }) => {
   return (
     <>
       <Modal
@@ -27,7 +27,7 @@ const TaskModal = ({ open, handleClose }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <NewTaskForm onHandleClose={handleClose} />
+          <NewTaskForm manager={manager} onHandleClose={handleClose} />
         </Box>
       </Modal>
     </>

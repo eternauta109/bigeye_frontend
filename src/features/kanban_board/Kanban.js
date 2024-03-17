@@ -5,16 +5,28 @@ import useEventsStore from "../.././store/EventDataContext";
 import { cinemaDB } from "../.././database/cinemaDB";
 import TaskModal from "./TaskModal";
 import CustomCard from "./CustomCard";
+import { autoBatchEnhancer } from "@reduxjs/toolkit";
 
 const dataInit = {
   lanes: [
     // Lascia le tue lane iniziali vuote o come preferisci
   ],
 };
+const styleLane={
+  width: 270,
+              maxHeight:470,
+              overflowY:"auto",
+              backgroundColor: "#B39DDB",
+              color: "#fff",
+              color: "#fff",
+              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
+
+}
 
 const Kanban = () => {
   const { tasks, upDateTask } = useEventsStore();
   const [openNewTask, setOpenNewTask] = useState(false);
+  const [selectedManager, setSelectedManager]=useState();
 
   const handleOpenNewTask = () => setOpenNewTask(true);
   const handleCloseNewTask = () => setOpenNewTask(false);
@@ -23,6 +35,8 @@ const Kanban = () => {
   const managerNames = managers.map((manager) => manager.name);
 
   const [managerData, setManagerData] = useState([]);
+
+
 
   console.log("tasks", tasks);
   useEffect(() => {
@@ -35,10 +49,8 @@ const Kanban = () => {
             title: "to do task",
             label: "",
             style: {
-              width: 270,
-              backgroundColor: "#B39DDB",
-              color: "#fff",
-              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
+              ...styleLane,
+              backgroundColor: "#B39DDB",             
             },
             cards: tasks.filter(
               (task) =>
@@ -50,11 +62,10 @@ const Kanban = () => {
             title: "in progress",
             label: "",
             style: {
-              width: 270,
-              backgroundColor: "#F9A825",
-              color: "#fff",
-              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
+              ...styleLane,
+              backgroundColor: "#F9A825",             
             },
+           
             cards: tasks.filter(
               (task) =>
                 task.manager === manager &&
@@ -65,11 +76,10 @@ const Kanban = () => {
             id: `lane-${manager}-completed`,
             title: "Completed",
             label: "",
+           
             style: {
-              width: 270,
-              backgroundColor: "#689F38",
-              color: "#fff",
-              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
+              ...styleLane,
+              backgroundColor: "#689F38",             
             },
             cards: tasks.filter(
               (task) =>
@@ -82,11 +92,10 @@ const Kanban = () => {
             title: "Blocked",
             label: "",
             style: {
-              width: 270,
-              backgroundColor: "#9E9E9E",
-              color: "#fff",
-              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
+              ...styleLane,
+              backgroundColor: "#9E9E9E",             
             },
+            
             cards: tasks.filter(
               (task) =>
                 task.manager === manager &&
@@ -122,7 +131,7 @@ const Kanban = () => {
                 color: "white",
               }}
               onClick={() => {
-                console.log(manager);
+                setSelectedManager(manager)
                 handleOpenNewTask();
               }}
             >
@@ -151,14 +160,15 @@ const Kanban = () => {
                 upDateTask(newTask, cardId);
               }
             }}
-            laneStyle={{
-              maxHeight: "450px",
-              overflowY: "auto",
-            }}
+            laneStyle={(laneId, index) => ({
+              maxHeight: "250px", // Altezza massima della singola lane
+              overflowY: "auto", // Abilita lo scorrimento verticale quando necessario
+              marginBottom: "10px", // Spazio inferiore tra le lane
+            })}
           />
         </Box>
       ))}
-      <TaskModal open={openNewTask} handleClose={handleCloseNewTask} />
+      <TaskModal manager={selectedManager} open={openNewTask} handleClose={handleCloseNewTask} />
     </Container>
   );
 };

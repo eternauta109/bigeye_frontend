@@ -26,7 +26,7 @@ const eventsReducer = (state, action) => {
       return {
         ...state,
         events: payload.events,
-        totalEvent: state.totalEvent + 1,
+        totalEvents: state.totalEvents + 1,
       };
     case "UPDATE_EVENT":
       /* console.log("UPDATE_EVENT", payload); */
