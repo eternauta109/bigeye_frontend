@@ -3,10 +3,10 @@ import ShareCalendar from "./features/calendar/ShareCalendar";
 import Login from "./features/Login";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import NavBar from "./features/NavBar";
-
 import { EventStoreContext } from "./store/EventDataContext";
 import { PromoStoreContext } from "./store/PromoDataContext";
 import Kanban from "./features/kanban_board/Kanban";
+import Cascading from "./features/cascading/Cascading";
 
 export default function App() {
   return (
@@ -18,7 +18,7 @@ export default function App() {
             <Routes>
               <Route exact path="/" element={<Login />} />
               <Route path="/calendar" element={<ShareCalendar />} />
-
+              <Route path="/cascading" element={<Cascading/>}/>
               <Route path="/kanban" element={<Kanban />} />
             </Routes>
           </div>

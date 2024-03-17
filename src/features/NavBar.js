@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { Link, useNavigate } from "react-router-dom";
 
-const pages = ["ShareCalendar", "KanBanBoard", "what should i do when.."];
+const pages = ["ShareCalendar", "KanBanBoard", "cascading"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function NavBar() {
@@ -33,8 +33,8 @@ function NavBar() {
   const handleCloseNavMenu = (e) => {
     console.log("menu toggle", e.target.value);
     switch (e.target.value) {
-      case "what should i do when..":
-        navigate("/whatsholdido");
+      case "cascading":
+        navigate("/cascading");
         break;
       case "KanBanBoard":
         navigate("/kanban");

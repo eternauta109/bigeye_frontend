@@ -279,10 +279,6 @@ function NewEvent({ handleClose }) {
         </FormControl>
 
         {/*  
-       
-
-        
-
         <FormControl fullWidth sx={{ mt: 2, maxWidth: 400 }}>
           <InputLabel id="cinemaInvolved">Cinema involved </InputLabel>
           <Select

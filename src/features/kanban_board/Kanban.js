@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Box, Button } from "@mui/material";
+import { Container, Typography, Box, Button, Card } from "@mui/material";
 import Board from "react-trello";
 import useEventsStore from "../.././store/EventDataContext";
 import { cinemaDB } from "../.././database/cinemaDB";
 import TaskModal from "./TaskModal";
 import CustomCard from "./CustomCard";
-import { autoBatchEnhancer } from "@reduxjs/toolkit";
+
 
 const dataInit = {
   lanes: [
     // Lascia le tue lane iniziali vuote o come preferisci
   ],
 };
+
+
 const styleLane={
   width: 270,
               maxHeight:470,
@@ -165,6 +167,7 @@ const Kanban = () => {
               overflowY: "auto", // Abilita lo scorrimento verticale quando necessario
               marginBottom: "10px", // Spazio inferiore tra le lane
             })}
+            
           />
         </Box>
       ))}
