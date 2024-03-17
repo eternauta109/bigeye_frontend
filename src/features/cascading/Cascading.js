@@ -43,6 +43,13 @@ const columns = [
         width: 110,
         editable: true,
     },
+    {
+        field: 'link',
+        headerName: 'link',
+        //type: 'number',
+        width: 110,
+        editable: true,
+    },
     ...managers.map((manager, index) => ({
         field: manager.name,
         headerName: (
@@ -53,13 +60,7 @@ const columns = [
         width: 60,
         renderCell: (params) => <ManagerCheckbox {...params} manager={manager.name} />
     })),
-    {
-        field: 'link',
-        headerName: 'link',
-        //type: 'number',
-        width: 110,
-        editable: true,
-    },
+   
 
     {
         field: 'note',
