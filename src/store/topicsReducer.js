@@ -3,7 +3,7 @@ export const initialTopic = {
   topics: [],
   newTopic: {
     id: null,
-    date: new Date(),
+    dateStart: new Date(),
     topicArgument: [],
     typeDocument: "",
     topicType: "",
@@ -12,6 +12,7 @@ export const initialTopic = {
     link: "",
     note: "",
     managers: [],
+    tmVeto:false,
   },
 };
 
