@@ -1,10 +1,12 @@
 import { createContext, useReducer, useContext } from "react";
 import eventsReducer, { initialEvents } from "./eventsReducer";
 import taskReducer, { initialTask } from "./taskReducer";
+import topicsReducer, { initialTopic } from "./topicsReducer";
 
 export const initialDataContext = {
   events: initialEvents,
   tasks: initialTask,
+  topics: initialTopic,
 };
 
 export const EventDataContext = createContext(initialDataContext);
@@ -12,20 +14,35 @@ export const EventDataContext = createContext(initialDataContext);
 export const EventStoreContext = ({ children }) => {
   const [eventState, deispatchEvent] = useReducer(eventsReducer, initialEvents);
   const [taskState, taskDispatch] = useReducer(taskReducer, initialTask);
+  const [topicState, topicDispatch] = useReducer(topicsReducer, initialTopic);
+
+  //Topic ACTION
+
+  const addTopic = (topic) => {
+    const newTopic = topicState.topics.concat(topic);
+    topicDispatch({
+      type: "ADD_TOPIC",
+      payload: { topics: newTopic },
+    });
+  };
+
+  const upDateTopic = (topic, id) => {
+    let updateTopics = topicState.topics;
+    let updateTopic = topicState.topics.findIndex((e) => e.id === id);
+    updateTopics[updateTopic] = topic;
+    topicDispatch({
+      type: "UPDATE_TOPIC",
+      payload: { topic: updateTopics },
+    });
+  };
+
+  //Action EVENT
 
   const addEvent = (event) => {
     const updateEvents = eventState.events.concat(event);
     deispatchEvent({
       type: "ADD_EVENT",
       payload: { events: updateEvents },
-    });
-  };
-
-  const addTask = (task) => {
-    const newTasks = taskState.tasks.concat(task);
-    taskDispatch({
-      type: "ADD_TASK",
-      payload: { tasks: newTasks },
     });
   };
 
@@ -114,6 +131,16 @@ export const EventStoreContext = ({ children }) => {
     });
   };
 
+  //Azioni TASK ############################
+
+  const addTask = (task) => {
+    const newTasks = taskState.tasks.concat(task);
+    taskDispatch({
+      type: "ADD_TASK",
+      payload: { tasks: newTasks },
+    });
+  };
+
   const getTasks = () => {
     taskDispatch({
       type: "GET_TASKS",
@@ -131,13 +158,18 @@ export const EventStoreContext = ({ children }) => {
   };
 
   const value = {
+    //TOPICS
+    totalTopics: topicState.totalTopics,
+    emptyTopic: initialTopic.newTopic,
+    topics: topicState.topics,
+    addTopic,
+    upDateTopic,
+
+    //EVENT
+
     totalEvent: eventState.totalEvents,
     events: eventState.events,
     event: eventState.newEvent,
-    tasks: taskState.tasks,
-    totalTask: taskState.totalTask,
-    emptyTask: initialTask.newTask,
-    initialTask,
     addEvent,
     setEventType,
     setManager,
@@ -151,6 +183,13 @@ export const EventStoreContext = ({ children }) => {
     setEvent,
     addNote,
     setDivision,
+
+    //TASK
+
+    tasks: taskState.tasks,
+    totalTask: taskState.totalTask,
+    emptyTask: initialTask.newTask,
+    initialTask,
     addTask,
     getTasks,
     upDateTask,
