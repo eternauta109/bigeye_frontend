@@ -10,11 +10,10 @@ import {
 } from "@mui/material";
 
 const NewTaskForm = ({ manager, onHandleClose }) => {
-  const { addTask, totalTask, emptyTask, } = useEventsStore();
+  const { addTask, totalTask, emptyTask } = useEventsStore();
   const [newTask, setNewTask] = useState({ ...emptyTask });
 
   const handleSubmit = (event) => {
-
     event.preventDefault();
     // Aggiungi qui la logica per gestire il submit del form
     console.log("Form submitted!", newTask, totalTask);
@@ -23,21 +22,19 @@ const NewTaskForm = ({ manager, onHandleClose }) => {
       manager: manager,
       label: "task",
       laneId: `lane-${manager}`,
-      id: totalTask
-    }
+      id: totalTask.toString(),
+    };
     addTask(sendNewTaskInStore);
     onHandleClose();
-
   };
   console.log("Form submitted!", newTask, manager);
 
   useMemo(() => {
-    console.log("new task in use memo", newTask)
+    console.log("new task in use memo", newTask);
     return () => {
       setNewTask({ ...emptyTask });
     };
-
-  }, [newTask])
+  }, [newTask]);
   return (
     <Container
       sx={{
@@ -47,56 +44,66 @@ const NewTaskForm = ({ manager, onHandleClose }) => {
         mb: 2,
         overflowY: "auto",
       }}
-
-
     >
-      {newTask && <form onSubmit={handleSubmit}>
-        <FormControl fullWidth>
+      {newTask && (
+        <form onSubmit={handleSubmit}>
+          <FormControl fullWidth>
+            <TextField
+              fullWidth
+              variant="filled"
+              disabled
+              value={`new task for:  ${manager}`}
+              name="task for"
+              onChange={(t) =>
+                setNewTask({ ...newTask, title: t.target.value })
+              }
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="title"
+              variant="outlined"
+              value={newTask ? newTask.title : ""}
+              name="title"
+              onChange={(t) =>
+                setNewTask({ ...newTask, title: t.target.value })
+              }
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="description"
+              variant="outlined"
+              multiline
+              rows={4}
+              value={newTask ? newTask.description : ""}
+              name="description"
+              onChange={(t) =>
+                setNewTask({ ...newTask, description: t.target.value })
+              }
+              sx={{ mb: 2 }}
+            />
 
-          <TextField
-            fullWidth
-            variant="filled"
-            disabled
-            value={`new task for:  ${manager}`}
-            name="task for"
-            onChange={(t) => setNewTask({ ...newTask, title: t.target.value })}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="title"
-            variant="outlined"
-            value={newTask ? newTask.title : ""}
-            name="title"
-            onChange={(t) => setNewTask({ ...newTask, title: t.target.value })}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="description"
-            variant="outlined"
-            multiline
-            rows={4}
-            value={newTask ? newTask.description : ""}
-            name="description"
-            onChange={(t) => setNewTask({ ...newTask, description: t.target.value })}
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            fullWidth
-            label="note"
-            variant="outlined"
-            value={newTask ? newTask.note : ""}
-            name="note"
-            onChange={(t) => setNewTask({ ...newTask, note: t.target.value })}
-            sx={{ mb: 2 }}
-          />
-          <Button fullWidth variant="outlined" type="submit" color="secondary">
-            ADD TASK
-          </Button>
-        </FormControl>
-      </form>}
+            <TextField
+              fullWidth
+              label="note"
+              variant="outlined"
+              value={newTask ? newTask.note : ""}
+              name="note"
+              onChange={(t) => setNewTask({ ...newTask, note: t.target.value })}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              fullWidth
+              variant="outlined"
+              type="submit"
+              color="secondary"
+            >
+              ADD TASK
+            </Button>
+          </FormControl>
+        </form>
+      )}
     </Container>
   );
 };

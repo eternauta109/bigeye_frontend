@@ -45,8 +45,8 @@ function NewEvent({ handleClose }) {
     events,
     addTask,
     addEvent,
-    setEventType,   
-    totalEvent, 
+    setEventType,
+    totalEvent,
     totalTask,
     tasks,
     upDateEvent,
@@ -75,7 +75,7 @@ function NewEvent({ handleClose }) {
     } else {
       if (event.manager !== "") {
         const newTask = {
-          id: totalTask,
+          id: totalTask.toString(),
           title: event.title,
           manager: event.manager,
           description: event.description,

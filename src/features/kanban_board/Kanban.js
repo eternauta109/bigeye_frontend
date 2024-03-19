@@ -6,29 +6,26 @@ import { cinemaDB } from "../.././database/cinemaDB";
 import TaskModal from "./TaskModal";
 import CustomCard from "./CustomCard";
 
-
 const dataInit = {
   lanes: [
     // Lascia le tue lane iniziali vuote o come preferisci
   ],
 };
 
-
-const styleLane={
+const styleLane = {
   width: 270,
-              maxHeight:470,
-              overflowY:"auto",
-              backgroundColor: "#B39DDB",
-              color: "#fff",
-              color: "#fff",
-              boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
-
-}
+  maxHeight: 470,
+  overflowY: "auto",
+  backgroundColor: "#B39DDB",
+  color: "#fff",
+  color: "#fff",
+  boxShadow: "2px 2px 4px 0px rgba(0,0,0,0.75)",
+};
 
 const Kanban = () => {
   const { tasks, upDateTask } = useEventsStore();
   const [openNewTask, setOpenNewTask] = useState(false);
-  const [selectedManager, setSelectedManager]=useState();
+  const [selectedManager, setSelectedManager] = useState();
 
   const handleOpenNewTask = () => setOpenNewTask(true);
   const handleCloseNewTask = () => setOpenNewTask(false);
@@ -38,7 +35,31 @@ const Kanban = () => {
 
   const [managerData, setManagerData] = useState([]);
 
+  const handleDragEnd = (
+    cardId,
+    sourceLaneId,
+    targetLaneId,
+    position,
+    card
+  ) => {
+    const sourceManager = sourceLaneId.split("-")[1];
+    const targetManager = targetLaneId.split("-")[1];
+    console.log(sourceManager, targetManager);
 
+    const finder = tasks.find((task) => task.id === cardId);
+
+    if (sourceManager !== targetManager) {
+      const newTask = {
+        ...finder,
+        laneId: targetLaneId,
+        manager: targetManager,
+      };
+      upDateTask(newTask, cardId);
+    } else {
+      const newTask = { ...finder, laneId: targetLaneId };
+      upDateTask(newTask, cardId);
+    }
+  };
 
   console.log("tasks", tasks);
   useEffect(() => {
@@ -52,7 +73,7 @@ const Kanban = () => {
             label: "",
             style: {
               ...styleLane,
-              backgroundColor: "#B39DDB",             
+              backgroundColor: "#B39DDB",
             },
             cards: tasks.filter(
               (task) =>
@@ -65,9 +86,9 @@ const Kanban = () => {
             label: "",
             style: {
               ...styleLane,
-              backgroundColor: "#F9A825",             
+              backgroundColor: "#F9A825",
             },
-           
+
             cards: tasks.filter(
               (task) =>
                 task.manager === manager &&
@@ -78,10 +99,10 @@ const Kanban = () => {
             id: `lane-${manager}-completed`,
             title: "Completed",
             label: "",
-           
+
             style: {
               ...styleLane,
-              backgroundColor: "#689F38",             
+              backgroundColor: "#689F38",
             },
             cards: tasks.filter(
               (task) =>
@@ -95,9 +116,9 @@ const Kanban = () => {
             label: "",
             style: {
               ...styleLane,
-              backgroundColor: "#9E9E9E",             
+              backgroundColor: "#9E9E9E",
             },
-            
+
             cards: tasks.filter(
               (task) =>
                 task.manager === manager &&
@@ -133,7 +154,7 @@ const Kanban = () => {
                 color: "white",
               }}
               onClick={() => {
-                setSelectedManager(manager)
+                setSelectedManager(manager);
                 handleOpenNewTask();
               }}
             >
@@ -143,35 +164,15 @@ const Kanban = () => {
           <Board
             style={{ height: "500px", marginTop: "20px" }}
             data={data} // Passa direttamente l'oggetto data
-            handleDragEnd={(cardId, sourceLaneId, targetLaneId) => {
-              const sourceManager = sourceLaneId.split("-")[1];
-              const targetManager = targetLaneId.split("-")[1];
-              console.log(sourceManager, targetManager);
-
-              const finder = tasks.find((task) => task.id === cardId);
-
-              if (sourceManager !== targetManager) {
-                const newTask = {
-                  ...finder,
-                  laneId: targetLaneId,
-                  manager: targetManager,
-                };
-                upDateTask(newTask, cardId);
-              } else {
-                const newTask = { ...finder, laneId: targetLaneId };
-                upDateTask(newTask, cardId);
-              }
-            }}
-            laneStyle={(laneId, index) => ({
-              maxHeight: "250px", // Altezza massima della singola lane
-              overflowY: "auto", // Abilita lo scorrimento verticale quando necessario
-              marginBottom: "10px", // Spazio inferiore tra le lane
-            })}
-            
+            handleDragEnd={handleDragEnd}
           />
         </Box>
       ))}
-      <TaskModal manager={selectedManager} open={openNewTask} handleClose={handleCloseNewTask} />
+      <TaskModal
+        manager={selectedManager}
+        open={openNewTask}
+        handleClose={handleCloseNewTask}
+      />
     </Container>
   );
 };
