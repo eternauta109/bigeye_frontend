@@ -19,20 +19,25 @@ export const EventStoreContext = ({ children }) => {
   //Topic ACTION
 
   const addTopic = (topic) => {
-    const newTopic = topicState.topics.concat(topic);
+    console.log("add topic in reducer", topic);
+    const newTopics = topicState.topics.concat(topic);
     topicDispatch({
       type: "ADD_TOPIC",
-      payload: { topics: newTopic },
+      payload: { topics: newTopics },
     });
   };
 
   const upDateTopic = (topic, id) => {
+    console.log(topic, id);
     let updateTopics = topicState.topics;
+    console.log("updateTopics", updateTopics);
     let updateTopic = topicState.topics.findIndex((e) => e.id === id);
+    console.log("indice topic update", updateTopic);
     updateTopics[updateTopic] = topic;
+    console.log("aggiornato", updateTopics);
     topicDispatch({
       type: "UPDATE_TOPIC",
-      payload: { topic: updateTopics },
+      payload: { topics: updateTopics },
     });
   };
 
