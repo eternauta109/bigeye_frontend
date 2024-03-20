@@ -16,7 +16,7 @@ export const loginUser = createAsyncThunk(
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ username, password }),
         });
 
         if (!response.ok) {
@@ -80,6 +80,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout,loginSuccess } = userSlice.actions;
+export const { logout, loginSuccess } = userSlice.actions;
 export default userSlice.reducer;
-

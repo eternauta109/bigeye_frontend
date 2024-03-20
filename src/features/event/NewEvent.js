@@ -84,7 +84,6 @@ function NewEvent({ handleClose, upDate }) {
       }
       const prepareEvent = {
         ...event,
-        manager: event.manager,
         id: totalEvent,
       };
       console.log("newevent", event);

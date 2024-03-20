@@ -2,8 +2,6 @@ import "./styles.css";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import NavBar from "./features/NavBar";
 import { EventStoreContext } from "./store/EventDataContext";
-import { PromoStoreContext } from "./store/PromoDataContext";
-
 import Kanban from "./features/kanban_board/Kanban";
 import Topics from "./features/topics/Topics";
 import ShareCalendar from "./features/calendar/ShareCalendar";
@@ -13,17 +11,15 @@ export default function App() {
   return (
     <>
       <EventStoreContext>
-        <PromoStoreContext>
-          <div className="App">
-            <NavBar />
-            <Routes>
-              <Route exact path="/" element={<Login />} />
-              <Route path="/calendar" element={<ShareCalendar />} />
-              <Route path="/topics" element={<Topics />} />
-              <Route path="/kanban" element={<Kanban />} />
-            </Routes>
-          </div>
-        </PromoStoreContext>
+        <div className="App">
+          <NavBar />
+          <Routes>
+            <Route exact path="/" element={<Login />} />
+            <Route path="/calendar" element={<ShareCalendar />} />
+            <Route path="/topics" element={<Topics />} />
+            <Route path="/kanban" element={<Kanban />} />
+          </Routes>
+        </div>
       </EventStoreContext>
     </>
   );
