@@ -22,7 +22,7 @@ import { cinemaDB } from "../../database/cinemaDB";
 const managers = cinemaDB[11].managers;
 
 const topicTypes = [
-  { value: "", label: "none" },
+  { value: "none", label: "none" },
   { value: "cascading", label: "cascading" },
   { value: "suggest", label: "abitudini" },
   { value: "tutorial", label: "Tutorial" },
@@ -32,21 +32,21 @@ const topicTypes = [
 ];
 
 const docTypes = [
-  { value: "", label: "none" },
+  { value: "none", label: "none" },
   { value: "presentazione", label: "presentazione" },
   { value: "pdf", label: "pdf" },
   { value: "office", label: "office" },
 ];
 
 const priorityTypes = [
-  { value: "", label: "none" },
+  { value: "none", label: "none" },
   { value: "high", label: "high" },
   { value: "low", label: "low" },
   { value: "medium", label: "medium" },
 ];
 
 const officeTypes = [
-  { value: "", label: "none" },
+  { value: "none", label: "none" },
   { value: "marketing", label: "marketing" },
   { value: "hr", label: "hr" },
   { value: "operations", label: "operations" },
