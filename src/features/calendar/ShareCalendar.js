@@ -6,7 +6,6 @@ import { Container, Grid } from "@mui/material";
 
 import MyCalendar from "./MyCalendar";
 
-
 const roundButtonStyle = {
   borderRadius: "10%",
   width: "100px",
@@ -18,15 +17,26 @@ const roundButtonStyle = {
 
 const ShareCalendar = () => {
   const [openNewEvent, setOpenNewEvent] = useState(false);
+  const [upDate, setUpDate] = useState(false);
 
-  const handleOpenNewEvent = () => setOpenNewEvent(true);
+  const handleOpenNewEvent = () => {
+    setUpDate(false);
+    setOpenNewEvent(true);
+    // Imposta upDate a false quando viene aperto il modal
+  };
+
+  const handleOpenOldEvent = () => {
+    setUpDate(true);
+    setOpenNewEvent(true);
+    // Imposta upDate a false quando viene aperto il modal
+  };
   const handleCloseNewEvent = () => setOpenNewEvent(false);
 
   return (
     <Container maxWidth="xl" style={{ maxHeight: "900px" }}>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={11}>
-          <MyCalendar handleOpen={handleOpenNewEvent} />
+          <MyCalendar handleOpen={handleOpenOldEvent} />
         </Grid>
         <Grid item xs={12} md={1}>
           <Button
@@ -44,10 +54,12 @@ const ShareCalendar = () => {
         alignItems="center"
         justifyContent="center"
         sx={{ mt: 4 }}
-      >
-     
-      </Grid>
-      <ModalEvent open={openNewEvent} handleClose={handleCloseNewEvent} />
+      ></Grid>
+      <ModalEvent
+        open={openNewEvent}
+        handleClose={handleCloseNewEvent}
+        upDate={upDate}
+      />
     </Container>
   );
 };

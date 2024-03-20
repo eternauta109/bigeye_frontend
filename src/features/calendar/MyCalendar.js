@@ -47,13 +47,8 @@ export default function Basic({ handleOpen }) {
     []
   );
 
-  const handleSelect = (e) => {
-    let person = prompt("Please enter Event ");
-    let date = e.start;
-    console.log(person);
-    console.log(date);
-  };
   const onSelectEvent = (event) => {
+    console.log("onSelectEvent", event);
     setEvent(event);
     handleOpen();
   };

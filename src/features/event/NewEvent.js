@@ -35,9 +35,8 @@ const MenuProps = {
   },
 };
 
-function NewEvent({ handleClose }) {
+function NewEvent({ handleClose, upDate }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [upDate, setUpDate] = useState(false);
 
   /* const dispatch = useDispatch(); */
 
@@ -45,21 +44,19 @@ function NewEvent({ handleClose }) {
     events,
     addTask,
     addEvent,
-    setEventType,
+    eventToUpdate,
     totalEvent,
     totalTask,
     tasks,
     upDateEvent,
-    setDate,
-    event,
+    emptyEvent,
     initEvent,
-    addLink,
-    setManager,
-    addNote,
-    addTitleInEvent,
     setDivision,
-    addDescriptionInEvent,
   } = useEventsStore();
+
+  const [event, setEvent] = useState(
+    upDate ? { ...eventToUpdate } : { ...emptyEvent }
+  );
 
   const managers = cinemaDB[11].managers[0].name;
   console.log(managers);
@@ -85,14 +82,14 @@ function NewEvent({ handleClose }) {
 
         addTask(newTask);
       }
-      const eventBis = {
+      const prepareEvent = {
         ...event,
         manager: event.manager,
         id: totalEvent,
       };
       console.log("newevent", event);
       /* await dispatch(addEvents(eventBis)); */
-      addEvent(eventBis);
+      addEvent(prepareEvent);
     }
     initEvent();
     handleClose();
@@ -124,19 +121,20 @@ function NewEvent({ handleClose }) {
         color = "#90A4AE";
         break;
       default:
-        throw new Error("no case select division");
+        color = "#7B68EE";
     }
-    setDivision({ division: e.target.value, color: color });
+
+    setEvent({ ...event, division: e.target.value, colorDivision: color });
   };
+
+  useMemo(() => console.log("useMemo newEvent", event), [event]);
 
   useEffect(() => {
     console.log("UPDATE", upDate);
-    if (event.id !== null) {
+    if (upDate) {
       console.log(
         "evento.id esistente questo è l evento da aggiornare" + event
       );
-
-      setUpDate(true);
     }
 
     return () => {
@@ -172,13 +170,13 @@ function NewEvent({ handleClose }) {
         </Button>
       )}
       <form onSubmit={onSubmit}>
-        <ToggleEvent alignment={event.eventType} setEventType={setEventType} />
+        <ToggleEvent setEventType={setEvent} event={event} />
 
         <TextField
           fullWidth
           label="eventType"
           disabled
-          value={event.eventType}
+          value={event?.eventType ? event.eventType : ""}
           name="eventType"
           sx={{ mb: 2 }}
         />
@@ -190,7 +188,7 @@ function NewEvent({ handleClose }) {
           value={event?.title ? event.title : ""}
           name="title"
           sx={{ mb: 2 }}
-          onChange={(e) => addTitleInEvent(e.target.value)}
+          onChange={(e) => setEvent({ ...event, title: e.target.value })}
         />
 
         <TextField
@@ -202,13 +200,18 @@ function NewEvent({ handleClose }) {
           name="description"
           rows={4}
           sx={{ mb: 2 }}
-          onChange={(e) => addDescriptionInEvent(e.target.value)}
+          onChange={(e) => setEvent({ ...event, description: e.target.value })}
         />
 
         <DateTimeRangePicker
           onChange={(newDateRange) => {
             setDateRange(newDateRange);
-            setDate(newDateRange);
+            console.log(newDateRange);
+            setEvent({
+              ...event,
+              start: newDateRange[0],
+              end: newDateRange[1],
+            });
           }}
           value={upDate ? [event.start, event.end] : dateRange}
         />
@@ -221,11 +224,10 @@ function NewEvent({ handleClose }) {
             input={<OutlinedInput label="division" />}
             id="demo-simple-select"
             value={event?.division ? event.division : ""}
-            onChange={(e) => {
-              handleDivisionChange(e);
-            }}
+            onChange={(e) => handleDivisionChange(e)}
             fullWidth
           >
+            <MenuItem value={""}>none</MenuItem>
             <MenuItem value={"marketing"}>marketing</MenuItem>
             <MenuItem value={"operations"}>operations</MenuItem>
             <MenuItem value={"pricing"}>pricing</MenuItem>
@@ -243,7 +245,7 @@ function NewEvent({ handleClose }) {
           size="small"
           name="egnyte"
           value={event?.link ? event.link : ""}
-          onChange={(link) => addLink(link.target.value)}
+          onChange={(link) => setEvent({ ...event, link: link.target.value })}
           rows={1}
           sx={{ mt: 2, mb: 2 }}
         />
@@ -254,7 +256,7 @@ function NewEvent({ handleClose }) {
           multiline
           name="note"
           value={event?.note ? event.note : ""}
-          onChange={(note) => addNote(note.target.value)}
+          onChange={(note) => setEvent({ ...event, note: note.target.value })}
           rows={4}
           sx={{ mt: 2, mb: 2 }}
         />
@@ -265,7 +267,9 @@ function NewEvent({ handleClose }) {
             fullWidth
             labelId="owner"
             value={event?.manager ? event.manager : ""}
-            onChange={(e) => setManager(e.target.value)}
+            onChange={(manager) =>
+              setEvent({ ...event, manager: manager.target.value })
+            }
             MenuProps={MenuProps}
             input={<OutlinedInput label="assign this task to.." />}
           >

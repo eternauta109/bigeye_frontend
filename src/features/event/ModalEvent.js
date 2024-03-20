@@ -17,25 +17,24 @@ const style = {
   p: 4,
 };
 
-const ModalEvent = ({ open, handleClose }) => {
-  const { event, initEvent } = useEventsStore();
+const ModalEvent = ({ open, handleClose, upDate }) => {
+  const { initEvent } = useEventsStore();
+
   return (
     <>
-      {event && (
-        <Modal
-          open={open}
-          onClose={() => {
-            handleClose();
-            initEvent(); // Suppongo che tu abbia la funzione initEvent()
-          }}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <NewEvent event={event} handleClose={handleClose} />
-          </Box>
-        </Modal>
-      )}
+      <Modal
+        open={open}
+        onClose={() => {
+          handleClose();
+          initEvent(); // Suppongo che tu abbia la funzione initEvent()
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <NewEvent handleClose={handleClose} upDate={upDate} />
+        </Box>
+      </Modal>
     </>
   );
 };
