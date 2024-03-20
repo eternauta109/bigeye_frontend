@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Box, Typography, Switch } from "@mui/material";
+import { Box, Typography, Switch, Select, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,6 +20,41 @@ import ManagerCheckbox from "./ManagerCheckBox";
 
 import { cinemaDB } from "../../database/cinemaDB";
 const managers = cinemaDB[11].managers;
+
+const topicTypes = [
+  { value: "", label: "none" },
+  { value: "cascading", label: "cascading" },
+  { value: "suggest", label: "abitudini" },
+  { value: "tutorial", label: "Tutorial" },
+  { value: "procedur", label: "procedura interna" },
+  { value: "brief", label: "brief" },
+  { value: "internalComunication", label: "comunicazione da sede" },
+];
+
+const docTypes = [
+  { value: "", label: "none" },
+  { value: "presentazione", label: "presentazione" },
+  { value: "pdf", label: "pdf" },
+  { value: "office", label: "office" },
+];
+
+const priorityTypes = [
+  { value: "", label: "none" },
+  { value: "high", label: "high" },
+  { value: "low", label: "low" },
+  { value: "medium", label: "medium" },
+];
+
+const officeTypes = [
+  { value: "", label: "none" },
+  { value: "marketing", label: "marketing" },
+  { value: "hr", label: "hr" },
+  { value: "operations", label: "operations" },
+  { value: "pricing", label: "pricing" },
+  { value: "filmcontent", label: "Film Content" },
+  { value: "it", label: "it" },
+  { value: "finance", label: "finance" },
+];
 
 function EditToolbar(props) {
   const { setRowModesModel } = props;
@@ -118,7 +153,8 @@ const Topics = () => {
     {
       field: "topicType",
       headerName: "topic type",
-      //type: 'number',
+      type: "singleSelect",
+      valueOptions: topicTypes,
       width: 110,
       editable: true,
     },
@@ -143,9 +179,11 @@ const Topics = () => {
     {
       field: "office",
       headerName: "office",
-      //type: 'number',
+      type: "number",
       width: 110,
       editable: true,
+      type: "singleSelect",
+      valueOptions: officeTypes,
     },
     {
       field: "typeDocument",
@@ -153,13 +191,18 @@ const Topics = () => {
       //type: 'number',
       width: 110,
       editable: true,
+      type: "singleSelect",
+      valueOptions: docTypes,
     },
+
     {
       field: "priority",
       headerName: "priorità",
       //type: 'number',
       width: 110,
       editable: true,
+      type: "singleSelect",
+      valueOptions: priorityTypes,
     },
     {
       field: "link",
@@ -188,7 +231,16 @@ const Topics = () => {
     {
       field: "tmVeto",
       headerName: "Tm Veto",
-      renderCell: (params) => <Switch />,
+      renderCell: (params) => (
+        <Switch
+          checked={params.row.tmVeto}
+          onChange={(e) => {
+            console.log("switch", params.row);
+            const newVetoState = { ...params.row, tmVeto: e.target.checked };
+            upDateTopic(newVetoState, params.row.id);
+          }}
+        />
+      ),
     },
 
     {
