@@ -93,21 +93,17 @@ const Topics = () => {
   // Funzione per gestire l'evento di cambio di stato dei checkbox
   const handleCheckboxChange = (rowId, managerName) => {
     // Troviamo la riga corrispondente a rowId
-    const updatedRows = topics.map((row) => {
-      if (row.id === rowId) {
-        console.log("handle chek", rowId, managerName, row);
-        // Aggiorniamo lo stato dei checkbox associato al manager
-        return {
-          ...row,
-          managers: topics[row.id].managers.includes(managerName)
-            ? topics[row.id].managers.filter(
-                (manager) => manager !== managerName
-              )
-            : [...topics[row.id].managers, managerName],
-        };
-      }
-      return row;
-    });
+    const updatedRow = topics.find((row) => row.id === rowId);
+
+    if (updatedRow) {
+      const updatedManagers = updatedRow.managers.includes(managerName)
+        ? updatedRow.managers.filter((manager) => manager !== managerName)
+        : [...updatedRow.managers, managerName];
+      const upTopic = { ...updatedRow, managers: updatedManagers };
+      // Aggiorna lo stato dell'elemento con la funzione upDateTopic
+      upDateTopic(upTopic, rowId);
+      return upTopic;
+    }
   };
 
   const columns = [
@@ -177,14 +173,16 @@ const Topics = () => {
       headerName: manager.name,
       width: 60,
       renderCell: (params) => (
-        /* console.log(params), */
-        <ManagerCheckbox
-          row={params.row}
-          manager={manager.name}
-          onCheckboxChange={(managerName) =>
-            handleCheckboxChange(params.row.id, managerName)
-          }
-        />
+        console.log(params.row.managers.includes(manager.name)),
+        (
+          <ManagerCheckbox
+            row={params.row}
+            manager={manager.name}
+            onCheckboxChange={(managerName) =>
+              handleCheckboxChange(params.row.id, managerName)
+            }
+          />
+        )
       ),
     })),
     {

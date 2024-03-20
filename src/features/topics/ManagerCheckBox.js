@@ -6,9 +6,11 @@ const ManagerCheckbox = ({ row, manager, onCheckboxChange }) => {
   const { topics, totalTopics, emptyTopic, updateTopic, addTopic } =
     useEventsStore();
 
-  const isChecked = topics.manager
-    ? topics[row.id].managers.includes(manager)
-    : null;
+  // Accedi all'oggetto riga usando row.id
+  const currentRow = topics.find((item) => item.id === row.id);
+
+  // Controlla se l'oggetto riga è valido e il manager è presente
+  const isChecked = currentRow?.managers?.includes(manager) || false;
 
   const handleChange = () => {
     onCheckboxChange(manager);
