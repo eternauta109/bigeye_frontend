@@ -15,7 +15,7 @@ import {
 } from "@mui/x-data-grid";
 
 import useEventsStore from "../../store/EventDataContext";
-import { columnsBase } from "./headerTopicTable";
+
 import ManagerCheckbox from "./ManagerCheckBox";
 
 import { cinemaDB } from "../../database/cinemaDB";
@@ -141,6 +141,7 @@ const Topics = () => {
     }
   };
 
+  // COLUMNS ================================================
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
@@ -161,7 +162,7 @@ const Topics = () => {
     {
       field: "topicArgument",
       headerName: "argomento",
-      width: 220,
+      width: 420,
       editable: true,
       renderCell: (params) => (
         <Typography
@@ -321,10 +322,6 @@ const Topics = () => {
         rows={topics}
         columns={columns}
         editMode="row"
-        /* getRowId={(row) => {
-          console.log("getRawId", row.id);
-          row?.id;
-        }} */
         onProcessRowUpdateError={(error) =>
           console.error("Errore durante l'aggiornamento della riga:", error)
         }
