@@ -14,7 +14,7 @@ const dataInit = {
 
 const styleLane = {
   width: 270,
-  maxHeight: 470,
+
   overflowY: "auto",
   backgroundColor: "#B39DDB",
   color: "#fff",
@@ -35,13 +35,7 @@ const Kanban = () => {
 
   const [managerData, setManagerData] = useState([]);
 
-  const handleDragEnd = (
-    cardId,
-    sourceLaneId,
-    targetLaneId,
-    position,
-    card
-  ) => {
+  const onhandleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
     const sourceManager = sourceLaneId.split("-")[1];
     const targetManager = targetLaneId.split("-")[1];
     console.log(sourceManager, targetManager);
@@ -164,7 +158,7 @@ const Kanban = () => {
           <Board
             style={{ height: "500px", marginTop: "20px" }}
             data={data} // Passa direttamente l'oggetto data
-            handleDragEnd={handleDragEnd}
+            handleDragEnd={onhandleDragEnd}
           />
         </Box>
       ))}
