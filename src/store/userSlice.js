@@ -42,6 +42,7 @@ const userSlice = createSlice({
   initialState: {
     isAuthenticated: false,
     username: null,
+    name: "",
     rule: null,
     error: null,
     status: "idle", // 'idle', 'loading', 'succeeded', 'failed'

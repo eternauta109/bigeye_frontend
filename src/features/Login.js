@@ -5,6 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../store/userSlice";
+/* import { getManagerByCredentials } from "../../levelDB/managersDBhandle"; */
 import {
   Container,
   Typography,
@@ -41,15 +42,21 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-
   const navigate = useNavigate();
 
   const theme = useTheme();
 
-  const handleSubmit = (event) => {
-    console.log(user);
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(loginUser({ username: userName, password }));
+    // Ottieni il manager corrispondente alle credenziali
+    /* const manager = await getManagerByCredentials(userName, password);
+    console.log("quando vedrai questa scritta molto sarà avvenuto", manager); */
+    if (manager) {
+      dispatch(loginUser({ username: userName, password }));
+      // Naviga alla pagina successiva dopo il login
+    } else {
+      console.log("Credenziali non valide");
+    }
   };
 
   useEffect(() => {
