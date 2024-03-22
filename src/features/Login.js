@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import favicon from ".././asset/favicon.ico";
+import favicon from ".././assets/favicon.ico";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -53,7 +53,8 @@ export default function Login() {
   };
 
   useEffect(() => {
-    console.log("login",user.isAuthenticated);
+    console.log("version?", window.versions);
+    console.log("login", user.isAuthenticated);
     if (user.isAuthenticated) {
       navigate("/calendar");
     }
