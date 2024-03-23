@@ -67,6 +67,9 @@ async function populateDatabase() {
       password: "109",
       isAuth: false,
       cinema: "guidonia",
+
+      notification: [],
+
     },
     {
       name: "robertod",
@@ -74,6 +77,9 @@ async function populateDatabase() {
       password: "110",
       isAuth: false,
       cinema: "guidonia",
+
+      notification: [],
+
     },
     {
       name: "corlos",
@@ -81,6 +87,9 @@ async function populateDatabase() {
       password: "111",
       isAuth: fals,
       cinema: "guidonia",
+
+      notification: [],
+
     },
     {
       name: "marap",
@@ -88,6 +97,9 @@ async function populateDatabase() {
       password: "113",
       isAuth: false,
       cinema: "guidonia",
+
+      notification: [],
+
     },
     {
       name: "valentinad",
@@ -95,6 +107,9 @@ async function populateDatabase() {
       password: "114",
       isAuth: false,
       cinema: "guidonia",
+
+      notification: [],
+
     },
   ];
 

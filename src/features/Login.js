@@ -54,7 +54,6 @@ export default function Login() {
   useEffect(() => {
     if (user?.isAuth) {
       navigate("/calendar");
-    }
   }, [user, navigate]);
 
   return (
