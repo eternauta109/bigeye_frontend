@@ -45,27 +45,17 @@ export default function Login() {
   const navigate = useNavigate();
 
   const theme = useTheme();
-  const { ipcRenderer } = window.require("electron");
 
   const handleSubmit = async (event) => {
-    console.log("handle submit login", ipcRenderer);
     event.preventDefault();
-
-    // Ottieni il manager corrispondente alle credenziali
-
-    ipcRenderer.send("login", { userName, password });
-
-    ipcRenderer.on("returnManager", (event, returnManager) => {
-      console.log("inizia un era", returnManager);
-      //se return Manager torna non vuoto setto il manager nello store
-      if (returnManager) {
-        setUser({ ...returnManager, isAuth: true });
-        console.log("User authenticated. Redirecting to calendar...");
-        navigate("/calendar");
-      } else {
-        return console.log("credenziali non corrette");
-      }
-    });
+    await setUser({ userName, password });
+    console.log("user in handle dopo aver cercato nello store: " + user);
+    if (user?.isAuth) {
+      console.log("user in handle dopo aver cercato nello store: " + user);
+      navigate("./calendar");
+    } else {
+      console.log("credenziali errate");
+    }
   };
 
   return (

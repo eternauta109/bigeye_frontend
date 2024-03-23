@@ -20,10 +20,10 @@ export const EventStoreContext = ({ children }) => {
   const [userState, userDispatch] = useReducer(userReducer, initialUser);
 
   //USER ACTION
-  const setUser = (user) => {
+  const setUser = ({ userName, password }) => {
     userDispatch({
       type: "SET_USER",
-      payload: { user },
+      payload: { userName, password },
     });
   };
 

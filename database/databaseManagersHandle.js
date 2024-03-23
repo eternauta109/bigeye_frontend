@@ -130,6 +130,7 @@ function close() {
       if (err) {
         reject(err);
       } else {
+        console.log("db managers close");
         resolve();
       }
     });
