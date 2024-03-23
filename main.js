@@ -1,9 +1,17 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require("electron");
+const { ipcMain } = require("electron");
 const path = require("path");
+const {
+  createDb,
+  populateDatabase,
+  readAll,
+  getManagerByCredentials,
+} = require("./database/databaseManagersHandle");
 const express = require("express");
 const cors = require("cors");
 const localServerApp = express();
+
 const PORT = 8088;
 const startLocalServer = (done) => {
   localServerApp.use(express.json({ limit: "100mb" }));
@@ -15,11 +23,14 @@ const startLocalServer = (done) => {
   });
 };
 
+createDb();
+let mainWindow;
+
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+  mainWindow = new BrowserWindow({
+    width: 1100,
+    height: 800,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -57,3 +68,15 @@ app.on("window-all-closed", function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.on("login", async (event, { userName, password }) => {
+  console.log(
+    "login ha inviato username e password a main",
+    userName,
+    password
+  );
+  const returnManager = await getManagerByCredentials(userName, password);
+  console.log("manager ipcMain del main", returnManager);
+  await mainWindow.webContents.send("returnManager", returnManager);
+  // Gestisci le credenziali di accesso qui
+  // Esegui l'autenticazione, interagisci con il database, ecc.
+});

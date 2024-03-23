@@ -5,7 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../store/userSlice";
-/* import { getManagerByCredentials } from "../../levelDB/managersDBhandle"; */
+
 import {
   Container,
   Typography,
@@ -45,18 +45,25 @@ export default function Login() {
   const navigate = useNavigate();
 
   const theme = useTheme();
+  const { ipcRenderer } = window.require("electron");
 
   const handleSubmit = async (event) => {
+    console.log("handle submit login", ipcRenderer);
     event.preventDefault();
     // Ottieni il manager corrispondente alle credenziali
     /* const manager = await getManagerByCredentials(userName, password);
     console.log("quando vedrai questa scritta molto sarà avvenuto", manager); */
-    if (manager) {
+    ipcRenderer.send("login", { userName, password });
+    ipcRenderer.on("returnManager", (event, returnManager) => {
+      console.log("inizia un era", returnManager);
+    });
+    dispatch(loginUser({ username: userName, password }));
+    /* if (manager) {
       dispatch(loginUser({ username: userName, password }));
       // Naviga alla pagina successiva dopo il login
     } else {
       console.log("Credenziali non valide");
-    }
+    } */
   };
 
   useEffect(() => {
