@@ -3,8 +3,8 @@ import favicon from ".././assets/favicon.ico";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../store/userSlice";
+
+import useEventsStore from "../store/EventDataContext";
 
 import {
   Container,
@@ -40,8 +40,8 @@ function Copyright(props) {
 export default function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+
+  const { user, setUser } = useEventsStore();
   const navigate = useNavigate();
 
   const theme = useTheme();
@@ -50,29 +50,23 @@ export default function Login() {
   const handleSubmit = async (event) => {
     console.log("handle submit login", ipcRenderer);
     event.preventDefault();
+
     // Ottieni il manager corrispondente alle credenziali
-    /* const manager = await getManagerByCredentials(userName, password);
-    console.log("quando vedrai questa scritta molto sarà avvenuto", manager); */
+
     ipcRenderer.send("login", { userName, password });
+
     ipcRenderer.on("returnManager", (event, returnManager) => {
       console.log("inizia un era", returnManager);
+      //se return Manager torna non vuoto setto il manager nello store
+      if (returnManager) {
+        setUser({ ...returnManager, isAuth: true });
+        console.log("User authenticated. Redirecting to calendar...");
+        navigate("/calendar");
+      } else {
+        return alert("credenziali non corrette");
+      }
     });
-    dispatch(loginUser({ username: userName, password }));
-    /* if (manager) {
-      dispatch(loginUser({ username: userName, password }));
-      // Naviga alla pagina successiva dopo il login
-    } else {
-      console.log("Credenziali non valide");
-    } */
   };
-
-  useEffect(() => {
-    console.log("version?", window.versions);
-    console.log("login", user.isAuthenticated);
-    if (user.isAuthenticated) {
-      navigate("/calendar");
-    }
-  }, [user, navigate]);
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -86,7 +80,7 @@ export default function Login() {
           color="secondary"
           fontWeight="bold"
         >
-          incident report web app
+          Big Eye
         </Typography>
       </Box>
 

@@ -2,11 +2,13 @@ import { createContext, useReducer, useContext } from "react";
 import eventsReducer, { initialEvents } from "./eventsReducer";
 import taskReducer, { initialTask } from "./taskReducer";
 import topicsReducer, { initialTopic } from "./topicsReducer";
+import userReducer, { initialUser } from "./userReducer";
 
 export const initialDataContext = {
   events: initialEvents,
   tasks: initialTask,
   topics: initialTopic,
+  user: initialUser,
 };
 
 export const EventDataContext = createContext(initialDataContext);
@@ -15,6 +17,15 @@ export const EventStoreContext = ({ children }) => {
   const [eventState, deispatchEvent] = useReducer(eventsReducer, initialEvents);
   const [taskState, taskDispatch] = useReducer(taskReducer, initialTask);
   const [topicState, topicDispatch] = useReducer(topicsReducer, initialTopic);
+  const [userState, userDispatch] = useReducer(userReducer, initialUser);
+
+  //USER ACTION
+  const setUser = (user) => {
+    userDispatch({
+      type: "SET_USER",
+      payload: { user },
+    });
+  };
 
   //Topic ACTION
 
@@ -105,6 +116,10 @@ export const EventStoreContext = ({ children }) => {
   };
 
   const value = {
+    //USER
+    user: userState,
+    setUser,
+
     //TOPICS
     totalTopics: topicState.totalTopics,
     emptyTopic: initialTopic.newTopic,
