@@ -5,22 +5,26 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
+import { ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-
+import useEventsStore from "../store/EventDataContext";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { Link, useNavigate } from "react-router-dom";
 
 const pages = ["ShareCalendar", "KanBanBoard", "topics"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+/* const settings = ["user", "role", "notifications"]; */
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const { user } = useEventsStore();
+  const settings = [user.userName, user.role, user.notification];
+
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
@@ -30,9 +34,9 @@ function NavBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = (e) => {
-    console.log("menu toggle", e.target.value);
-    switch (e.target.value) {
+  const handleCloseNavMenu = (e, page) => {
+    console.log("menu toggle", page);
+    switch (page) {
       case "topics":
         navigate("/topics");
         break;
@@ -107,17 +111,12 @@ function NavBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Button
-                    color="success"
-                    key={page}
-                    value={page}
-                    onClick={(e) => handleCloseNavMenu(e)}
-                    sx={{ my: 2, color: "grey", display: "block", ml: 1 }}
-                  >
-                    {page}
-                  </Button>
+              {pages.map((page, key) => (
+                <MenuItem
+                  key={key}
+                  onClick={(e) => handleCloseNavMenu(e, page)}
+                >
+                  <ListItemText primary={page} key={key} />
                 </MenuItem>
               ))}
             </Menu>
@@ -144,24 +143,17 @@ function NavBar() {
             BigEye
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                variant="outlined"
-                color="success"
-                key={page}
-                value={page}
-                onClick={(e) => handleCloseNavMenu(e)}
-                sx={{ my: 2, color: "white", display: "block", ml: 1 }}
-              >
-                {page}
-              </Button>
+            {pages.map((page, key) => (
+              <MenuItem key={key} onClick={(e) => handleCloseNavMenu(e, page)}>
+                <ListItemText primary={page} key={key} />
+              </MenuItem>
             ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" />
               </IconButton>
             </Tooltip>
             <Menu

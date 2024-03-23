@@ -61,11 +61,41 @@ const db = new Level(dbPath, { valueEncoding: "json" }); */
 // Funzione per popolare il database
 async function populateDatabase() {
   const managers = [
-    { name: "fabioc", rule: "tm", password: "109", isAuth: false },
-    { name: "robertod", rule: "am", password: "110", isAuth: false },
-    { name: "corlos", rule: "am", password: "111", isAuth: false },
-    { name: "marap", rule: "am", password: "113", isAuth: false },
-    { name: "valentinad", rule: "am", password: "114", isAuth: false },
+    {
+      name: "fabioc",
+      rule: "tm",
+      password: "109",
+      isAuth: false,
+      cinema: "guidonia",
+    },
+    {
+      name: "robertod",
+      rule: "am",
+      password: "110",
+      isAuth: false,
+      cinema: "guidonia",
+    },
+    {
+      name: "corlos",
+      rule: "am",
+      password: "111",
+      isAuth: fals,
+      cinema: "guidonia",
+    },
+    {
+      name: "marap",
+      rule: "am",
+      password: "113",
+      isAuth: false,
+      cinema: "guidonia",
+    },
+    {
+      name: "valentinad",
+      rule: "am",
+      password: "114",
+      isAuth: false,
+      cinema: "guidonia",
+    },
   ];
 
   // Inserisci i manager nel database (assumendo che dbMan sia l'istanza del database creato)

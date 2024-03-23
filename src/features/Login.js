@@ -49,14 +49,13 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await setUser({ userName, password });
-    console.log("user in handle dopo aver cercato nello store: " + user);
-    if (user?.isAuth) {
-      console.log("user in handle dopo aver cercato nello store: " + user);
-      navigate("./calendar");
-    } else {
-      console.log("credenziali errate");
-    }
   };
+
+  useEffect(() => {
+    if (user?.isAuth) {
+      navigate("/calendar");
+    }
+  }, [user, navigate]);
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -76,7 +75,7 @@ export default function Login() {
           color="secondary"
           fontWeight="bold"
         >
-          eye
+          Eye
         </Typography>
       </Box>
 

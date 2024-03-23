@@ -1,40 +1,58 @@
-const { ipcRenderer } = window.require("electron");
+export const initialUser = {
+  userName: null,
+  password: null,
+  isAuth: false,
+};
 
-export const initialUser = null;
+export const loginUser = (userName, password) => {
+  if (process.env.NODE_ENV === "development") {
+    console.log("login user function", userName, password);
+    // Simulazione autenticazione in modalità di sviluppo
+    const manager = {
+      userName: "fabioc",
+      password: "109",
+      isAuth: true,
+      role: "tm",
+      cinema: "guidonia",
+    };
+    console.log("User authenticated. Redirecting to calendar...", manager);
+    return manager;
+  } else if (window.require) {
+    // Autenticazione tramite ipcRenderer in modalità di produzione
+    const { ipcRenderer } = window.require("electron");
+    return new Promise((resolve, reject) => {
+      try {
+        ipcRenderer.send("login", { userName, password });
+        ipcRenderer.on("returnManager", (event, returnManager) => {
+          if (returnManager) {
+            const manager = { ...returnManager, isAuth: true };
+            console.log(
+              "User authenticated. Redirecting to calendar...",
+              manager,
+            );
+            resolve(manager);
+          } else {
+            console.log("Credenziali non corrette");
+            reject(new Error("Credenziali non corrette"));
+          }
+        });
+      } catch (error) {
+        console.error("Errore durante il login:", error);
+        reject(error);
+      }
+    });
+  }
+};
 
 const userReducer = (state, action) => {
-  const { type, payload } = action;
-  console.log("userReducer", type, payload.userName, payload.password);
-  switch (type) {
+  const { userName, password } = action.payload;
+  switch (action.type) {
     case "SET_USER":
-      /* console.log("ADD_EVENT", payload); */
-      // Ottieni il manager corrispondente alle credenziali
-      let manager = null;
-      ipcRenderer.send("login", {
-        userName: payload.userName,
-        password: payload.password,
-      });
-
-      ipcRenderer.on("returnManager", (event, returnManager) => {
-        console.log("inizia un era", returnManager);
-
-        //se return Manager torna non vuoto setto il manager nello store
-        if (returnManager) {
-          manager = { ...returnManager, isAuth: true };
-          console.log(
-            "User authenticated. Redirecting to calendar...",
-            manager
-          );
-        } else {
-          return console.log("credenziali non corrette");
-        }
-      });
       return {
-        user: manager,
+        ...loginUser(userName, password),
       };
-
     default:
-      throw new Error("no case for type", type);
+      throw new Error(`Azione non gestita: ${action.type}`);
   }
 };
 
