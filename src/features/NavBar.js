@@ -11,16 +11,19 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-
+import useEventsStore from "../store/EventDataContext";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { Link, useNavigate } from "react-router-dom";
 
 const pages = ["ShareCalendar", "KanBanBoard", "topics"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+/* const settings = ["user", "role", "notifications"]; */
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const { user } = useEventsStore();
+  const settings = [user.userName, user.role, user.notification];
+
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
@@ -161,7 +164,7 @@ function NavBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" />
               </IconButton>
             </Tooltip>
             <Menu
