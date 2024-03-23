@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import favicon from ".././assets/favicon.ico";
+import icoEye from ".././assets/eye-icon-1483-Windows.ico";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -63,7 +63,7 @@ export default function Login() {
         console.log("User authenticated. Redirecting to calendar...");
         navigate("/calendar");
       } else {
-        return alert("credenziali non corrette");
+        return console.log("credenziali non corrette");
       }
     });
   };
@@ -71,16 +71,22 @@ export default function Login() {
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <img src={favicon} alt="Favicon" />
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Typography
           component="h1"
           variant="h3"
           color="secondary"
           fontWeight="bold"
         >
-          Big Eye
+          Big
+        </Typography>
+        <img src={icoEye} alt="icoEye" />
+        <Typography
+          component="h1"
+          variant="h3"
+          color="secondary"
+          fontWeight="bold"
+        >
+          eye
         </Typography>
       </Box>
 

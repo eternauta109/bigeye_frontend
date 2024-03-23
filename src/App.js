@@ -6,13 +6,15 @@ import Kanban from "./features/kanban_board/Kanban";
 import Topics from "./features/topics/Topics";
 import ShareCalendar from "./features/calendar/ShareCalendar";
 import Login from "./features/Login";
+import useEventsStore from "./store/EventDataContext";
 
 export default function App() {
+  const { user } = useEventsStore();
   return (
     <>
       <EventStoreContext>
         <div className="App">
-          <NavBar />
+          {user && <NavBar />}
           <Routes>
             <Route exact path="/" element={<Login />} />
             <Route path="/calendar" element={<ShareCalendar />} />
