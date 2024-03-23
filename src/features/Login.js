@@ -49,14 +49,12 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await setUser({ userName, password });
-    console.log("user in handle dopo aver cercato nello store: ", user);
-    if (user?.isAuth) {
-      console.log("verificato user e isAuth: ", user);
-      navigate("./calendar");
-    } else {
-      console.log("credenziali errate");
-    }
   };
+
+  useEffect(() => {
+    if (user?.isAuth) {
+      navigate("/calendar");
+  }, [user, navigate]);
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>

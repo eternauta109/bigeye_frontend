@@ -14,7 +14,9 @@ export const loginUser = (userName, password) => {
       isAuth: true,
       role: "tm",
       cinema: "guidonia",
+
       notification: [],
+
     };
     console.log("User authenticated. Redirecting to calendar...", manager);
     return manager;

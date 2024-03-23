@@ -5,6 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
+import { ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
@@ -33,9 +34,9 @@ function NavBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = (e) => {
-    console.log("menu toggle", e.target.value);
-    switch (e.target.value) {
+  const handleCloseNavMenu = (e, page) => {
+    console.log("menu toggle", page);
+    switch (page) {
       case "topics":
         navigate("/topics");
         break;
@@ -110,17 +111,12 @@ function NavBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Button
-                    color="success"
-                    key={page}
-                    value={page}
-                    onClick={(e) => handleCloseNavMenu(e)}
-                    sx={{ my: 2, color: "grey", display: "block", ml: 1 }}
-                  >
-                    {page}
-                  </Button>
+              {pages.map((page, key) => (
+                <MenuItem
+                  key={key}
+                  onClick={(e) => handleCloseNavMenu(e, page)}
+                >
+                  <ListItemText primary={page} key={key} />
                 </MenuItem>
               ))}
             </Menu>
@@ -147,17 +143,10 @@ function NavBar() {
             BigEye
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                variant="outlined"
-                color="success"
-                key={page}
-                value={page}
-                onClick={(e) => handleCloseNavMenu(e)}
-                sx={{ my: 2, color: "white", display: "block", ml: 1 }}
-              >
-                {page}
-              </Button>
+            {pages.map((page, key) => (
+              <MenuItem key={key} onClick={(e) => handleCloseNavMenu(e, page)}>
+                <ListItemText primary={page} key={key} />
+              </MenuItem>
             ))}
           </Box>
 
