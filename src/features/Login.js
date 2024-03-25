@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import icoEye from ".././assets/eye-icon-1483-Windows.ico";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 import useEventsStore from "../store/EventDataContext";
+import { loginUser } from "../store/userReducer";
 
 import {
   Container,
@@ -40,6 +41,7 @@ function Copyright(props) {
 export default function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [counter, setCounter] = useState(0);
 
   const { user, setUser } = useEventsStore();
   const navigate = useNavigate();
@@ -48,13 +50,21 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await setUser({ userName, password });
+    const manager = await loginUser(userName, password);
+    console.log("loginUser da login", manager);
+    setUser(manager);
+    setCounter(counter + 1);
   };
 
   useEffect(() => {
+    console.log("counter in login", counter);
+    console.log("user in login", user);
     if (user?.isAuth) {
       navigate("/calendar");
-  }, [user, navigate]);
+    }
+
+    return () => {};
+  }, [user]);
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>

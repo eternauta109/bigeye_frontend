@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, screen } = require("electron");
 const { ipcMain } = require("electron");
 const path = require("path");
 const {
@@ -28,9 +28,10 @@ let mainWindow;
 
 function createWindow() {
   // Create the browser window.
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 800,
+    width: width,
+    height: height,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -68,13 +69,16 @@ app.on("window-all-closed", function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-ipcMain.on("login", async (event, { userName, password }) => {
+ipcMain.on("login", async (event, args) => {
   console.log(
     "login ha inviato username e password a main",
-    userName,
-    password
+    args.userName,
+    args.password
   );
-  const returnManager = await getManagerByCredentials(userName, password);
+  const returnManager = await getManagerByCredentials(
+    args.userName,
+    args.password
+  );
   console.log("manager ipcMain del main", returnManager);
   await mainWindow.webContents.send("returnManager", returnManager);
   // Gestisci le credenziali di accesso qui

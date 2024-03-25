@@ -4,7 +4,7 @@ export const initialUser = {
   isAuth: false,
 };
 
-export const loginUser = (userName, password) => {
+export const loginUser = async (userName, password) => {
   if (process.env.NODE_ENV === "development") {
     console.log("login user function", userName, password);
     // Simulazione autenticazione in modalità di sviluppo
@@ -16,7 +16,6 @@ export const loginUser = (userName, password) => {
       cinema: "guidonia",
 
       notification: [],
-
     };
     console.log("User authenticated. Redirecting to calendar...", manager);
     return manager;
@@ -25,15 +24,14 @@ export const loginUser = (userName, password) => {
     const { ipcRenderer } = window.require("electron");
     return new Promise((resolve, reject) => {
       try {
+        console.log("User nam e e pawss:", userName, password);
         ipcRenderer.send("login", { userName, password });
         ipcRenderer.on("returnManager", (event, returnManager) => {
           if (returnManager) {
             const manager = { ...returnManager, isAuth: true };
-            console.log(
-              "User authenticated. Redirecting to calendar...",
-              manager,
-            );
-            resolve(manager);
+            console.log("ipc userReducer ritorna..", manager);
+
+            resolve({ ...manager });
           } else {
             console.log("Credenziali non corrette");
             reject(new Error("Credenziali non corrette"));
@@ -49,11 +47,10 @@ export const loginUser = (userName, password) => {
 
 const userReducer = (state, action) => {
   const { userName, password } = action.payload;
+  console.log("userReducer action.paylod", action.payload);
   switch (action.type) {
     case "SET_USER":
-      return {
-        ...loginUser(userName, password),
-      };
+      return { ...action.payload };
     default:
       throw new Error(`Azione non gestita: ${action.type}`);
   }

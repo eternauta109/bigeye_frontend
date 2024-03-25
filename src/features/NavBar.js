@@ -23,7 +23,12 @@ function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { user } = useEventsStore();
-  const settings = [user.userName, user.role, user.notification];
+  console.log("user in nav bar", user);
+  const settings = [
+    `name: ${user.name}`,
+    `rule: ${user.rule}`,
+    `notify ${user.notification.length}`,
+  ];
 
   const navigate = useNavigate();
 

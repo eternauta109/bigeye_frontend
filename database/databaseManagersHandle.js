@@ -1,5 +1,6 @@
 const { Level } = require("level");
 const path = require("path");
+const fs = require("fs");
 
 const dbName = "managers";
 
@@ -36,20 +37,24 @@ async function getManagerByCredentials(userName, password) {
   return managerFound;
 }
 
-async function createDb() {
-  try {
-    await db.open();
-    console.log("create db prima linea");
-    await populateDatabase();
-    console.log("create db dopo popolate");
-    await readAll();
-    console.log("create db dopo readAll");
-    await close();
-    return db;
-  } catch (error) {
-    console.log("try catch", error);
-  }
-  await close();
+function createDb() {
+  fs.access(dbPath, fs.constants.F_OK, async (err) => {
+    if (err) {
+      console.log("db non esistente, lo creo");
+    } else {
+      console.log("db esistente lo leggo");
+      try {
+        await db.open();
+        await populateDatabase();
+        await readAll();
+        await close();
+        return db;
+      } catch (error) {
+        console.log("try catch", error);
+      }
+      await close();
+    }
+  });
 }
 
 /* 
@@ -69,7 +74,6 @@ async function populateDatabase() {
       cinema: "guidonia",
 
       notification: [],
-
     },
     {
       name: "robertod",
@@ -79,17 +83,15 @@ async function populateDatabase() {
       cinema: "guidonia",
 
       notification: [],
-
     },
     {
       name: "corlos",
       rule: "am",
       password: "111",
-      isAuth: fals,
+      isAuth: false,
       cinema: "guidonia",
 
       notification: [],
-
     },
     {
       name: "marap",
@@ -99,7 +101,6 @@ async function populateDatabase() {
       cinema: "guidonia",
 
       notification: [],
-
     },
     {
       name: "valentinad",
@@ -109,7 +110,6 @@ async function populateDatabase() {
       cinema: "guidonia",
 
       notification: [],
-
     },
   ];
 
