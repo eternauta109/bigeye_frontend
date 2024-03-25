@@ -1,8 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
-
-/* import { useDispatch } from "react-redux"; */
 import ToggleEvent from "./ToggleEvent";
-/* import { addEvents } from "../../store/eventsSlice.js"; */
+
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import "@wojtekmaj/react-datetimerange-picker/dist/DateTimeRangePicker.css";
 import "react-calendar/dist/Calendar.css";
@@ -22,6 +20,8 @@ import {
 
 import { cinemaDB } from "../../database/cinemaDB";
 
+import { getAllManagersName } from "../../store/userReducer";
+
 import useEventsStore from "../../store/EventDataContext";
 
 const ITEM_HEIGHT = 48;
@@ -37,8 +37,7 @@ const MenuProps = {
 
 function NewEvent({ handleClose, upDate }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-
-  /* const dispatch = useDispatch(); */
+  const [managers, setManagers] = useState([]);
 
   const {
     events,
@@ -47,22 +46,21 @@ function NewEvent({ handleClose, upDate }) {
     eventToUpdate,
     totalEvent,
     totalTask,
-    tasks,
     upDateEvent,
     emptyEvent,
     initEvent,
-    setDivision,
+    user,
   } = useEventsStore();
 
   const [event, setEvent] = useState(
     upDate ? { ...eventToUpdate } : { ...emptyEvent }
   );
 
-  const managers = cinemaDB[11].managers[0].name;
-  console.log(managers);
-
-  console.log("events", events);
-  console.log("event", event);
+  const getManagerName = async () => {
+    const managersDaDb = await getAllManagersName();
+    console.log("managers in new login in funzione asincrona", managersDaDb);
+    setManagers([...managersDaDb]);
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -72,7 +70,7 @@ function NewEvent({ handleClose, upDate }) {
     } else {
       if (event.manager !== "") {
         const newTask = {
-          id: totalTask.toString(),
+          id: "task" + totalTask,
           title: event.title,
           manager: event.manager,
           description: event.description,
@@ -84,10 +82,9 @@ function NewEvent({ handleClose, upDate }) {
       }
       const prepareEvent = {
         ...event,
-        id: totalEvent,
+        id: "event" + totalEvent,
       };
-      console.log("newevent", event);
-      /* await dispatch(addEvents(eventBis)); */
+
       addEvent(prepareEvent);
     }
     initEvent();
@@ -126,9 +123,11 @@ function NewEvent({ handleClose, upDate }) {
     setEvent({ ...event, division: e.target.value, colorDivision: color });
   };
 
-  useMemo(() => console.log("useMemo newEvent", event), [event]);
+  //funzione che stampa evetn a pogni modifica
+  /* useMemo(() => console.log("useMemo newEvent", event), [event]); */
 
   useEffect(() => {
+    getManagerName();
     console.log("UPDATE", upDate);
     if (upDate) {
       console.log(
@@ -273,9 +272,9 @@ function NewEvent({ handleClose, upDate }) {
             input={<OutlinedInput label="assign this task to.." />}
           >
             <MenuItem value="">None</MenuItem>
-            {cinemaDB[11].managers.map((el, key) => (
-              <MenuItem key={key} value={el.name}>
-                {el.name}
+            {managers?.map((el, key) => (
+              <MenuItem key={key} value={el}>
+                {el}
               </MenuItem>
             ))}
           </Select>

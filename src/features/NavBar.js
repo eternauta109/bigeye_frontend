@@ -17,13 +17,12 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { Link, useNavigate } from "react-router-dom";
 
 const pages = ["ShareCalendar", "KanBanBoard", "topics"];
-/* const settings = ["user", "role", "notifications"]; */
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { user } = useEventsStore();
-  console.log("user in nav bar", user);
+
   const settings = [
     `name: ${user.name}`,
     `rule: ${user.rule}`,

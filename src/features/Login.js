@@ -41,7 +41,6 @@ function Copyright(props) {
 export default function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [counter, setCounter] = useState(0);
 
   const { user, setUser } = useEventsStore();
   const navigate = useNavigate();
@@ -51,14 +50,14 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const manager = await loginUser(userName, password);
-    console.log("loginUser da login", manager);
-    setUser(manager);
-    setCounter(counter + 1);
+    if (manager.isAuth) {
+      setUser(manager);
+    } else {
+      alert("error access");
+    }
   };
 
   useEffect(() => {
-    console.log("counter in login", counter);
-    console.log("user in login", user);
     if (user?.isAuth) {
       navigate("/calendar");
     }

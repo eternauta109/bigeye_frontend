@@ -4,6 +4,43 @@ export const initialUser = {
   isAuth: false,
 };
 
+//funzione che restistuisce un array con i nomi di tutti
+// i managers. Se si è in produzione, faccio icp a electron
+// per restituire i valori da db. altrimenti restituisco un array di defalt
+export const getAllManagersName = async () => {
+  if (process.env.NODE_ENV === "development") {
+    const managers = [
+      "fabiocTest",
+      "robertodTest",
+      "carlosTest",
+      "marapTest",
+      "valentinaoTest",
+    ];
+    return managers;
+  } else {
+    // siamo in modalita dist, quindi vado sul db gestito da electron
+    //inizializzo icpRender
+    console.log(
+      "sono inn modalita dist e vado su electron a prendere i nnomi managers"
+    );
+    const { ipcRenderer } = window.require("electron");
+    return new Promise((resolve, reject) => {
+      try {
+        ipcRenderer.send("send:managersName", "invio richiesta nomi managers");
+        ipcRenderer.on("managersName", (event, managers) => {
+          console.log("send:managers è arrivato su user reducer", managers);
+          resolve(managers);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+};
+
+//funzione che restiruisce un oggetto manager/user
+// se si è in produzione eseguo icp per restituire i valori da db managers.
+//Altrimenti restituisco oggetto di default
 export const loginUser = async (userName, password) => {
   if (process.env.NODE_ENV === "development") {
     console.log("login user function", userName, password);
@@ -14,7 +51,6 @@ export const loginUser = async (userName, password) => {
       isAuth: true,
       role: "tm",
       cinema: "guidonia",
-
       notification: [],
     };
     console.log("User authenticated. Redirecting to calendar...", manager);

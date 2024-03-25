@@ -7,6 +7,8 @@ const dbName = "managers";
 const dbPath = path.join(__dirname, `./${dbName}`);
 const db = new Level(dbPath, { valueEncoding: "json" });
 
+//funzione per cercare e restituire il manager con crede
+//credenziali corrette
 async function getManagerByCredentials(userName, password) {
   console.log("ricevo in db query user pass", userName, password, dbPath);
   const db = new Level(dbPath, { valueEncoding: "json" });
@@ -37,34 +39,33 @@ async function getManagerByCredentials(userName, password) {
   return managerFound;
 }
 
-function createDb() {
+// Funzione per creare il database se non esiste
+function createDbUser() {
   fs.access(dbPath, fs.constants.F_OK, async (err) => {
     if (err) {
-      console.log("db non esistente, lo creo");
-    } else {
-      console.log("db esistente lo leggo");
+      console.log("db managers non esistente, lo creo");
+
+      await connect();
       try {
-        await db.open();
         await populateDatabase();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      console.log("db managers esistente lo leggo");
+      try {
+        await connect();
         await readAll();
-        await close();
-        return db;
       } catch (error) {
         console.log("try catch", error);
       }
-      await close();
     }
   });
 }
 
-/* 
-console.log("Creating database path: " + dbPath);
-const db = new Level(dbPath, { valueEncoding: "json" }); */
-
-// Funzione per creare il database se non esiste
-
 // Funzione per popolare il database
 async function populateDatabase() {
+  await connect();
   const managers = [
     {
       name: "fabioc",
@@ -85,7 +86,7 @@ async function populateDatabase() {
       notification: [],
     },
     {
-      name: "corlos",
+      name: "carlos",
       rule: "am",
       password: "111",
       isAuth: false,
@@ -117,13 +118,28 @@ async function populateDatabase() {
   for (const manager of managers) {
     await db.put(manager.name, manager);
   }
-  await db.close();
+  await close();
   console.log("Database popolato con successo!");
 }
 
+//funzione che restituisce un array contenente
+//tutti i nomi dei managers
+async function getAllManagersName() {
+  console.log("nomi managers");
+  await connect();
+  const results = [];
+  for await (const [key, value] of db.iterator()) {
+    results.push(value.name);
+  }
+  console.log("stampo l'array di nomi managers dal gestore del db", results);
+  await close();
+  return results;
+}
+
+//funzione che legge e stampa tutto il db
 async function readAll() {
-  console.log("Database letto!");
-  db.open();
+  console.log("Database manager letto!");
+  await connect();
   const results = [];
   for await (const [key, value] of db.iterator()) {
     results.push({ key, value });
@@ -134,18 +150,20 @@ async function readAll() {
 }
 
 function connect() {
+  console.log("Connect with managers");
   return new Promise((resolve, reject) => {
     db.open((err) => {
       if (err) {
         reject(err);
       } else {
-        resolve();
+        resolve(db);
       }
     });
   });
 }
 
-function insert(key, value) {
+async function insert(key, value) {
+  await connect();
   return new Promise((resolve, reject) => {
     db.put(key, value, (err) => {
       if (err) {
@@ -157,9 +175,10 @@ function insert(key, value) {
   });
 }
 
-function query(key) {
+async function query(key) {
+  await connect();
   return new Promise((resolve, reject) => {
-    dbMan.get(key, (err, value) => {
+    db.get(key, (err, value) => {
       if (err) {
         reject(err);
       } else {
@@ -187,8 +206,9 @@ module.exports = {
   insert,
   query,
   close,
-  createDb,
+  createDbUser,
   populateDatabase,
   getManagerByCredentials,
   readAll,
+  getAllManagersName,
 };

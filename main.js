@@ -3,15 +3,16 @@ const { app, BrowserWindow, screen } = require("electron");
 const { ipcMain } = require("electron");
 const path = require("path");
 const {
-  createDb,
-  populateDatabase,
-  readAll,
+  createDbUser,
   getManagerByCredentials,
+  getAllManagersName,
 } = require("./database/databaseManagersHandle");
+const { createDbEvents } = require("./database/eventsDB");
 const express = require("express");
 const cors = require("cors");
 const localServerApp = express();
 
+//non so bene perche faccio questa cosa
 const PORT = 8088;
 const startLocalServer = (done) => {
   localServerApp.use(express.json({ limit: "100mb" }));
@@ -23,7 +24,13 @@ const startLocalServer = (done) => {
   });
 };
 
-createDb();
+// creo i db speriamo solo se serve
+
+createDbUser();
+createDbEvents();
+/* getAllManagersName(); */
+
+//inizializzo mainWindow per esposrla in tutta la funzione
 let mainWindow;
 
 function createWindow() {
@@ -83,4 +90,11 @@ ipcMain.on("login", async (event, args) => {
   await mainWindow.webContents.send("returnManager", returnManager);
   // Gestisci le credenziali di accesso qui
   // Esegui l'autenticazione, interagisci con il database, ecc.
+});
+
+ipcMain.on("send:managersName", async (event, args) => {
+  console.log(args);
+  const managers = await getAllManagersName();
+  console.log("managers in main dopo chiamata al db", managers);
+  await mainWindow.webContents.send("managersName", managers);
 });

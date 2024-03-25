@@ -10,7 +10,7 @@ import useEventsStore from "./store/EventDataContext";
 
 export default function App() {
   const { user } = useEventsStore();
-  console.log("user in APP", user);
+
   return (
     <>
       <div className="App">
