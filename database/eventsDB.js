@@ -69,11 +69,8 @@ async function getAllEvents() {
 // Funzione per popolare il database
 async function populateDatabase() {
   await connect();
-
   // Inserisci i manager nel database (assumendo che dbMan sia l'istanza del database creato)
-
   await db.put("totalEvents", 0);
-
   await close();
   console.log("Database events popolato con successo!");
 }
@@ -193,10 +190,7 @@ function close() {
 }
 
 module.exports = {
-  connect,
   insertEvent,
-  query,
-  close,
   createDbEvents,
   getEvntFromID,
   readAllEvents,

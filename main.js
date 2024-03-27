@@ -2,6 +2,7 @@
 const { app, BrowserWindow, screen } = require("electron");
 const { ipcMain } = require("electron");
 const path = require("path");
+
 const {
   createDbUser,
   getManagerByCredentials,
@@ -14,6 +15,14 @@ const {
   getAllEvents,
   deleteThisEvent,
 } = require("./database/eventsDB");
+const {
+  createDbTasks,
+  insertTask,
+  getAllTasks,
+  readAllTasks,
+  deleteThisTask,
+} = require("./database/taskDB");
+
 const express = require("express");
 const cors = require("cors");
 const localServerApp = express();
@@ -34,6 +43,7 @@ const startLocalServer = (done) => {
 
 createDbUser();
 createDbEvents();
+createDbTasks();
 /* getAllManagersName(); */
 
 //inizializzo mainWindow per esposrla in tutta la funzione
@@ -128,4 +138,28 @@ ipcMain.on("send:eventToDelete", async (event, eventId) => {
   console.log("send:eventToDelete", eventId);
   await deleteThisEvent(eventId);
   await readAllEvents();
+});
+
+//ICP PER GESTIRE I TASK
+
+//icp electron che inserisce o aggiorna  task
+ipcMain.on("send:task", async (event, args) => {
+  console.log("MAIN: task da inserire in db", args);
+  await insertTask(args);
+  await readAllTasks();
+});
+
+//icp che restituisce tutti gli tasks. mi serve per caricare events alla primo avvio
+//viene letta dal reducers tasks
+ipcMain.on("send:getTasks", async (event, args) => {
+  console.log("argomenti di send:getTasks", args);
+  const stateTasks = await getAllTasks();
+  await mainWindow.webContents.send("return:getTasks", stateTasks);
+});
+
+//icp che elimina un event dal db task
+ipcMain.on("send:tasksToDelete", async (event, tasksId) => {
+  console.log("send:tasksToDelete", tasksId);
+  await deleteThisTask(tasksId);
+  await readAllTasks();
 });

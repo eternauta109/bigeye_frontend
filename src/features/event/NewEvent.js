@@ -22,7 +22,7 @@ import {
 //queste sono le funzioni che bho messo dentro i reducer che
 // vanno a lavorare con il db Level
 import { addNewEvent, deleteEventFromDb } from "../../store/eventsReducer";
-
+import { addNewTask } from "../../store/taskReducer";
 import useEventsStore from "../../store/EventDataContext";
 
 const ITEM_HEIGHT = 48;
@@ -69,7 +69,7 @@ function NewEvent({ handleClose, upDate }) {
       if (event.manager !== "") {
         const newTask = {
           id: "task" + totalTask,
-          createdBy: user.user.name,
+          createdBy: user.user.userName,
           title: event.title,
           manager: event.manager,
           description: event.description,
@@ -78,6 +78,7 @@ function NewEvent({ handleClose, upDate }) {
         };
 
         addTask(newTask);
+        await addNewTask(newTask, totalTask);
       }
       const prepareEvent = {
         ...event,

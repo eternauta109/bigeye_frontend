@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Container, Typography, Box, Button, Card } from "@mui/material";
 import Board from "react-trello";
 import useEventsStore from "../.././store/EventDataContext";
-import { cinemaDB } from "../.././database/cinemaDB";
 import TaskModal from "./TaskModal";
 import CustomCard from "./CustomCard";
+
+import { getTasks, addNewTask } from "../../store/taskReducer";
 
 const dataInit = {
   lanes: [
@@ -14,7 +15,6 @@ const dataInit = {
 
 const styleLane = {
   width: 270,
-
   overflowY: "auto",
   backgroundColor: "#B39DDB",
   color: "#fff",
@@ -23,22 +23,19 @@ const styleLane = {
 };
 
 const Kanban = () => {
-  const { tasks, upDateTask } = useEventsStore();
+  const { tasks, upDateTask, user, setTasks, totalTask } = useEventsStore();
   const [openNewTask, setOpenNewTask] = useState(false);
   const [selectedManager, setSelectedManager] = useState();
 
   const handleOpenNewTask = () => setOpenNewTask(true);
   const handleCloseNewTask = () => setOpenNewTask(false);
 
-  const managers = cinemaDB[11].managers;
-  const managerNames = managers.map((manager) => manager.name);
-
   const [managerData, setManagerData] = useState([]);
 
-  const onhandleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
+  const onhandleDragEnd = async (cardId, sourceLaneId, targetLaneId) => {
     const sourceManager = sourceLaneId.split("-")[1];
     const targetManager = targetLaneId.split("-")[1];
-    console.log(sourceManager, targetManager);
+    console.log("spostamenti di lane", sourceManager, targetManager);
 
     const finder = tasks.find((task) => task.id === cardId);
 
@@ -49,15 +46,30 @@ const Kanban = () => {
         manager: targetManager,
       };
       upDateTask(newTask, cardId);
+      await addNewTask(newTask, cardId);
     } else {
       const newTask = { ...finder, laneId: targetLaneId };
       upDateTask(newTask, cardId);
+      await addNewTask(newTask, cardId);
     }
   };
 
-  console.log("tasks", tasks);
+  //funzione asincrona che prende i task dal db con una funzione
+  // sotto taskReducer attenzione ch ein modalita dev
+  //task si azzera a ogni ricarica della pagina
+  const getTasksFromDb = async () => {
+    console.log("getTasksFromDb triggerato");
+    await getTasks().then((args) => setTasks(args));
+  };
+
   useEffect(() => {
-    const updatedManagerData = managerNames.map((manager) => ({
+    getTasksFromDb();
+
+    return () => {};
+  }, [tasks.lenght]);
+
+  useEffect(() => {
+    const updatedManagerData = user?.managersName.map((manager) => ({
       manager: manager,
       data: {
         lanes: [
@@ -124,7 +136,7 @@ const Kanban = () => {
     }));
     console.log("mappa lane da kanban", updatedManagerData);
     setManagerData(updatedManagerData);
-  }, [tasks, managers]);
+  }, [tasks.lenght]);
 
   return (
     <Container>

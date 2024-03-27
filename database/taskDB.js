@@ -11,27 +11,35 @@ const db = new Level(dbPath, { valueEncoding: "json" });
 async function getEvntFromID() {}
 
 // Funzione per creare il database se non esiste
-function createDbtasks() {
+function createDbTasks() {
   fs.access(dbPath, fs.constants.F_OK, async (err) => {
     if (err) {
       console.log("db tasks non esistente, lo creo");
 
-      await connect();
       try {
+        await connect();
         await populateDatabase();
       } catch (error) {
         console.log(error);
       }
-      await readAlltasks();
     } else {
       console.log("db tasks esistente lo leggo");
       try {
-        await readAlltasks();
+        await readAllTasks();
       } catch (error) {
         console.log("try catch", error);
       }
     }
   });
+}
+
+// Funzione per popolare il database
+async function populateDatabase() {
+  await connect();
+  // Inserisci i manager nel database (assumendo che dbMan sia l'istanza del database creato)
+  await db.put("totalTask", 0);
+  await close();
+  console.log("Database task inizializzato con successo!");
 }
 
 // Funzione per convertire le date in formato stringa ISO
@@ -45,13 +53,13 @@ function convertStringToDate(dateString) {
 }
 
 //funzione che restituisce tutto il db
-async function getAlltasks() {
+async function getAllTasks() {
   const alltasks = [];
-  const tottasks = await query("totaltasks");
+  const tottasks = await query("totalTask");
   try {
     await connect();
     for await (const [key, value] of db.iterator()) {
-      if (key !== "totaltasks") {
+      if (key !== "totalTasks") {
         const parsedtask = JSON.parse(value);
         parsedtask.start = convertStringToDate(parsedtask.start);
         parsedtask.end = convertStringToDate(parsedtask.end);
@@ -63,23 +71,11 @@ async function getAlltasks() {
   } finally {
     await close();
   }
-  return { tasks: alltasks, totaltasks: tottasks };
-}
-
-// Funzione per popolare il database
-async function populateDatabase() {
-  await connect();
-
-  // Inserisci i manager nel database (assumendo che dbMan sia l'istanza del database creato)
-
-  await db.put("totaltasks", 0);
-
-  await close();
-  console.log("Database tasks popolato con successo!");
+  return { tasks: alltasks, totalTask: tottasks };
 }
 
 // funzione che legge tutto il database
-async function readAlltasks() {
+async function readAllTasks() {
   console.log("Database tasks letto!");
   await connect();
   const results = [];
@@ -123,12 +119,12 @@ async function taskExists(key) {
 //in questa funzione controllo se un task esiste gia, per capire
 // se devo aggiungere l'task e aumentare totaltasks in caso non esista,
 // o aggiornare un task e non aumentare totaltasks in caso esista.
-async function inserttask(value) {
+async function insertTask(value) {
   console.log("task in insertOrUpdatetask in db:", value);
   const serializetask = JSON.stringify({
     ...value.task,
-    start: convertDateToString(value.task.start),
-    end: convertDateToString(value.task.end),
+    start: convertDateToString(value.event.start),
+    end: convertDateToString(value.event.end),
   });
 
   try {
@@ -138,7 +134,7 @@ async function inserttask(value) {
       await db.put(value.task.id, serializetask); // Aggiornamento dell'tasko nel database
     } else {
       // Se l'tasko non esiste, incremento totaltasks
-      await db.put("totaltasks", value.totaltasks + 1); // Aggiornamento di totaltasks
+      await db.put("totalTask", value.totalTask + 1); // Aggiornamento di totaltasks
       await db.put(value.task.id, serializetask); // Inserimento dell'tasko nel database
     }
     console.log("task inserted or updated successfully.");
@@ -151,7 +147,7 @@ async function inserttask(value) {
 }
 
 //qui ricevo un taskId e lo elimino
-async function deleteThistask(taskId) {
+async function deleteThisTask(taskId) {
   console.log("Deleting task id: ", taskId);
   try {
     await connect(); // Connessione al database
@@ -193,13 +189,10 @@ function close() {
 }
 
 module.exports = {
-  connect,
-  inserttask,
-  query,
-  close,
-  createDbtasks,
+  insertTask,
+  createDbTasks,
   getEvntFromID,
-  readAlltasks,
-  getAlltasks,
-  deleteThistask,
+  readAllTasks,
+  getAllTasks,
+  deleteThisTask,
 };

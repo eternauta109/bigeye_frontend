@@ -101,6 +101,13 @@ export const EventStoreContext = ({ children }) => {
 
   //Azioni TASK ############################
 
+  const deleteTask = (taskId) => {
+    deispatchEvent({
+      type: "DELETE_TASK",
+      payload: eventId,
+    });
+  };
+
   const addTask = (task) => {
     const newTasks = taskState.tasks.concat(task);
     taskDispatch({
@@ -122,6 +129,14 @@ export const EventStoreContext = ({ children }) => {
     taskDispatch({
       type: "UPDATE_TASK",
       payload: { tasks: updateTasks },
+    });
+  };
+
+  const setTasks = (args) => {
+    console.log("SET TASKS EDC: ", args);
+    taskDispatch({
+      type: "SET_TASKS",
+      payload: args,
     });
   };
 
@@ -158,8 +173,9 @@ export const EventStoreContext = ({ children }) => {
     emptyTask: initialTask.newTask,
     initialTask,
     addTask,
-    getTasks,
     upDateTask,
+    deleteTask,
+    setTasks,
   };
   return (
     <EventDataContext.Provider value={value}>

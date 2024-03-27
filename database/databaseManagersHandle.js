@@ -205,13 +205,8 @@ function close() {
 }
 
 module.exports = {
-  connect,
-  insert,
-  query,
-  close,
   createDbUser,
   populateDatabase,
   getManagerByCredentials,
-  readAll,
   getAllManagersName,
 };

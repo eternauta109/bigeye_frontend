@@ -58,7 +58,8 @@ export default function Basic({ handleOpen }) {
   };
 
   //funzione asincrona che prende gli events dal db con una funzione
-  // sotto eventsReducer
+  // sotto eventsReducer attenzione ch ein modalita dev
+  //events si azzera a ogni ricarica della pagina
   const getEventsFromDb = async () => {
     console.log("getEventsFromDb triggerato");
     await getEvents().then((args) => setEvents(args));

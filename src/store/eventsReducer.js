@@ -44,6 +44,7 @@ export const getEvents = async () => {
 //funzione che tramite icp di electron va ad aggiungere un event nel db
 export const addNewEvent = async (event, totalEvents) => {
   if (process.env.NODE_ENV === "development") {
+    console.log("modali dev addNewEvent: ", event);
     const newEvent = event;
     return newEvent;
   } else {

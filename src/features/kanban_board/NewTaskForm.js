@@ -9,32 +9,39 @@ import {
   Slider,
 } from "@mui/material";
 
-const NewTaskForm = ({ manager, onHandleClose }) => {
-  const { addTask, totalTask, emptyTask } = useEventsStore();
-  const [newTask, setNewTask] = useState({ ...emptyTask });
+import { addNewTask } from "../../store/taskReducer";
 
-  const handleSubmit = (event) => {
+const NewTaskForm = ({ manager, onHandleClose }) => {
+  const { addTask, totalTask, emptyTask, user } = useEventsStore();
+  const [newTask, setNewTask] = useState({ ...emptyTask });
+  console.log(user);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Aggiungi qui la logica per gestire il submit del form
     console.log("Form submitted!", newTask, totalTask);
     const sendNewTaskInStore = {
       ...newTask,
       manager: manager,
+      createdBy: user.user.userName,
+      start: new Date(),
       label: "task",
       laneId: `lane-${manager}`,
-      id: totalTask.toString(),
+      id: "task" + totalTask,
     };
     addTask(sendNewTaskInStore);
     onHandleClose();
+    await addNewTask(sendNewTaskInStore, totalTask);
   };
   console.log("Form submitted!", newTask, manager);
 
-  useMemo(() => {
+  /*  useMemo(() => {
     console.log("new task in use memo", newTask);
     return () => {
       setNewTask({ ...emptyTask });
     };
-  }, [newTask]);
+  }, [newTask]); */
+
   return (
     <Container
       sx={{
