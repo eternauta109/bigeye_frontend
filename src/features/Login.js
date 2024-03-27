@@ -67,7 +67,7 @@ export default function Login() {
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
         <Typography
           component="h1"
           variant="h3"

@@ -119,7 +119,7 @@ async function populateDatabase() {
     await db.put(manager.name, manager);
   }
   await close();
-  console.log("Database popolato con successo!");
+  console.log("Database manager popolato con successo!");
 }
 
 //funzione che restituisce un array contenente

@@ -7,7 +7,12 @@ const {
   getManagerByCredentials,
   getAllManagersName,
 } = require("./database/databaseManagersHandle");
-const { createDbEvents } = require("./database/eventsDB");
+const {
+  createDbEvents,
+  insertEvent,
+  readAllEvents,
+  getAllEvents,
+} = require("./database/eventsDB");
 const express = require("express");
 const cors = require("cors");
 const localServerApp = express();
@@ -74,8 +79,7 @@ app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+//icp per cercare sul db managers chi si sta loggando
 ipcMain.on("login", async (event, args) => {
   console.log(
     "login ha inviato username e password a main",
@@ -92,9 +96,23 @@ ipcMain.on("login", async (event, args) => {
   // Esegui l'autenticazione, interagisci con il database, ecc.
 });
 
+//icp electron che restituisce un array con tutti i nomi dei managers
 ipcMain.on("send:managersName", async (event, args) => {
-  console.log(args);
   const managers = await getAllManagersName();
   console.log("managers in main dopo chiamata al db", managers);
   await mainWindow.webContents.send("managersName", managers);
+});
+
+//icp electron che inserisce un nuovo evento
+ipcMain.on("send:event", async (event, args) => {
+  console.log("MAIN: evento da inserire in db", args);
+  await insertEvent(args);
+  await readAllEvents();
+});
+
+//icp che restituisce tutte gli events
+ipcMain.on("send:getEvents", async (event, args) => {
+  console.log("argomenti di send:getEvents", args);
+  const events = await getAllEvents();
+  await mainWindow.webContents.send("return:getEvents", events);
 });

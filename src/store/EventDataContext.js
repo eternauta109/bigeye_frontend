@@ -89,6 +89,14 @@ export const EventStoreContext = ({ children }) => {
     });
   };
 
+  const setEvents = (events) => {
+    console.log("SET EVENTS EDC: ", events);
+    deispatchEvent({
+      type: "SET_EVENTS",
+      payload: events,
+    });
+  };
+
   //Azioni TASK ############################
 
   const addTask = (task) => {
@@ -139,6 +147,7 @@ export const EventStoreContext = ({ children }) => {
     getEvents,
     initEvent,
     setEvent,
+    setEvents,
 
     //TASK
 

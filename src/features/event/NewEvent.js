@@ -18,8 +18,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import { cinemaDB } from "../../database/cinemaDB";
-
+import { addNewEvent } from "../../store/eventsReducer";
 import { getAllManagersName } from "../../store/userReducer";
 
 import useEventsStore from "../../store/EventDataContext";
@@ -37,7 +36,7 @@ const MenuProps = {
 
 function NewEvent({ handleClose, upDate }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [managers, setManagers] = useState([]);
+  const [managersName, setManagersName] = useState([]);
 
   const {
     events,
@@ -56,10 +55,11 @@ function NewEvent({ handleClose, upDate }) {
     upDate ? { ...eventToUpdate } : { ...emptyEvent }
   );
 
+  //prendo i nomi dei managers dal db
   const getManagerName = async () => {
     const managersDaDb = await getAllManagersName();
     console.log("managers in new login in funzione asincrona", managersDaDb);
-    setManagers([...managersDaDb]);
+    setManagersName([...managersDaDb]);
   };
 
   const onSubmit = async (e) => {
@@ -84,8 +84,10 @@ function NewEvent({ handleClose, upDate }) {
         ...event,
         id: "event" + totalEvent,
       };
-
       addEvent(prepareEvent);
+      initEvent();
+      handleClose();
+      await addNewEvent(prepareEvent, totalEvent);
     }
     initEvent();
     handleClose();
@@ -272,7 +274,7 @@ function NewEvent({ handleClose, upDate }) {
             input={<OutlinedInput label="assign this task to.." />}
           >
             <MenuItem value="">None</MenuItem>
-            {managers?.map((el, key) => (
+            {managersName?.map((el, key) => (
               <MenuItem key={key} value={el}>
                 {el}
               </MenuItem>

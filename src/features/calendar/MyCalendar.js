@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
 import format from "date-fns/format";
 import parse from "date-fns/parse";
@@ -6,6 +6,8 @@ import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
 import useEventsStore from "../../store/EventDataContext";
+
+import { getEvents } from "../../store/eventsReducer";
 
 import {
   Calendar,
@@ -35,7 +37,7 @@ const localizer = dateFnsLocalizer({
  * example on the main 'About' page in Storybook
  */
 export default function Basic({ handleOpen }) {
-  const { events, setEvent } = useEventsStore();
+  const { events, setEvent, setEvents } = useEventsStore();
 
   console.log("events in calendar", events);
 
@@ -47,11 +49,26 @@ export default function Basic({ handleOpen }) {
     []
   );
 
+  //funzione che gestisce la riapertura di un evento sul calendario.
+  //upDate in questo caso è settata a true dal componete padre
   const onSelectEvent = (event) => {
     console.log("onSelectEvent", event);
     setEvent(event);
     handleOpen();
   };
+
+  //funzione asincrona che prende gli events dal db con una funzione
+  // sotto eventsReducer
+  const getEventsFromDb = async () => {
+    console.log("getEventsFromDb triggerato");
+    await getEvents().then((events) => setEvents(events));
+  };
+
+  useEffect(() => {
+    getEventsFromDb();
+
+    return () => {};
+  }, [events.lenght]);
 
   return (
     <div className="calendarContainer">
