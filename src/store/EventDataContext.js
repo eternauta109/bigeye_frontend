@@ -20,10 +20,11 @@ export const EventStoreContext = ({ children }) => {
   const [userState, userDispatch] = useReducer(userReducer, initialUser);
 
   //USER ACTION
-  const setUser = (user) => {
+  const setUser = (args) => {
+    console.log("ricevo args per login user: ", args);
     userDispatch({
       type: "SET_USER",
-      payload: { user },
+      payload: { ...args },
     });
   };
 
@@ -126,7 +127,7 @@ export const EventStoreContext = ({ children }) => {
 
   const value = {
     //USER
-    user: userState.user,
+    user: userState,
     setUser,
 
     //TOPICS

@@ -49,16 +49,19 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const manager = await loginUser(userName, password);
-    if (manager.isAuth) {
-      setUser(manager);
+    const args = await loginUser(userName, password);
+    console.log("COSA MI RITORNA DAL DB", args);
+    if (args.user.isAuth) {
+      console.log(args);
+      setUser(args);
     } else {
       alert("error access");
     }
   };
 
   useEffect(() => {
-    if (user?.isAuth) {
+    console.log("user in login useffect", user);
+    if (user?.user.isAuth) {
       navigate("/calendar");
     }
 

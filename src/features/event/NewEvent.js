@@ -22,7 +22,6 @@ import {
 //queste sono le funzioni che bho messo dentro i reducer che
 // vanno a lavorare con il db Level
 import { addNewEvent, deleteEventFromDb } from "../../store/eventsReducer";
-import { getAllManagersName } from "../../store/userReducer";
 
 import useEventsStore from "../../store/EventDataContext";
 
@@ -39,8 +38,6 @@ const MenuProps = {
 
 function NewEvent({ handleClose, upDate }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [managersName, setManagersName] = useState([]);
-
   const {
     addTask,
     addEvent,
@@ -51,18 +48,12 @@ function NewEvent({ handleClose, upDate }) {
     emptyEvent,
     initEvent,
     deleteEvent,
+    user,
   } = useEventsStore();
 
   const [event, setEvent] = useState(
     upDate ? { ...eventToUpdate } : { ...emptyEvent }
   );
-
-  //prendo i nomi dei managers dal db
-  const getManagerName = async () => {
-    const managersDaDb = await getAllManagersName();
-    console.log("managers in new login in funzione asincrona", managersDaDb);
-    setManagersName([...managersDaDb]);
-  };
 
   //funzione di submit. qua succedono un sacco di cose.
   //primo: se event è nuov lo aggiungo sia sllo store EDC che al db
@@ -78,6 +69,7 @@ function NewEvent({ handleClose, upDate }) {
       if (event.manager !== "") {
         const newTask = {
           id: "task" + totalTask,
+          createdBy: user.user.name,
           title: event.title,
           manager: event.manager,
           description: event.description,
@@ -89,6 +81,7 @@ function NewEvent({ handleClose, upDate }) {
       }
       const prepareEvent = {
         ...event,
+        createdBy: user.user.userName,
         id: "event" + totalEvent,
       };
       addEvent(prepareEvent);
@@ -146,8 +139,8 @@ function NewEvent({ handleClose, upDate }) {
   /* useMemo(() => console.log("useMemo newEvent", event), [event]); */
 
   useEffect(() => {
-    getManagerName();
     console.log("UPDATE", upDate);
+    console.log("user in new events useeffect", user);
     if (upDate) {
       console.log("evento.id esistente questo è l evento da aggiornare", event);
     }
@@ -195,6 +188,16 @@ function NewEvent({ handleClose, upDate }) {
           name="eventType"
           sx={{ mb: 2 }}
         />
+        {upDate && (
+          <TextField
+            fullWidth
+            label="created by"
+            disabled
+            value={event?.createdBy ? event.createdBy : ""}
+            name="createdBy"
+            sx={{ mb: 2 }}
+          />
+        )}
 
         <TextField
           fullWidth
@@ -289,7 +292,7 @@ function NewEvent({ handleClose, upDate }) {
             input={<OutlinedInput label="assign this task to.." />}
           >
             <MenuItem value="">None</MenuItem>
-            {managersName?.map((el, key) => (
+            {user?.managersName.map((el, key) => (
               <MenuItem key={key} value={el}>
                 {el}
               </MenuItem>

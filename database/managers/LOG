@@ -1,3 +1,5 @@
-2024/03/27-13:39:06.617 6d28 Recovering log #436
-2024/03/27-13:39:06.624 6d28 Delete type=0 #436
-2024/03/27-13:39:06.624 6d28 Delete type=3 #435
+2024/03/27-16:09:19.020 4cf4 Recovering log #3
+2024/03/27-16:09:19.020 4cf4 Level-0 table #5: started
+2024/03/27-16:09:19.023 4cf4 Level-0 table #5: 398 bytes OK
+2024/03/27-16:09:19.030 4cf4 Delete type=0 #3
+2024/03/27-16:09:19.030 4cf4 Delete type=3 #2

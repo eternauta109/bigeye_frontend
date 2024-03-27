@@ -3,6 +3,7 @@ export const initialTask = {
   tasks: [],
   newTask: {
     id: null,
+    createdBy: null,
     colorType: "#F39C12",
     description: "",
     start: new Date(),

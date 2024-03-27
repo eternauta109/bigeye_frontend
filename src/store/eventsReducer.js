@@ -3,6 +3,7 @@ export const initialEvents = {
   events: [],
   newEvent: {
     id: null,
+    createdBy: null,
     eventType: "evento",
     colorDivision: null,
     colorEventType: "#F39C12",

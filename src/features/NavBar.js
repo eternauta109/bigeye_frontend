@@ -24,9 +24,9 @@ function NavBar() {
   const { user } = useEventsStore();
 
   const settings = [
-    `name: ${user.name}`,
-    `rule: ${user.rule}`,
-    `notify ${user.notification.length}`,
+    `name: ${user.user.userName}`,
+    `rule: ${user.user.role}`,
+    `notify ${user.user.notification.length}`,
   ];
 
   const navigate = useNavigate();

@@ -11,17 +11,20 @@ const db = new Level(dbPath, { valueEncoding: "json" });
 //credenziali corrette
 async function getManagerByCredentials(userName, password) {
   console.log("ricevo in db query user pass", userName, password, dbPath);
-  const db = new Level(dbPath, { valueEncoding: "json" });
+  await connect();
   let managerFound = null;
+  let managersName = null;
 
   try {
     for await (const [key, value] of db.iterator()) {
       const manager = value;
-
-      if (manager.name === userName && manager.password === password) {
+      console.log("manager", manager);
+      if (manager.userName === userName && manager.password === password) {
         console.log("Credenziali corrette", key, manager);
         managerFound = manager;
-        break; // Esci dal loop quando trovi il manager corrispondente
+        managersName = await getAllManagersName(managerFound.cinema);
+        await close();
+        return { managerFound, managersName }; // Esci dal loop quando trovi il manager corrispondente
       }
     }
     if (!managerFound) {
@@ -33,10 +36,8 @@ async function getManagerByCredentials(userName, password) {
   } finally {
     // Chiudi il database solo dopo aver completato le iterazioni
     console.log("chiudi il db:");
-    await db.close();
+    await close();
   }
-
-  return managerFound;
 }
 
 // Funzione per creare il database se non esiste
@@ -68,7 +69,7 @@ async function populateDatabase() {
   await connect();
   const managers = [
     {
-      name: "fabioc",
+      userName: "fabioc",
       rule: "tm",
       password: "109",
       isAuth: false,
@@ -77,8 +78,8 @@ async function populateDatabase() {
       notification: [],
     },
     {
-      name: "robertod",
-      rule: "am",
+      userName: "robertod",
+      role: "am",
       password: "110",
       isAuth: false,
       cinema: "guidonia",
@@ -86,8 +87,8 @@ async function populateDatabase() {
       notification: [],
     },
     {
-      name: "carlos",
-      rule: "am",
+      userName: "carlos",
+      role: "am",
       password: "111",
       isAuth: false,
       cinema: "guidonia",
@@ -95,8 +96,8 @@ async function populateDatabase() {
       notification: [],
     },
     {
-      name: "marap",
-      rule: "am",
+      userName: "marap",
+      role: "am",
       password: "113",
       isAuth: false,
       cinema: "guidonia",
@@ -104,8 +105,8 @@ async function populateDatabase() {
       notification: [],
     },
     {
-      name: "valentinad",
-      rule: "am",
+      userName: "valentinad",
+      role: "am",
       password: "114",
       isAuth: false,
       cinema: "guidonia",
@@ -116,7 +117,7 @@ async function populateDatabase() {
 
   // Inserisci i manager nel database (assumendo che dbMan sia l'istanza del database creato)
   for (const manager of managers) {
-    await db.put(manager.name, manager);
+    await db.put(manager.userName, manager);
   }
   await close();
   console.log("Database manager popolato con successo!");
@@ -124,12 +125,14 @@ async function populateDatabase() {
 
 //funzione che restituisce un array contenente
 //tutti i nomi dei managers
-async function getAllManagersName() {
+async function getAllManagersName(cinemaValue) {
   console.log("nomi managers");
   await connect();
   const results = [];
   for await (const [key, value] of db.iterator()) {
-    results.push(value.name);
+    if (value.cinema === cinemaValue) {
+      results.push(value.userName);
+    }
   }
   console.log("stampo l'array di nomi managers dal gestore del db", results);
   await close();

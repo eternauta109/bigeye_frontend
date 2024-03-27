@@ -14,7 +14,7 @@ export default function App() {
   return (
     <>
       <div className="App">
-        {user?.isAuth ? <NavBar /> : null}
+        {user?.user.isAuth ? <NavBar /> : null}
         <Routes>
           <Route exact path="/" element={<Login />} />
           <Route path="/calendar" element={<ShareCalendar />} />
