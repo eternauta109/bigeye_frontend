@@ -26,7 +26,6 @@ function createDbEvents() {
     } else {
       console.log("db events esistente lo leggo");
       try {
-        await connect();
         await readAllEvents();
       } catch (error) {
         console.log("try catch", error);
@@ -48,6 +47,7 @@ function convertStringToDate(dateString) {
 //funzione che restituisce tutto il db
 async function getAllEvents() {
   const allEvents = [];
+  const totEvents = await query("totalEvents");
   try {
     await connect();
     for await (const [key, value] of db.iterator()) {
@@ -61,9 +61,9 @@ async function getAllEvents() {
   } catch (error) {
     console.log("errore durante il recupero dei dai dal db events", error);
   } finally {
-    close();
+    await close();
   }
-  return allEvents;
+  return { events: allEvents, totalEvents: totEvents };
 }
 
 // Funzione per popolare il database
@@ -81,7 +81,7 @@ async function populateDatabase() {
 // funzione che legge tutto il database
 async function readAllEvents() {
   console.log("Database events letto!");
-  connect();
+  await connect();
   const results = [];
   for await (const [key, value] of db.iterator()) {
     results.push({ key, value });
@@ -104,32 +104,65 @@ function connect() {
   });
 }
 
-//funzione che riceve una key e un event e lo
-// aggiunge al database
+// Funzione per controllare se un evento esiste nel database
+// mi servirà quando aggiungo un nuovo event per capire
+// se aumentare o no totalEvents
+async function eventExists(key) {
+  console.log("eventExists", key);
+  try {
+    const value = await db.get(key); // Recupero il valore dell'evento
+    return value !== undefined; // Ritorno true se l'evento esiste, altrimenti false
+  } catch (error) {
+    // Se si verifica un errore, l'evento non esiste
+    return false;
+  } finally {
+  }
+}
+
+// Funzione per inserire o aggiornare un  evento nel database
+//in questa funzione controllo se un event esiste gia, per capire
+// se devo aggiungere l'event e aumentare totalEvents in caso non esista,
+// o aggiornare un event e non aumentare totalEvents in caso esista.
 async function insertEvent(value) {
-  console.log("event in insertEvnet in db:", value);
+  console.log("Event in insertOrUpdateEvent in db:", value);
   const serializeEvent = JSON.stringify({
     ...value.event,
     start: convertDateToString(value.event.start),
     end: convertDateToString(value.event.end),
   });
-  connect();
-  return new Promise((resolve, reject) => {
-    db.put("totalEvents", value.totalEvents + 1, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-    db.put(value.event.id, serializeEvent, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+
+  try {
+    await connect(); // Connessione al database
+    if (await eventExists(value.event.id)) {
+      // Se l'evento esiste già, non aggiorno totalEvents
+      await db.put(value.event.id, serializeEvent); // Aggiornamento dell'evento nel database
+    } else {
+      // Se l'evento non esiste, incremento totalEvents
+      await db.put("totalEvents", value.totalEvents + 1); // Aggiornamento di totalEvents
+      await db.put(value.event.id, serializeEvent); // Inserimento dell'evento nel database
+    }
+    console.log("Event inserted or updated successfully.");
+  } catch (error) {
+    console.error("Error inserting or updating event:", error);
+    throw error; // Gestione dell'errore
+  } finally {
+    await close(); // Chiusura della connessione al database
+  }
+}
+
+//qui ricevo un eventId e lo elimino
+async function deleteThisEvent(eventId) {
+  console.log("Deleting event id: ", eventId);
+  try {
+    await connect(); // Connessione al database
+    await db.del(eventId); // Elimina l'evento utilizzando l'ID come chiave
+    console.log("Event deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    throw error; // Gestione dell'errore
+  } finally {
+    await close(); // Chiusura della connessione al database
+  }
 }
 
 //non so
@@ -168,4 +201,5 @@ module.exports = {
   getEvntFromID,
   readAllEvents,
   getAllEvents,
+  deleteThisEvent,
 };

@@ -13,12 +13,15 @@ import {
   MenuItem,
   FormControl,
   Button,
+  Box,
   OutlinedInput,
   Select,
   TextField,
 } from "@mui/material";
 
-import { addNewEvent } from "../../store/eventsReducer";
+//queste sono le funzioni che bho messo dentro i reducer che
+// vanno a lavorare con il db Level
+import { addNewEvent, deleteEventFromDb } from "../../store/eventsReducer";
 import { getAllManagersName } from "../../store/userReducer";
 
 import useEventsStore from "../../store/EventDataContext";
@@ -39,7 +42,6 @@ function NewEvent({ handleClose, upDate }) {
   const [managersName, setManagersName] = useState([]);
 
   const {
-    events,
     addTask,
     addEvent,
     eventToUpdate,
@@ -48,7 +50,7 @@ function NewEvent({ handleClose, upDate }) {
     upDateEvent,
     emptyEvent,
     initEvent,
-    user,
+    deleteEvent,
   } = useEventsStore();
 
   const [event, setEvent] = useState(
@@ -62,11 +64,16 @@ function NewEvent({ handleClose, upDate }) {
     setManagersName([...managersDaDb]);
   };
 
+  //funzione di submit. qua succedono un sacco di cose.
+  //primo: se event è nuov lo aggiungo sia sllo store EDC che al db
+  //se è solo da aggiornare aggiorno lo store e il db senza aumentare totalEvents
+  //devo fare lo stesso con le tasks
   const onSubmit = async (e) => {
     e.preventDefault();
     if (upDate) {
       upDateEvent(event, event.id);
       handleClose();
+      await addNewEvent(event, totalEvent);
     } else {
       if (event.manager !== "") {
         const newTask = {
@@ -89,10 +96,20 @@ function NewEvent({ handleClose, upDate }) {
       handleClose();
       await addNewEvent(prepareEvent, totalEvent);
     }
-    initEvent();
-    handleClose();
   };
 
+  //questa funzione andra a cancellare l'event. qui upDate deve essere sicuramente true,
+  // e poi devo passare event.id per andare a cancellare l'evento
+  //sia dallo store che dal db
+  const onDelete = async (e, idToCancel) => {
+    e.preventDefault();
+    deleteEvent(idToCancel);
+    handleClose();
+    await deleteEventFromDb(idToCancel);
+  };
+
+  //gestisco i cambiamenti del valore della divsions e aggiorno sia
+  // lo stato che il colore relativo
   const handleDivisionChange = (e) => {
     let color;
     console.log(e.target.value);
@@ -125,16 +142,14 @@ function NewEvent({ handleClose, upDate }) {
     setEvent({ ...event, division: e.target.value, colorDivision: color });
   };
 
-  //funzione che stampa evetn a pogni modifica
+  //funzione che stampa event a pogni modifica
   /* useMemo(() => console.log("useMemo newEvent", event), [event]); */
 
   useEffect(() => {
     getManagerName();
     console.log("UPDATE", upDate);
     if (upDate) {
-      console.log(
-        "evento.id esistente questo è l evento da aggiornare" + event
-      );
+      console.log("evento.id esistente questo è l evento da aggiornare", event);
     }
 
     return () => {
@@ -159,7 +174,7 @@ function NewEvent({ handleClose, upDate }) {
       )}
       {upDate && (
         <Button
-          variant="contained"
+          variant="outlined"
           sx={{ m: 2 }}
           onClick={(e) => {
             handleClose();
@@ -308,9 +323,22 @@ function NewEvent({ handleClose, upDate }) {
         
         
          */}
+
         <Button fullWidth variant="outlined" type="submit" color="secondary">
           {upDate ? "updates" : "save"}
         </Button>
+        {upDate && (
+          <Button
+            variant="contained"
+            color="error"
+            sx={{ mt: 4 }}
+            onClick={(e) => {
+              onDelete(e, event.id);
+            }}
+          >
+            Delete This Event
+          </Button>
+        )}
       </form>
     </Container>
   );

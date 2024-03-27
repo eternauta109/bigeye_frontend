@@ -12,6 +12,7 @@ const {
   insertEvent,
   readAllEvents,
   getAllEvents,
+  deleteThisEvent,
 } = require("./database/eventsDB");
 const express = require("express");
 const cors = require("cors");
@@ -79,6 +80,8 @@ app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
 });
 
+//ICP PER GESTIRE I MANAGERS
+
 //icp per cercare sul db managers chi si sta loggando
 ipcMain.on("login", async (event, args) => {
   console.log(
@@ -103,6 +106,8 @@ ipcMain.on("send:managersName", async (event, args) => {
   await mainWindow.webContents.send("managersName", managers);
 });
 
+//ICP PER GESTIRE GLI EVENTI
+
 //icp electron che inserisce un nuovo evento
 ipcMain.on("send:event", async (event, args) => {
   console.log("MAIN: evento da inserire in db", args);
@@ -110,9 +115,17 @@ ipcMain.on("send:event", async (event, args) => {
   await readAllEvents();
 });
 
-//icp che restituisce tutte gli events
+//icp che restituisce tutti gli events. mi serve per caricare events alla primo avvio
+//viene letta dal reducers eventi che va a modificare events nel calendar
 ipcMain.on("send:getEvents", async (event, args) => {
   console.log("argomenti di send:getEvents", args);
-  const events = await getAllEvents();
-  await mainWindow.webContents.send("return:getEvents", events);
+  const stateEvents = await getAllEvents();
+  await mainWindow.webContents.send("return:getEvents", stateEvents);
+});
+
+//icp che elimina un event dal db event
+ipcMain.on("send:eventToDelete", async (event, eventId) => {
+  console.log("send:eventToDelete", eventId);
+  await deleteThisEvent(eventId);
+  await readAllEvents();
 });

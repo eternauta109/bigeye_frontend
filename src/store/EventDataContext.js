@@ -76,9 +76,10 @@ export const EventStoreContext = ({ children }) => {
     });
   };
 
-  const getEvents = () => {
+  const deleteEvent = (eventId) => {
     deispatchEvent({
-      type: "GET_EVENTS",
+      type: "DELETE_EVENT",
+      payload: eventId,
     });
   };
 
@@ -89,11 +90,11 @@ export const EventStoreContext = ({ children }) => {
     });
   };
 
-  const setEvents = (events) => {
-    console.log("SET EVENTS EDC: ", events);
+  const setEvents = (args) => {
+    console.log("SET EVENTS EDC: ", args);
     deispatchEvent({
       type: "SET_EVENTS",
-      payload: events,
+      payload: args,
     });
   };
 
@@ -144,10 +145,10 @@ export const EventStoreContext = ({ children }) => {
     emptyEvent: initialEvents.newEvent,
     addEvent,
     upDateEvent,
-    getEvents,
     initEvent,
     setEvent,
     setEvents,
+    deleteEvent,
 
     //TASK
 

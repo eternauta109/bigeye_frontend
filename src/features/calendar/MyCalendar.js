@@ -61,7 +61,7 @@ export default function Basic({ handleOpen }) {
   // sotto eventsReducer
   const getEventsFromDb = async () => {
     console.log("getEventsFromDb triggerato");
-    await getEvents().then((events) => setEvents(events));
+    await getEvents().then((args) => setEvents(args));
   };
 
   useEffect(() => {
@@ -72,23 +72,25 @@ export default function Basic({ handleOpen }) {
 
   return (
     <div className="calendarContainer">
-      <Calendar
-        localizer={localizer}
-        max={max}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 880 }}
-        selectable={true}
-        step={60}
-        views={views}
-        onSelectEvent={(event) => onSelectEvent(event)}
-        /* onSelectSlot={handleSelect} */
-        eventPropGetter={(event) => {
-          const backgroundColor = event.colorEventType;
-          return { style: { backgroundColor } };
-        }}
-      />
+      {events && (
+        <Calendar
+          localizer={localizer}
+          max={max}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 880 }}
+          selectable={true}
+          step={60}
+          views={views}
+          onSelectEvent={(event) => onSelectEvent(event)}
+          /* onSelectSlot={handleSelect} */
+          eventPropGetter={(event) => {
+            const backgroundColor = event.colorEventType;
+            return { style: { backgroundColor } };
+          }}
+        />
+      )}
     </div>
   );
 }

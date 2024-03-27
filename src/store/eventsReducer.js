@@ -21,7 +21,8 @@ export const initialEvents = {
 //funzione che tramite icp di electron va a prendere tutto il db events
 export const getEvents = async () => {
   if (process.env.NODE_ENV === "development") {
-    return [{ key: "totalEvents", value: 0 }];
+    console.log("sono in dev mode");
+    return { ...initialEvents };
   } else {
     //siamo in dist e quindi uso icp per andare sul db
     const { ipcRenderer } = window.require("electron");
@@ -42,21 +43,7 @@ export const getEvents = async () => {
 //funzione che tramite icp di electron va ad aggiungere un event nel db
 export const addNewEvent = async (event, totalEvents) => {
   if (process.env.NODE_ENV === "development") {
-    const newEvent = {
-      id: "prova",
-      eventType: "evento",
-      colorDivision: "#F39C12",
-      colorEventType: "#F39C12",
-      description: "",
-      division: "marketing",
-      start: new Date(),
-      end: new Date(),
-      link: "www.google.com",
-      note: "",
-      title: "",
-      manager: "",
-      laneId: "lane1",
-    };
+    const newEvent = event;
     return newEvent;
   } else {
     // siamo in modalita dist, quindi vado sul db gestito da electron
@@ -72,6 +59,24 @@ export const addNewEvent = async (event, totalEvents) => {
           console.log("send:managers è arrivato su user reducer", events);
           resolve(events);
         }); */
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+};
+
+//funzione che va gestire la cnacellazione di un event sia in modali dev che dist
+export const deleteEventFromDb = async (eventId) => {
+  if (process.env.NODE_ENV === "development") {
+    return eventId;
+  } else {
+    return new Promise((resolve, reject) => {
+      const { ipcRenderer } = window.require("electron");
+      try {
+        ipcRenderer.send("send:eventToDelete", eventId);
+        resolve();
       } catch (error) {
         reject(error);
       }
@@ -89,11 +94,20 @@ const eventsReducer = (state, action) => {
         events: payload.events,
         totalEvents: state.totalEvents + 1,
       };
+
+    // Aggiungi il caso per la cancellazione dell'evento nel tuo reducer
+    case "DELETE_EVENT":
+      // Filtra gli eventi rimuovendo quello con l'ID corrispondente
+      const updatedEvents = state.events.filter(
+        (event) => event.id !== payload
+      );
+      return {
+        ...state,
+        events: updatedEvents,
+      };
+
     case "UPDATE_EVENT":
       /* console.log("UPDATE_EVENT", payload); */
-      return { ...state, events: payload.events };
-    case "GET_EVENTS":
-      /* console.log("GET_EVENTS", payload); */
       return { ...state, events: payload.events };
 
     case "SET_EVENT":
@@ -110,7 +124,8 @@ const eventsReducer = (state, action) => {
       console.log("payload.events SET_EVENT in reducer says:", payload);
       return {
         ...state,
-        events: payload,
+        totalEvents: payload.totalEvents,
+        events: [...payload.events],
       };
 
     case "INIT_EVENT":
