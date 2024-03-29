@@ -62,15 +62,24 @@ const officeTypes = [
 
 function EditToolbar(props) {
   const { setRowModesModel } = props;
-  const { totalTopics, emptyTopic, addTopic } = useEventsStore();
+  const { totalTopics, emptyTopic, addTopic, user, setTopics } =
+    useEventsStore();
 
   const handleClick = async (e) => {
     console.log("inserisco nuovo topic vuoto", totalTopics);
     e.preventDefault();
     const id = totalTopics;
     console.log("id con new topic: ", id);
-    const newTopic = { ...emptyTopic, id };
-    addTopic(newTopic);
+    const newTopic = { ...emptyTopic, id, createdBy: user.user.userName };
+    if (process.env.NODE_ENV === "development") {
+      addTopic(newTopic);
+    } else {
+      await addNewTopic(newTopic, totalTopics);
+      await getTopics({ topics: newTopic, totalTopics }).then((args) => {
+        console.log("getTopicsFromDb result:", args);
+        setTopics(args);
+      });
+    }
 
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -113,12 +122,19 @@ const Topics = () => {
   };
 
   const handleDeleteClick = (id) => async () => {
-    deleteTopic(id);
-    await deleteTopic(id);
-    /* setRows(rows.filter((row) => row.id !== id)); */
+    if (process.env.NODE_ENV === "development") {
+      deleteTopic(id);
+    } else {
+      console.log("cancello un topic", id);
+      await deleteTopicFromDb({ topicId: id });
+      await getTopics().then((args) => {
+        console.log("getTopicsFromDb result:", args);
+        setTopics(args);
+      });
+    }
   };
 
-  const handleCancelClick = (id) => () => {
+  const handleCancelClick = (id) => async () => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -244,7 +260,7 @@ const Topics = () => {
         )
       ),
     })),
-    /*
+
     {
       field: "tmVeto",
       headerName: "Tm Veto",
@@ -312,7 +328,7 @@ const Topics = () => {
           />,
         ];
       },
-    }, */
+    },
     ,
   ];
 
@@ -325,7 +341,6 @@ const Topics = () => {
       /*  for (const element in args.topics) {
         console.log("element: ", element);
       } */
-
       console.log("getTopicsFromDb result:", args);
       setTopics(args);
     });
@@ -333,9 +348,8 @@ const Topics = () => {
 
   useMemo(() => {
     console.log("usememo di topics", topics, rowModesModel);
-    console.log("topics length: ", topics.length);
     getTopicsFromDb();
-  }, [topics.length]);
+  }, []);
 
   return (
     <Box

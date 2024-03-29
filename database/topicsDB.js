@@ -165,8 +165,8 @@ async function deleteThisTopic(topicId) {
 }
 
 //non so
-function query(key) {
-  connect();
+async function query(key) {
+  await connect();
   return new Promise((resolve, reject) => {
     db.get(key, (err, value) => {
       if (err) {

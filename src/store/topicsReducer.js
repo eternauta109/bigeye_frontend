@@ -31,7 +31,7 @@ export const getTopics = async (topics, totalTopics) => {
   } else {
     //siamo in dist e quindi uso icp per andare sul db
     const { ipcRenderer } = window.require("electron");
-    console.log("sono in dist mode");
+    console.log("sono in dist mode getTopics");
     return new Promise((resolve, reject) => {
       try {
         ipcRenderer.send("send:getTopics", "getAllTopics");
@@ -49,6 +49,7 @@ export const getTopics = async (topics, totalTopics) => {
 //funzione che tramite icp di electron va ad aggiungere un event nel db
 export const addNewTopic = async (topic, totalTopics) => {
   if (process.env.NODE_ENV === "development") {
+    console.log("addNewTopic dev mode topic:", topic, totalTopics);
     const newTopic = topic;
     return newTopic;
   } else {
@@ -73,7 +74,7 @@ export const addNewTopic = async (topic, totalTopics) => {
 };
 
 //funzione che va gestire la cancellazione di un topic sia in modalità dev che dist
-export const deleteTopicFromDb = async (topicId) => {
+export const deleteTopicFromDb = async ({ topicId }) => {
   console.log("sono in topicReducer e sto cancelladno", topicId);
   if (process.env.NODE_ENV === "development") {
     return topicId;
@@ -105,7 +106,7 @@ const topicReducer = (state, action) => {
       };
     case "UPDATE_TOPIC":
       const { payload } = action;
-      console.log("UPDATE_EVENT", state.topics, payload);
+      console.log("UPDATE_TOPIC", state.topics, payload);
       const topicIndex = state.topics.findIndex(
         (topic) => topic.id === payload.id
       );
@@ -123,7 +124,7 @@ const topicReducer = (state, action) => {
       console.log("payload.topics SET_TOPICS in reducer says:", action.payload);
       return {
         ...state,
-
+        totalTopics: action.payload.totalTopics,
         topics: [...action.payload.topics],
       };
 
