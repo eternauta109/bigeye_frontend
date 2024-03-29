@@ -29,11 +29,18 @@ export const EventStoreContext = ({ children }) => {
   };
 
   //Topic ACTION
+  const setTopics = (args) => {
+    console.log("SET TOPICS EDC: ", args);
+    topicDispatch({
+      type: "SET_TOPICS",
+      payload: args,
+    });
+  };
 
   const addTopic = (topic) => {
     topicDispatch({
       type: "ADD_TOPIC",
-      payload: { topic },
+      payload: topic,
     });
   };
 
@@ -152,6 +159,7 @@ export const EventStoreContext = ({ children }) => {
     addTopic,
     upDateTopic,
     deleteTopic,
+    setTopics,
 
     //EVENT
 

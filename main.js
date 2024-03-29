@@ -11,7 +11,7 @@ const {
 const {
   createDbEvents,
   insertEvent,
-  readAllEvents,
+
   getAllEvents,
   deleteThisEvent,
 } = require("./database/eventsDB");
@@ -22,6 +22,14 @@ const {
   readAllTasks,
   deleteThisTask,
 } = require("./database/taskDB");
+
+const {
+  createDbTopics,
+  insertTopic,
+  getAllTopics,
+  readAllTopics,
+  deleteThisTopic,
+} = require("./database/topicsDB");
 
 const express = require("express");
 const cors = require("cors");
@@ -44,6 +52,7 @@ const startLocalServer = (done) => {
 createDbUser();
 createDbEvents();
 createDbTasks();
+createDbTopics();
 /* getAllManagersName(); */
 
 //inizializzo mainWindow per esposrla in tutta la funzione
@@ -137,29 +146,53 @@ ipcMain.on("send:getEvents", async (event, args) => {
 ipcMain.on("send:eventToDelete", async (event, eventId) => {
   /* console.log("send:eventToDelete", eventId); */
   await deleteThisEvent(eventId);
-  await readAllEvents();
+  /* await readAllEvents(); */
 });
 
 //ICP PER GESTIRE I TASK
 
 //icp electron che inserisce o aggiorna  task
 ipcMain.on("send:task", async (event, args) => {
-  console.log("MAIN: task da inserire in db", args);
+  /* console.log("MAIN: task da inserire in db", args); */
   await insertTask(args);
-  await readAllTasks();
+  /* await readAllTasks(); */
 });
 
 //icp che restituisce tutti gli tasks. mi serve per caricare events alla primo avvio
 //viene letta dal reducers tasks
 ipcMain.on("send:getTasks", async (event, args) => {
-  console.log("argomenti di send:getTasks", args);
+  /*   console.log("argomenti di send:getTasks", args); */
   const stateTasks = await getAllTasks();
   await mainWindow.webContents.send("return:getTasks", stateTasks);
 });
 
 //icp che elimina un event dal db task
 ipcMain.on("send:taskToDelete", async (event, taskId) => {
-  console.log("send:taskToDelete", taskId);
+  /* console.log("send:taskToDelete", taskId); */
   await deleteThisTask(taskId);
-  await readAllTasks();
+  /* await readAllTasks(); */
+});
+
+//ICP PER GESTIRE I TOPICS
+
+//icp electron che inserisce o aggiorna un topic
+ipcMain.on("send:topic", async (event, args) => {
+  console.log("MAIN: topic da inserire in db", args);
+  await insertTopic(args);
+  await readAllTopics();
+});
+
+//icp che restituisce tutti i topics.
+//viene letta dal reducers topics
+ipcMain.on("send:getTopics", async (event, args) => {
+  console.log("argomenti di send:getTopics", args);
+  const stateTopics = await getAllTopics();
+  await mainWindow.webContents.send("return:getTopics", stateTopics);
+});
+
+//icp che elimina un event dal db topics
+ipcMain.on("send:topicToDelete", async (event, topicId) => {
+  console.log("send:topicToDelete", topicId);
+  await deleteThisTopic(topicId);
+  await readAllTopics();
 });

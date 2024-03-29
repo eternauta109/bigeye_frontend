@@ -35,7 +35,7 @@ async function getManagerByCredentials(userName, password) {
     throw error;
   } finally {
     // Chiudi il database solo dopo aver completato le iterazioni
-    console.log("chiudi il db:");
+
     await close();
   }
 }

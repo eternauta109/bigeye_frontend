@@ -14,13 +14,17 @@ import {
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
 
+import {
+  addNewTopic,
+  deleteTopicFromDb,
+  getTopics,
+} from "../../store/topicsReducer";
+
 import useEventsStore from "../../store/EventDataContext";
 
 import ManagerCheckbox from "./ManagerCheckBox";
 
-import { cinemaDB } from "../../database/cinemaDB";
-const managers = cinemaDB[11].managers;
-
+// qui creo la struttura delle selct
 const topicTypes = [
   { value: "none", label: "none" },
   { value: "cascading", label: "cascading" },
@@ -58,14 +62,16 @@ const officeTypes = [
 
 function EditToolbar(props) {
   const { setRowModesModel } = props;
-  const { topics, totalTopics, emptyTopic, updateTopic, addTopic } =
-    useEventsStore();
+  const { totalTopics, emptyTopic, addTopic } = useEventsStore();
 
-  const handleClick = () => {
+  const handleClick = async (e) => {
+    console.log("inserisco nuovo topic vuoto", totalTopics);
+    e.preventDefault();
     const id = totalTopics;
-    console.log("id con new topic: " + id);
+    console.log("id con new topic: ", id);
     const newTopic = { ...emptyTopic, id };
     addTopic(newTopic);
+
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "topicType" },
@@ -74,7 +80,11 @@ function EditToolbar(props) {
 
   return (
     <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+      <Button
+        color="primary"
+        startIcon={<AddIcon />}
+        onClick={(e) => handleClick(e)}
+      >
         Add Topic
       </Button>
     </GridToolbarContainer>
@@ -82,10 +92,10 @@ function EditToolbar(props) {
 }
 
 const Topics = () => {
-  const { topics, totalTopics, emptyTopic, upDateTopic, deleteTopic } =
+  const { topics, upDateTopic, deleteTopic, setTopics, user, totalTopics } =
     useEventsStore();
 
-  const [rowModesModel, setRowModesModel] = React.useState({});
+  const [rowModesModel, setRowModesModel] = useState({});
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -102,8 +112,9 @@ const Topics = () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id) => () => {
+  const handleDeleteClick = (id) => async () => {
     deleteTopic(id);
+    await deleteTopic(id);
     /* setRows(rows.filter((row) => row.id !== id)); */
   };
 
@@ -114,10 +125,11 @@ const Topics = () => {
     });
   };
 
-  const processRowUpdate = (newRow) => {
+  const processRowUpdate = async (newRow) => {
     console.log("processRowUpDate", newRow);
     const updatedRow = { ...newRow, isNew: false };
     upDateTopic(updatedRow, newRow.id);
+    await addNewTopic(updatedRow);
     return updatedRow;
   };
 
@@ -151,6 +163,7 @@ const Topics = () => {
       width: 90,
       editable: true,
     },
+
     {
       field: "topicType",
       headerName: "topic type",
@@ -186,6 +199,7 @@ const Topics = () => {
       type: "singleSelect",
       valueOptions: officeTypes,
     },
+
     {
       field: "typeDocument",
       headerName: "documento",
@@ -212,16 +226,17 @@ const Topics = () => {
       width: 110,
       editable: true,
     },
-    ...managers.map((manager, index) => ({
-      field: manager.name,
-      headerName: manager.name,
+
+    ...user.managersName.map((manager, index) => ({
+      field: manager,
+      headerName: manager,
       width: 60,
       renderCell: (params) => (
-        console.log(params.row.managers.includes(manager.name)),
+        console.log(params.row.managers.includes(manager)),
         (
           <ManagerCheckbox
             row={params.row}
-            manager={manager.name}
+            manager={manager}
             onCheckboxChange={(managerName) =>
               handleCheckboxChange(params.row.id, managerName)
             }
@@ -229,6 +244,7 @@ const Topics = () => {
         )
       ),
     })),
+    /*
     {
       field: "tmVeto",
       headerName: "Tm Veto",
@@ -296,14 +312,30 @@ const Topics = () => {
           />,
         ];
       },
-    },
+    }, */
+    ,
   ];
+
+  //funzione asincrona che prende i topics dal db con una funzione
+  // sotto topicsReducer attenzione ch in modalita dev
+  //topics si azzera a ogni ricarica della pagina
+  const getTopicsFromDb = async () => {
+    console.log("getTopicsFromDb triggerato");
+    await getTopics(topics, totalTopics).then((args) => {
+      /*  for (const element in args.topics) {
+        console.log("element: ", element);
+      } */
+
+      console.log("getTopicsFromDb result:", args);
+      setTopics(args);
+    });
+  };
 
   useMemo(() => {
     console.log("usememo di topics", topics, rowModesModel);
-
-    return () => {};
-  }, [topics]);
+    console.log("topics length: ", topics.length);
+    getTopicsFromDb();
+  }, [topics.length]);
 
   return (
     <Box

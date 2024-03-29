@@ -193,7 +193,7 @@ module.exports = {
   insertEvent,
   createDbEvents,
   getEvntFromID,
-  readAllEvents,
+
   getAllEvents,
   deleteThisEvent,
 };

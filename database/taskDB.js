@@ -25,7 +25,7 @@ function createDbTasks() {
     } else {
       console.log("db tasks esistente lo leggo");
       try {
-        await readAllTasks();
+        /* await readAllTasks(); */
       } catch (error) {
         console.log("try catch", error);
       }
@@ -56,7 +56,7 @@ function convertStringToDate(dateString) {
 async function getAllTasks() {
   await connect();
   console.log("leggo tutto il db tasks");
-  await readAllTasks();
+  /* await readAllTasks(); */
   const alltasks = [];
   const tottasks = await query("totalTasks");
   try {
