@@ -70,7 +70,7 @@ async function populateDatabase() {
   const managers = [
     {
       userName: "fabioc",
-      rule: "tm",
+      role: "tm",
       password: "109",
       isAuth: false,
       cinema: "guidonia",

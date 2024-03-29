@@ -26,7 +26,7 @@ export const loginUser = async (userName, password) => {
         notification: [],
       },
       managersName: [
-        "fabiocTest",
+        "fabioc",
         "robertodTest",
         "carlosTest",
         "marapTest",

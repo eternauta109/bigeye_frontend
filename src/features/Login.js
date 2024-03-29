@@ -26,7 +26,7 @@ function Copyright(props) {
       borderRadius="5px"
       align="center"
       {...props}
-      sx={{ bgcolor: "gray", opacity: 0.9, width: "300px", fontSize: "10px" }}
+      sx={{ bgcolor: "white", opacity: 0.9, width: "300px", fontSize: "10px" }}
     >
       {"Dev By  "}
       <Link color="inherit" href="#">

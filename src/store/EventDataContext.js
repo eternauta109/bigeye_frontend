@@ -102,9 +102,9 @@ export const EventStoreContext = ({ children }) => {
   //Azioni TASK ############################
 
   const deleteTask = (taskId) => {
-    deispatchEvent({
+    taskDispatch({
       type: "DELETE_TASK",
-      payload: eventId,
+      payload: taskId,
     });
   };
 

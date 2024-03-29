@@ -65,13 +65,14 @@ export const addNewTask = async (task, totalTasks) => {
 
 //funzione che va gestire la cancellazione di un task sia in modalità dev che dist
 export const deleteTaskFromDb = async (taskId) => {
+  console.log("sono in taskReducer e sto cancelladno", taskId);
   if (process.env.NODE_ENV === "development") {
     return taskId;
   } else {
     return new Promise((resolve, reject) => {
       const { ipcRenderer } = window.require("electron");
       try {
-        ipcRenderer.send("send:eventToDelete", taskId);
+        ipcRenderer.send("send:taskToDelete", taskId);
         resolve();
       } catch (error) {
         reject(error);

@@ -25,7 +25,7 @@ const NewTaskForm = ({ manager, onHandleClose }) => {
       manager: manager,
       createdBy: user.user.userName,
       start: new Date(),
-      label: "task",
+      label: user.user.userName,
       laneId: `lane-${manager}`,
       id: "task" + totalTasks,
     };

@@ -5,7 +5,11 @@ import useEventsStore from "../.././store/EventDataContext";
 import TaskModal from "./TaskModal";
 import CustomCard from "./CustomCard";
 
-import { getTasks, addNewTask } from "../../store/taskReducer";
+import {
+  getTasks,
+  addNewTask,
+  deleteTaskFromDb,
+} from "../../store/taskReducer";
 
 const dataInit = {
   lanes: [
@@ -23,7 +27,8 @@ const styleLane = {
 };
 
 const Kanban = () => {
-  const { tasks, upDateTask, user, setTasks, totalTasks } = useEventsStore();
+  const { tasks, upDateTask, user, setTasks, totalTasks, deleteTask } =
+    useEventsStore();
   const [openNewTask, setOpenNewTask] = useState(false);
   const [selectedManager, setSelectedManager] = useState();
 
@@ -65,13 +70,27 @@ const Kanban = () => {
     });
   };
 
+  //funzione che cancella una task solo se l'user è tm e la lane e quella
+  //completed. se queste condizioni sono verificate, procedo con la chiamata della funzione
+  // su taskReducer
+  const onHandleCardDelete = async (taskId, laneId) => {
+    console.log("cancello card :", taskId, laneId, user.user);
+    if (user.user.role === "tm" && laneId.endsWith("-completed")) {
+      console.log("cancello card :", taskId, laneId, user.user);
+      deleteTask(taskId);
+      await deleteTaskFromDb(taskId);
+    }
+  };
+
+  //
+
   useEffect(() => {
     getTasksFromDb();
 
     return () => {};
   }, []);
 
-  useEffect(() => {
+  useMemo(() => {
     console.log("task in use effect di kanban", tasks, totalTasks);
     const updatedDataKanban = user?.managersName.map((manager) => ({
       manager: manager,
@@ -92,7 +111,7 @@ const Kanban = () => {
           },
           {
             id: `lane-${manager}-in-progress`,
-            title: "in progress",
+            title: "in svolgimento",
             label: "",
             style: {
               ...styleLane,
@@ -107,7 +126,7 @@ const Kanban = () => {
           },
           {
             id: `lane-${manager}-completed`,
-            title: "Completed",
+            title: "Completi",
             label: "",
 
             style: {
@@ -122,7 +141,7 @@ const Kanban = () => {
           },
           {
             id: `lane-${manager}-blocked`,
-            title: "Blocked",
+            title: "in stallo",
             label: "",
             style: {
               ...styleLane,
@@ -175,6 +194,7 @@ const Kanban = () => {
             style={{ height: "500px", marginTop: "20px" }}
             data={data} // Passa direttamente l'oggetto data
             handleDragEnd={onhandleDragEnd}
+            onCardDelete={onHandleCardDelete}
           />
         </Box>
       ))}

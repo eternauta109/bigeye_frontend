@@ -158,8 +158,8 @@ ipcMain.on("send:getTasks", async (event, args) => {
 });
 
 //icp che elimina un event dal db task
-ipcMain.on("send:tasksToDelete", async (event, tasksId) => {
-  console.log("send:tasksToDelete", tasksId);
-  await deleteThisTask(tasksId);
+ipcMain.on("send:taskToDelete", async (event, taskId) => {
+  console.log("send:taskToDelete", taskId);
+  await deleteThisTask(taskId);
   await readAllTasks();
 });
