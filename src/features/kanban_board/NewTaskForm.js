@@ -12,14 +12,14 @@ import {
 import { addNewTask } from "../../store/taskReducer";
 
 const NewTaskForm = ({ manager, onHandleClose }) => {
-  const { addTask, totalTask, emptyTask, user } = useEventsStore();
+  const { addTask, totalTasks, emptyTask, user } = useEventsStore();
   const [newTask, setNewTask] = useState({ ...emptyTask });
   console.log(user);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Aggiungi qui la logica per gestire il submit del form
-    console.log("Form submitted!", newTask, totalTask);
+    console.log("Form task submitted!", newTask, totalTasks);
     const sendNewTaskInStore = {
       ...newTask,
       manager: manager,
@@ -27,13 +27,14 @@ const NewTaskForm = ({ manager, onHandleClose }) => {
       start: new Date(),
       label: "task",
       laneId: `lane-${manager}`,
-      id: "task" + totalTask,
+      id: "task" + totalTasks,
     };
+    console.log("task to save!", sendNewTaskInStore, totalTasks);
     addTask(sendNewTaskInStore);
     onHandleClose();
-    await addNewTask(sendNewTaskInStore, totalTask);
+    await addNewTask(sendNewTaskInStore, totalTasks);
   };
-  console.log("Form submitted!", newTask, manager);
+  console.log("Form submitted!", newTask, manager, totalTasks);
 
   /*  useMemo(() => {
     console.log("new task in use memo", newTask);

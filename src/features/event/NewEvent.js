@@ -43,7 +43,7 @@ function NewEvent({ handleClose, upDate }) {
     addEvent,
     eventToUpdate,
     totalEvent,
-    totalTask,
+    totalTasks,
     upDateEvent,
     emptyEvent,
     initEvent,
@@ -68,7 +68,7 @@ function NewEvent({ handleClose, upDate }) {
     } else {
       if (event.manager !== "") {
         const newTask = {
-          id: "task" + totalTask,
+          id: "task" + totalTasks,
           createdBy: user.user.userName,
           title: event.title,
           manager: event.manager,
@@ -78,7 +78,7 @@ function NewEvent({ handleClose, upDate }) {
         };
 
         addTask(newTask);
-        await addNewTask(newTask, totalTask);
+        await addNewTask(newTask, totalTasks);
       }
       const prepareEvent = {
         ...event,

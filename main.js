@@ -94,16 +94,16 @@ app.on("window-all-closed", function () {
 
 //icp per cercare sul db managers chi si sta loggando
 ipcMain.on("login", async (event, args) => {
-  console.log(
+  /* console.log(
     "login ha inviato username e password a main",
     args.userName,
     args.password
-  );
+  ); */
   const returnManager = await getManagerByCredentials(
     args.userName,
     args.password
   );
-  console.log("manager ipcMain del main", returnManager);
+  /* console.log("manager ipcMain del main", returnManager); */
   await mainWindow.webContents.send("returnManager", returnManager);
   // Gestisci le credenziali di accesso qui
   // Esegui l'autenticazione, interagisci con il database, ecc.
@@ -112,7 +112,7 @@ ipcMain.on("login", async (event, args) => {
 //icp electron che restituisce un array con tutti i nomi dei managers
 ipcMain.on("send:managersName", async (event, args) => {
   const managers = await getAllManagersName();
-  console.log("managers in main dopo chiamata al db", managers);
+  /*  console.log("managers in main dopo chiamata al db", managers); */
   await mainWindow.webContents.send("managersName", managers);
 });
 
@@ -120,22 +120,22 @@ ipcMain.on("send:managersName", async (event, args) => {
 
 //icp electron che inserisce un nuovo evento
 ipcMain.on("send:event", async (event, args) => {
-  console.log("MAIN: evento da inserire in db", args);
+  /* console.log("MAIN: evento da inserire in db", args); */
   await insertEvent(args);
-  await readAllEvents();
+  /* await readAllEvents(); */
 });
 
 //icp che restituisce tutti gli events. mi serve per caricare events alla primo avvio
 //viene letta dal reducers eventi che va a modificare events nel calendar
 ipcMain.on("send:getEvents", async (event, args) => {
-  console.log("argomenti di send:getEvents", args);
+  /* console.log("argomenti di send:getEvents", args); */
   const stateEvents = await getAllEvents();
   await mainWindow.webContents.send("return:getEvents", stateEvents);
 });
 
 //icp che elimina un event dal db event
 ipcMain.on("send:eventToDelete", async (event, eventId) => {
-  console.log("send:eventToDelete", eventId);
+  /* console.log("send:eventToDelete", eventId); */
   await deleteThisEvent(eventId);
   await readAllEvents();
 });

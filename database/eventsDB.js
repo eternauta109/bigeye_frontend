@@ -22,14 +22,14 @@ function createDbEvents() {
       } catch (error) {
         console.log(error);
       }
-      await readAllEvents();
+      /* await readAllEvents(); */
     } else {
       console.log("db events esistente lo leggo");
-      try {
+      /* try {
         await readAllEvents();
       } catch (error) {
         console.log("try catch", error);
-      }
+      } */
     }
   });
 }

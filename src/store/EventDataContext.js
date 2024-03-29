@@ -169,7 +169,7 @@ export const EventStoreContext = ({ children }) => {
     //TASK
 
     tasks: taskState.tasks,
-    totalTask: taskState.totalTask,
+    totalTasks: taskState.totalTasks,
     emptyTask: initialTask.newTask,
     initialTask,
     addTask,

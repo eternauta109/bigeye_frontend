@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Container, Typography, Box, Button, Card } from "@mui/material";
 import Board from "react-trello";
 import useEventsStore from "../.././store/EventDataContext";
@@ -23,14 +23,14 @@ const styleLane = {
 };
 
 const Kanban = () => {
-  const { tasks, upDateTask, user, setTasks, totalTask } = useEventsStore();
+  const { tasks, upDateTask, user, setTasks, totalTasks } = useEventsStore();
   const [openNewTask, setOpenNewTask] = useState(false);
   const [selectedManager, setSelectedManager] = useState();
 
   const handleOpenNewTask = () => setOpenNewTask(true);
   const handleCloseNewTask = () => setOpenNewTask(false);
 
-  const [managerData, setManagerData] = useState([]);
+  const [dataKanban, setDataKanban] = useState([]);
 
   const onhandleDragEnd = async (cardId, sourceLaneId, targetLaneId) => {
     const sourceManager = sourceLaneId.split("-")[1];
@@ -59,17 +59,21 @@ const Kanban = () => {
   //task si azzera a ogni ricarica della pagina
   const getTasksFromDb = async () => {
     console.log("getTasksFromDb triggerato");
-    await getTasks().then((args) => setTasks(args));
+    await getTasks().then((args) => {
+      console.log("getTasksFromDb result:", args);
+      setTasks(args);
+    });
   };
 
   useEffect(() => {
     getTasksFromDb();
 
     return () => {};
-  }, [tasks.lenght]);
+  }, []);
 
   useEffect(() => {
-    const updatedManagerData = user?.managersName.map((manager) => ({
+    console.log("task in use effect di kanban", tasks, totalTasks);
+    const updatedDataKanban = user?.managersName.map((manager) => ({
       manager: manager,
       data: {
         lanes: [
@@ -134,13 +138,13 @@ const Kanban = () => {
         ],
       },
     }));
-    console.log("mappa lane da kanban", updatedManagerData);
-    setManagerData(updatedManagerData);
-  }, [tasks.lenght]);
+    console.log("mappa lane da kanban", updatedDataKanban);
+    setDataKanban(updatedDataKanban);
+  }, [tasks.length]);
 
   return (
     <Container>
-      {managerData.map(({ manager, data }) => (
+      {dataKanban.map(({ manager, data }) => (
         <Box key={manager} sx={{ mt: "30px" }}>
           <Box
             sx={{

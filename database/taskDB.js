@@ -37,7 +37,7 @@ function createDbTasks() {
 async function populateDatabase() {
   await connect();
   // Inserisci i manager nel database (assumendo che dbMan sia l'istanza del database creato)
-  await db.put("totalTask", 0);
+  await db.put("totalTasks", 0);
   await close();
   console.log("Database task inizializzato con successo!");
 }
@@ -54,13 +54,16 @@ function convertStringToDate(dateString) {
 
 //funzione che restituisce tutto il db
 async function getAllTasks() {
+  await connect();
+  console.log("leggo tutto il db tasks");
+  await readAllTasks();
   const alltasks = [];
-  const tottasks = await query("totalTask");
+  const tottasks = await query("totalTasks");
   try {
-    await connect();
     for await (const [key, value] of db.iterator()) {
       if (key !== "totalTasks") {
         const parsedtask = JSON.parse(value);
+        console.log("parsedtask", parsedtask, value);
         parsedtask.start = convertStringToDate(parsedtask.start);
         parsedtask.end = convertStringToDate(parsedtask.end);
         alltasks.push(parsedtask);
@@ -71,7 +74,8 @@ async function getAllTasks() {
   } finally {
     await close();
   }
-  return { tasks: alltasks, totalTask: tottasks };
+  console.log("cosa sto manadando da getAllTasks", alltasks, tottasks);
+  return { tasks: alltasks, totalTasks: tottasks };
 }
 
 // funzione che legge tutto il database
@@ -123,8 +127,8 @@ async function insertTask(value) {
   console.log("task in insertOrUpdatetask in db:", value);
   const serializetask = JSON.stringify({
     ...value.task,
-    start: convertDateToString(value.event.start),
-    end: convertDateToString(value.event.end),
+    start: convertDateToString(value.task.start),
+    end: convertDateToString(value.task.end),
   });
 
   try {
@@ -134,7 +138,7 @@ async function insertTask(value) {
       await db.put(value.task.id, serializetask); // Aggiornamento dell'tasko nel database
     } else {
       // Se l'tasko non esiste, incremento totaltasks
-      await db.put("totalTask", value.totalTask + 1); // Aggiornamento di totaltasks
+      await db.put("totalTasks", value.totalTasks + 1); // Aggiornamento di totaltasks
       await db.put(value.task.id, serializetask); // Inserimento dell'tasko nel database
     }
     console.log("task inserted or updated successfully.");

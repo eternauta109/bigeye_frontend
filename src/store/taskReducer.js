@@ -1,5 +1,5 @@
 export const initialTask = {
-  totalTask: 0,
+  totalTasks: 0,
   tasks: [],
   newTask: {
     id: null,
@@ -84,10 +84,11 @@ const taskReducer = (state, action) => {
   const { type, payload } = action;
   switch (type) {
     case "ADD_TASK":
+      console.log("ADD_TASK", payload);
       return {
         ...state,
         tasks: payload.tasks,
-        totalTask: state.totalTask + 1,
+        totalTasks: state.totalTasks + 1,
       };
     case "UPDATE_TASK":
       return { ...state, tasks: payload.tasks };
@@ -102,8 +103,8 @@ const taskReducer = (state, action) => {
       console.log("payload.tasks SET_TASKS in reducer says:", payload);
       return {
         ...state,
-        totalTask: payload.totalTask,
-        events: [...payload.tasks],
+        totalTasks: payload.totalTasks,
+        tasks: [...payload.tasks],
       };
 
     default:

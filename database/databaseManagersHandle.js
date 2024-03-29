@@ -56,7 +56,7 @@ function createDbUser() {
       console.log("db managers esistente lo leggo");
       try {
         await connect();
-        await readAll();
+        /* await readAll(); */
       } catch (error) {
         console.log("try catch", error);
       }
