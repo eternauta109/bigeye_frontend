@@ -15,9 +15,7 @@ function createDbTopics() {
   fs.access(dbPath, fs.constants.F_OK, async (err) => {
     if (err) {
       console.log("db topics non esistente, lo creo");
-
       try {
-        await connect();
         await populateDatabase();
       } catch (error) {
         console.log(error);
@@ -35,11 +33,17 @@ function createDbTopics() {
 
 // Funzione per popolare il database
 async function populateDatabase() {
+  console.log("Populating topics database...");
   await connect();
-  // Inserisci i manager nel database (assumendo che dbMan sia l'istanza del database creato)
-  await db.put("totalTopics", 0);
-  await close();
-  console.log("Database topic inizializzato con successo!");
+  try {
+    await db.put("totalTopics", 0);
+    console.log("Database topics popolato con successo!");
+  } catch (error) {
+    console.error("Error populating topics database:", error);
+    throw error;
+  } finally {
+    await close();
+  }
 }
 
 // Funzione per convertire le date in formato stringa ISO
@@ -54,28 +58,28 @@ function convertStringToDate(dateString) {
 
 //funzione che restituisce tutto il db
 async function getAllTopics() {
+  console.log("Reading all topics from database...");
   await connect();
-  console.log("leggo tutto il db topics");
-  await readAllTopics();
   const alltopics = [];
-  const tottopics = await query("totalTopics");
+
   try {
+    const tottopics = await query("totalTopics");
+    console.log("dopo query");
     for await (const [key, value] of db.iterator()) {
       if (key !== "totalTopics") {
         const parsedtopic = JSON.parse(value);
-        console.log("parsedtopic", parsedtopic, value);
         parsedtopic.dateStart = convertStringToDate(parsedtopic.dateStart);
-
+        /* console.log("parsedtopic", parsedtopic, value); */
         alltopics.push(parsedtopic);
       }
     }
+    console.log("cosa sto manadando da getAllTopics", alltopics, tottopics);
+    return { topics: alltopics, totalTopics: tottopics };
   } catch (error) {
     console.log("errore durante il recupero dei dai dal db topics", error);
   } finally {
     await close();
   }
-  console.log("cosa sto manadando da getAllTopics", alltopics, tottopics);
-  return { topics: alltopics, totalTopics: tottopics };
 }
 
 // funzione che legge tutto il database
@@ -115,7 +119,6 @@ async function topicExists(key) {
   } catch (error) {
     // Se si verifica un errore, l'topico non esiste
     return false;
-  } finally {
   }
 }
 
@@ -129,13 +132,14 @@ async function insertTopic(value) {
     ...value.topic,
     dateStart: convertDateToString(value.topic.dateStart),
   });
-
   try {
     await connect(); // Connessione al database
     if (await topicExists(value.topic.id)) {
+      console.log("topic already exists", value.topic);
       // Se l'topico esiste già, non aggiorno totaltopics
       await db.put(value.topic.id, serializetopic); // Aggiornamento dell'topico nel database
     } else {
+      console.log("topic not exists");
       // Se l'topico non esiste, incremento totaltopics
       await db.put("totalTopics", value.totalTopics + 1); // Aggiornamento di totaltopics
       await db.put(value.topic.id, serializetopic); // Inserimento dell'topico nel database
@@ -144,8 +148,6 @@ async function insertTopic(value) {
   } catch (error) {
     console.error("Error inserting or updating topic:", error);
     throw error; // Gestione dell'errore
-  } finally {
-    await close(); // Chiusura della connessione al database
   }
 }
 

@@ -74,11 +74,13 @@ function EditToolbar(props) {
     if (process.env.NODE_ENV === "development") {
       addTopic(newTopic);
     } else {
-      await addNewTopic(newTopic, totalTopics);
-      await getTopics({ topics: newTopic, totalTopics }).then((args) => {
-        console.log("getTopicsFromDb result:", args);
-        setTopics(args);
-      });
+      const newTopicsAfterAddTopic = await addNewTopic(newTopic, totalTopics);
+
+      console.log("added topic in DB: ", newTopicsAfterAddTopic);
+      setTopics(newTopicsAfterAddTopic);
+      /* const getTopicsFromDB = await getTopics();
+      console.log("getTopicsFromDb result:", getTopicsFromDB);
+      setTopics(getTopicsFromDB); */
     }
 
     setRowModesModel((oldModel) => ({
@@ -126,11 +128,8 @@ const Topics = () => {
       deleteTopic(id);
     } else {
       console.log("cancello un topic", id);
-      await deleteTopicFromDb({ topicId: id });
-      await getTopics().then((args) => {
-        console.log("getTopicsFromDb result:", args);
-        setTopics(args);
-      });
+      const topicsAfterDelete = await deleteTopicFromDb({ topicId: id });
+      setTopics(topicsAfterDelete);
     }
   };
 

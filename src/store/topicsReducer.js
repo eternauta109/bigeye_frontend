@@ -64,8 +64,10 @@ export const addNewTopic = async (topic, totalTopics) => {
     return new Promise((resolve, reject) => {
       try {
         ipcRenderer.send("send:topic", { topic, totalTopics });
-
-        resolve();
+        ipcRenderer.on("return:addNewTopics", (e, args) => {
+          console.log("return:addNewTopics da topic reducers", args);
+          resolve(args);
+        });
       } catch (error) {
         reject(error);
       }
@@ -83,7 +85,10 @@ export const deleteTopicFromDb = async ({ topicId }) => {
       const { ipcRenderer } = window.require("electron");
       try {
         ipcRenderer.send("send:topicToDelete", topicId);
-        resolve();
+        ipcRenderer.on("return:topicToDelete", (e, args) => {
+          console.log("return:topicToDelete da topic reducers", args);
+          resolve(args);
+        });
       } catch (error) {
         reject(error);
       }

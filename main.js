@@ -179,7 +179,9 @@ ipcMain.on("send:taskToDelete", async (event, taskId) => {
 ipcMain.on("send:topic", async (event, args) => {
   console.log("MAIN: topic da inserire in db", args);
   await insertTopic(args);
-  await readAllTopics();
+  const stateTopics = await getAllTopics();
+  await mainWindow.webContents.send("return:addNewTopics", stateTopics);
+  /* await readAllTopics(); */
 });
 
 //icp che restituisce tutti i topics.
@@ -187,12 +189,16 @@ ipcMain.on("send:topic", async (event, args) => {
 ipcMain.on("send:getTopics", async (event, args) => {
   console.log("argomenti di send:getTopics", args);
   const stateTopics = await getAllTopics();
+
   await mainWindow.webContents.send("return:getTopics", stateTopics);
+  /* await readAllTopics(); */
 });
 
 //icp che elimina un event dal db topics
 ipcMain.on("send:topicToDelete", async (event, topicId) => {
   console.log("send:topicToDelete", topicId);
   await deleteThisTopic(topicId);
-  await readAllTopics();
+  const stateTopics = await getAllTopics();
+  await mainWindow.webContents.send("return:topicToDelete", stateTopics);
+  /* await readAllTopics(); */
 });
