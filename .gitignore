@@ -3,6 +3,7 @@
 #launch.json folder
 
 node_modules
+/dist
 /build
 out/
 .vscode/

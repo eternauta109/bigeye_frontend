@@ -7,7 +7,7 @@ export const initialTask = {
     colorType: "#F39C12",
     description: "",
     start: new Date(),
-    end: new Date(),
+    /* end: new Date(), */
     note: "",
     title: "",
     manager: "",

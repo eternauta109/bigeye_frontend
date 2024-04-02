@@ -1,9 +1,11 @@
 {
   "name": "bigeye",
   "version": "1.0.0",
-  "description": "",
+  "author": "fabio conti",
+  "description": "a big eye app",
   "keywords": [],
-  "main": "main.js",
+  "main": "public/main.js",
+  "homepage": "./",
   "dependencies": {
     "@emotion/react": "11.10.6",
     "@emotion/styled": "11.10.6",
@@ -30,6 +32,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/runtime": "7.13.8",
     "electron": "^29.1.5",
+    "electron-builder": "^24.13.3",
     "typescript": "4.1.3"
   },
   "scripts": {
@@ -38,12 +41,38 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "electron": "electron .",
-    "newelectron": "react-scripts build --legacy-peer-deps && electron ."
+    "newelectron": "react-scripts build --legacy-peer-deps && electron .",
+    "builder": "electron-builder"
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "build": {
+    "extends": null,
+    "appId": "com.electron.bigeye",
+    "productName": "BigEye",
+    "files": [
+      "dist/**/*",
+      "build/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "public/**/*",
+      "database/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": "NSIS"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
 }

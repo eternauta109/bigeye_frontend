@@ -4,7 +4,10 @@ const fs = require("fs");
 
 const dbName = "managers";
 
-const dbPath = path.join(__dirname, `./${dbName}`);
+const { app } = require("electron");
+const userPath = app.getPath("appData");
+const dbPath = path.join(userPath, `./bigeyeDB/${dbName}`);
+
 const db = new Level(dbPath, { valueEncoding: "json" });
 
 //funzione per cercare e restituire il manager con crede
@@ -18,7 +21,7 @@ async function getManagerByCredentials(userName, password) {
   try {
     for await (const [key, value] of db.iterator()) {
       const manager = value;
-      console.log("manager", manager);
+      console.log("manager iterati", manager);
       if (manager.userName === userName && manager.password === password) {
         console.log("Credenziali corrette", key, manager);
         managerFound = manager;
@@ -53,10 +56,10 @@ function createDbUser() {
         console.log(error);
       }
     } else {
-      console.log("db managers esistente lo leggo");
+      console.log("db managers esistente");
       try {
-        await connect();
-        /* await readAll(); */
+        /* await connect();
+        await readAll(); */
       } catch (error) {
         console.log("try catch", error);
       }

@@ -4,11 +4,11 @@ const fs = require("fs");
 
 const dbName = "topics";
 
-const dbPath = path.join(__dirname, `./${dbName}`);
-const db = new Level(dbPath, { valueEncoding: "json" });
+const { app } = require("electron");
+const userPath = app.getPath("appData");
+const dbPath = path.join(userPath, `./bigeyeDB/${dbName}`);
 
-//funzione per cercare e restituire un topic per id
-async function getEvntFromID() {}
+const db = new Level(dbPath, { valueEncoding: "json" });
 
 // Funzione per creare il database se non esiste
 function createDbTopics() {
@@ -196,7 +196,7 @@ function close() {
 module.exports = {
   insertTopic,
   createDbTopics,
-  getEvntFromID,
+
   readAllTopics,
   getAllTopics,
   deleteThisTopic,

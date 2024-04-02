@@ -7,21 +7,21 @@ const {
   createDbUser,
   getManagerByCredentials,
   getAllManagersName,
-} = require("./database/databaseManagersHandle");
+} = require("../database/databaseManagersHandle");
 const {
   createDbEvents,
   insertEvent,
 
   getAllEvents,
   deleteThisEvent,
-} = require("./database/eventsDB");
+} = require("../database/eventsDB");
 const {
   createDbTasks,
   insertTask,
   getAllTasks,
   readAllTasks,
   deleteThisTask,
-} = require("./database/taskDB");
+} = require("../database/taskDB");
 
 const {
   createDbTopics,
@@ -29,7 +29,7 @@ const {
   getAllTopics,
   readAllTopics,
   deleteThisTopic,
-} = require("./database/topicsDB");
+} = require("../database/topicsDB");
 
 const express = require("express");
 const cors = require("cors");
@@ -67,6 +67,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      worldSafeExecution: true,
       /* preload: path.join(__dirname, "preload.js"), */
     },
   });
@@ -74,7 +75,14 @@ function createWindow() {
   // and load the index.html of the app.
   //   mainWindow.loadFile('index.html')
   mainWindow.loadURL("http://localhost:" + PORT);
-
+  /*  mainWindow.loadURL(
+    true
+      ? "http://localhost:3000"
+      : `file://${path.resolve(
+          path.join(__dirname, "..", "build", "index.html")
+        )}`
+  ); */
+  mainWindow.setMenu(null);
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 }
@@ -91,6 +99,7 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
+/* app.whenReady().then(createWindow); */
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

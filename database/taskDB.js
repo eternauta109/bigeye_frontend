@@ -4,11 +4,11 @@ const fs = require("fs");
 
 const dbName = "tasks";
 
-const dbPath = path.join(__dirname, `./${dbName}`);
-const db = new Level(dbPath, { valueEncoding: "json" });
+const { app } = require("electron");
+const userPath = app.getPath("appData");
+const dbPath = path.join(userPath, `./bigeyeDB/${dbName}`);
 
-//funzione per cercare e restituire un task per id
-async function getEvntFromID() {}
+const db = new Level(dbPath, { valueEncoding: "json" });
 
 // Funzione per creare il database se non esiste
 function createDbTasks() {
@@ -65,7 +65,7 @@ async function getAllTasks() {
         const parsedtask = JSON.parse(value);
         console.log("parsedtask", parsedtask, value);
         parsedtask.start = convertStringToDate(parsedtask.start);
-        parsedtask.end = convertStringToDate(parsedtask.end);
+        /* parsedtask.end = convertStringToDate(parsedtask.end); */
         alltasks.push(parsedtask);
       }
     }
@@ -128,7 +128,7 @@ async function insertTask(value) {
   const serializetask = JSON.stringify({
     ...value.task,
     start: convertDateToString(value.task.start),
-    end: convertDateToString(value.task.end),
+    /* end: convertDateToString(value.task.end), */
   });
 
   try {
@@ -195,7 +195,7 @@ function close() {
 module.exports = {
   insertTask,
   createDbTasks,
-  getEvntFromID,
+
   readAllTasks,
   getAllTasks,
   deleteThisTask,

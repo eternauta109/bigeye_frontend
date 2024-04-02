@@ -71,9 +71,10 @@ function NewEvent({ handleClose, upDate }) {
           id: "task" + totalTasks,
           createdBy: user.user.userName,
           title: event.title,
+          start: new Date(),
           manager: event.manager,
           description: event.description,
-          label: event.eventType,
+          label: user.user.userName,
           laneId: `lane-${event.manager}`,
         };
 
