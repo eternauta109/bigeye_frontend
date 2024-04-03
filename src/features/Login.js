@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import icoEye from ".././assets/eye-icon-1483-Windows.ico";
+import icoEye from ".././assets/eye.ico";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
