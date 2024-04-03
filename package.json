@@ -41,7 +41,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "electron": "electron .",
-    "newelectron": "react-scripts build --legacy-peer-deps && electron .",
+    "newelectron": "react-scripts build --legacy-peer-deps && electron ."
   },
   "browserslist": [
     ">0.2%",
