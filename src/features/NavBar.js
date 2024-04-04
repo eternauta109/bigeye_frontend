@@ -1,20 +1,27 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import { ListItemText } from "@mui/material";
+import React, { useEffect, useState, useMemo } from "react";
+
+import { Notify } from "./notification/Notify";
+
+import {
+  ListItemText,
+  Badge,
+  IconButton,
+  Typography,
+  AppBar,
+  Box,
+  Toolbar,
+  Menu,
+} from "@mui/material";
+import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import useEventsStore from "../store/EventDataContext";
 import eyeIcon from "../assets/bigeye2.ico";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+
+import useEventsStore from "../store/EventDataContext";
 import { Link, useNavigate } from "react-router-dom";
 
 const pages = ["ShareCalendar", "KanBanBoard", "topics"];
@@ -22,13 +29,33 @@ const pages = ["ShareCalendar", "KanBanBoard", "topics"];
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const { user } = useEventsStore();
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+  /* const { user } = useEventsStore(); */
+  const user = {
+    user: {
+      userName: "fabioc",
+      password: "109",
+      isAuth: true,
+      role: "tm",
+      cinema: "guidonia",
+      notification: [
+        {
+          notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+          see: false,
+          id: "obj.id",
+        },
+        {
+          notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+          see: false,
+          id: "obj.id",
+        },
+      ],
+    },
+  };
 
-  const settings = [
-    `name: ${user.user.userName}`,
-    `rule: ${user.user.role}`,
-    `notify ${user.user.notification.length}`,
-  ];
+  const settings = [`name: ${user.user.userName}`, `rule: ${user.user.role}`];
 
   const navigate = useNavigate();
 
@@ -161,6 +188,14 @@ function NavBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
+            <IconButton onClick={handleOpenModal} sx={{ mr: 1 }}>
+              <Badge
+                badgeContent={user.user.notification.length}
+                color="secondary"
+              >
+                <MailIcon />
+              </Badge>
+            </IconButton>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" />
@@ -191,6 +226,11 @@ function NavBar() {
           </Box>
         </Toolbar>
       </Container>
+      <Notify
+        onHandleClose={handleCloseModal}
+        open={openModal}
+        notify={user.user.notification}
+      />
     </AppBar>
   );
 }

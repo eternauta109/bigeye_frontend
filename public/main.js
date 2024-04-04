@@ -7,11 +7,11 @@ const {
   createDbUser,
   getManagerByCredentials,
   getAllManagersName,
+  addNotifyManagers,
 } = require("../database/databaseManagersHandle");
 const {
   createDbEvents,
   insertEvent,
-
   getAllEvents,
   deleteThisEvent,
 } = require("../database/eventsDB");
@@ -19,7 +19,6 @@ const {
   createDbTasks,
   insertTask,
   getAllTasks,
-  readAllTasks,
   deleteThisTask,
 } = require("../database/taskDB");
 
@@ -27,9 +26,9 @@ const {
   createDbTopics,
   insertTopic,
   getAllTopics,
-  readAllTopics,
   deleteThisTopic,
 } = require("../database/topicsDB");
+const { add } = require("date-fns");
 
 /* const express = require("express");
 const cors = require("cors");
@@ -136,6 +135,7 @@ ipcMain.on("send:managersName", async (event, args) => {
 //icp electron che inserisce un nuovo evento
 ipcMain.on("send:event", async (event, args) => {
   /* console.log("MAIN: evento da inserire in db", args); */
+  await addNotifyManagers({ typeNotify: "events", obj: args.event });
   await insertEvent(args);
   /* await readAllEvents(); */
 });

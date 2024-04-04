@@ -67,6 +67,36 @@ function createDbUser() {
   });
 }
 
+//funzione che aggiunge una notifica nel db managers
+async function addNotifyManagers({ typeNotify, obj }) {
+  console.log("NOTIFY", typeNotify, obj);
+
+  const newNotify = {
+    notify: `${obj.createdBy} ha creato un nuovo ${obj.eventType} con titolo ${obj.title} `,
+    see: false,
+    id: obj.id,
+  };
+  console.log("oggetto new notify", newNotify);
+  try {
+    await connect();
+    for await (const [key, value] of db.iterator()) {
+      if (obj.createdBy !== value.userName) {
+        console.log("inserisco nuova notifica a ", value.userName);
+
+        // Aggiungi la nuova notifica per il manager corrente
+        value.notification.push(newNotify);
+
+        // Aggiorna il manager nel database
+        await db.put(key, value);
+      }
+    }
+  } catch (error) {
+    console.log("errore nell'inserimento nuova notifica", error);
+  } finally {
+    await close();
+  }
+}
+
 // Funzione per popolare il database
 async function populateDatabase() {
   await connect();
@@ -168,7 +198,7 @@ function connect() {
   });
 }
 
-async function insert(key, value) {
+async function insertNewManager(key, value) {
   await connect();
   return new Promise((resolve, reject) => {
     db.put(key, value, (err) => {
@@ -212,4 +242,6 @@ module.exports = {
   populateDatabase,
   getManagerByCredentials,
   getAllManagersName,
+  addNotifyManagers,
+  insertNewManager,
 };
