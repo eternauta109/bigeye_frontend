@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import icoEye from ".././assets/eye.ico";
+import icoEye from "../assets/bigeye2.ico";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -79,7 +79,7 @@ export default function Login() {
         >
           Big
         </Typography>
-        <img src={icoEye} alt="icoEye" />
+
         <Typography
           component="h1"
           variant="h3"
@@ -145,7 +145,15 @@ export default function Login() {
             </Button>
           </Box>
         </Box>
+        <Box borderRadius={100} width={254} height={254} marginX="auto">
+          <img
+            src={icoEye}
+            alt="icoEye"
+            style={{ width: "100%", height: "100%" }}
+          />
+        </Box>
       </Container>
+
       <Box sx={{ mt: "auto", display: "flex", justifyContent: "center" }}>
         <Copyright />
       </Box>

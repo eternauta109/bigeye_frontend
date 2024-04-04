@@ -5,9 +5,9 @@ const fs = require("fs");
 const dbName = "managers";
 
 const { app } = require("electron");
-const userPath = app.getPath("appData");
-const dbPath = path.join(userPath, `./bigeyeDB/${dbName}`);
-
+const userPath = app.getAppPath();
+const dbPath = path.join(userPath, `./db/${dbName}`);
+console.log("dbPath", dbPath);
 const db = new Level(dbPath, { valueEncoding: "json" });
 
 //funzione per cercare e restituire il manager con crede

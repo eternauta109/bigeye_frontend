@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import useEventsStore from "../store/EventDataContext";
+import eyeIcon from "../assets/bigeye2.ico";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -65,9 +66,14 @@ function NavBar() {
     <AppBar position="static" sx={{ mb: "20px", bgcolor: "#689F38" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <RemoveRedEyeIcon
-            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-          />
+          <Box width={50} height={50} paddingRight={2}>
+            <img
+              src={eyeIcon}
+              alt="icoEye"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </Box>
+
           <Typography
             variant="h6"
             noWrap

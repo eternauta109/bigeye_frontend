@@ -31,12 +31,12 @@ const {
   deleteThisTopic,
 } = require("../database/topicsDB");
 
-const express = require("express");
+/* const express = require("express");
 const cors = require("cors");
-const localServerApp = express();
+const localServerApp = express(); */
 
 //non so bene perche faccio questa cosa
-const PORT = 8088;
+/* const PORT = 8088;
 const startLocalServer = (done) => {
   localServerApp.use(express.json({ limit: "100mb" }));
   localServerApp.use(cors());
@@ -45,7 +45,11 @@ const startLocalServer = (done) => {
     console.log("Server Started on PORT ", PORT);
     done();
   });
-};
+}; */
+
+const mode = process.env.NODE_ENV === "development" ? true : false;
+
+console.log("Starting mode", mode);
 
 // creo i db speriamo solo se serve
 
@@ -63,6 +67,7 @@ function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({
     width: width,
+    icon: path.join(__dirname, "bigeye2.ico"),
     height: height,
     webPreferences: {
       nodeIntegration: true,
@@ -72,16 +77,13 @@ function createWindow() {
     },
   });
 
+  const appPath = app.getAppPath();
   // and load the index.html of the app.
-  //   mainWindow.loadFile('index.html')
-  mainWindow.loadURL("http://localhost:" + PORT);
-  /*  mainWindow.loadURL(
-    true
+  mainWindow.loadURL(
+    mode
       ? "http://localhost:3000"
-      : `file://${path.resolve(
-          path.join(__dirname, "..", "build", "index.html")
-        )}`
-  ); */
+      : `file://${path.join(appPath, "build", "index.html")}`
+  );
   mainWindow.setMenu(null);
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -91,7 +93,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  startLocalServer(createWindow);
+  createWindow();
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
@@ -112,11 +114,6 @@ app.on("window-all-closed", function () {
 
 //icp per cercare sul db managers chi si sta loggando
 ipcMain.on("login", async (event, args) => {
-  /* console.log(
-    "login ha inviato username e password a main",
-    args.userName,
-    args.password
-  ); */
   const returnManager = await getManagerByCredentials(
     args.userName,
     args.password

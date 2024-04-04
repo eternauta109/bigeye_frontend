@@ -5,8 +5,8 @@ const fs = require("fs");
 const dbName = "topics";
 
 const { app } = require("electron");
-const userPath = app.getPath("appData");
-const dbPath = path.join(userPath, `./bigeyeDB/${dbName}`);
+const userPath = app.getAppPath();
+const dbPath = path.join(userPath, `./db/${dbName}`);
 
 const db = new Level(dbPath, { valueEncoding: "json" });
 
