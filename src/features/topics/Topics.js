@@ -115,6 +115,7 @@ const Topics = () => {
   };
 
   const handleEditClick = (id) => () => {
+    console.log("quiii");
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
@@ -149,6 +150,7 @@ const Topics = () => {
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
+    console.log("handleRowModesModelChange", newRowModesModel);
     setRowModesModel(newRowModesModel);
   };
 
@@ -247,16 +249,17 @@ const Topics = () => {
       headerName: manager,
       width: 60,
       renderCell: (params) => (
-        console.log(params.row.managers.includes(manager)),
-        (
-          <ManagerCheckbox
-            row={params.row}
-            manager={manager}
-            onCheckboxChange={(managerName) =>
-              handleCheckboxChange(params.row.id, managerName)
-            }
-          />
-        )
+        <ManagerCheckbox
+          row={params.row}
+          manager={manager}
+          onCheckboxChange={(managerName) => {
+            handleCheckboxChange(params.row.id, managerName);
+            setRowModesModel({
+              ...rowModesModel,
+              [params.row.id]: { mode: GridRowModes.Edit },
+            });
+          }}
+        />
       ),
     })),
 
@@ -270,6 +273,10 @@ const Topics = () => {
             console.log("switch", params.row);
             const newVetoState = { ...params.row, tmVeto: e.target.checked };
             upDateTopic(newVetoState, params.row.id);
+            setRowModesModel({
+              ...rowModesModel,
+              [params.row.id]: { mode: GridRowModes.Edit },
+            });
           }}
         />
       ),

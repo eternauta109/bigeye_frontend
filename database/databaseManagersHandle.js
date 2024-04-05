@@ -70,14 +70,25 @@ function createDbUser() {
 //funzione che aggiunge una notifica nel db managers
 async function addNotifyManagers({ typeNotify, obj }) {
   console.log("NOTIFY", typeNotify, obj);
+  let newNotify;
+  if (typeNotify === "topic") {
+    if (obj.topicArgument !== "") {
+      newNotify = {
+        notify: `${obj.createdBy} ha creato un nuovo ${typeNotify} con titolo ${obj.topicArgument} `,
+        see: true,
+        id: obj.id,
+      };
+    } else {
+      return null;
+    }
+  } else {
+    newNotify = {
+      notify: `${obj.createdBy} ha creato un nuovo ${typeNotify} con titolo ${obj.title} `,
+      see: true,
+      id: obj.id,
+    };
+  }
 
-  const newNotify = {
-    notify: `${obj.createdBy} ha creato un nuovo ${typeNotify} con titolo ${
-      typeNotify === "topic" ? obj.topicArgument : obj.title
-    } `,
-    see: false,
-    id: obj.id,
-  };
   console.log("oggetto new notify", newNotify);
   try {
     await connect();
