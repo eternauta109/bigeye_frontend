@@ -149,7 +149,7 @@ export default function Login() {
           <img
             src={icoEye}
             alt="icoEye"
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: "100%", height: "100%", borderRadius: "5%" }}
           />
         </Box>
       </Container>

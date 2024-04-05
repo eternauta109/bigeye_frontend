@@ -86,7 +86,7 @@ function createWindow() {
   );
   mainWindow.setMenu(null);
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools({ mode: "right" });
 }
 
 // This method will be called when Electron has finished
@@ -132,7 +132,7 @@ ipcMain.on("send:managersName", async (event, args) => {
 });
 
 //icp che restituisce un array di notifiche aggiornate dopo aver cancellato
-//quella appena letta
+//quella appena letta. con questo andrò a aggionare lo stato di user
 ipcMain.on("send:notifyToDelete", async (event, args) => {
   console.log(
     "sono in main e mando questa notifica da cancellare al lla funzione che gestisce il db manager",
