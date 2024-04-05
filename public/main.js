@@ -151,7 +151,7 @@ ipcMain.on("send:notifyToDelete", async (event, args) => {
 //icp electron che inserisce un nuovo evento
 ipcMain.on("send:event", async (event, args) => {
   /* console.log("MAIN: evento da inserire in db", args); */
-  await addNotifyManagers({ typeNotify: "events", obj: args.event });
+  await addNotifyManagers({ typeNotify: "event", obj: args.event });
   await insertEvent(args);
   /* await readAllEvents(); */
 });
@@ -177,6 +177,7 @@ ipcMain.on("send:eventToDelete", async (event, eventId) => {
 ipcMain.on("send:task", async (event, args) => {
   /* console.log("MAIN: task da inserire in db", args); */
   await insertTask(args);
+  await addNotifyManagers({ typeNotify: "task", obj: args.task });
   /* await readAllTasks(); */
 });
 
@@ -202,6 +203,7 @@ ipcMain.on("send:topic", async (event, args) => {
   console.log("MAIN: topic da inserire in db", args);
   await insertTopic(args);
   const stateTopics = await getAllTopics();
+  await addNotifyManagers({ typeNotify: "topic", obj: args.topic });
   await mainWindow.webContents.send("return:addNewTopics", stateTopics);
   /* await readAllTopics(); */
 });

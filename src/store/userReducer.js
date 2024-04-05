@@ -61,6 +61,56 @@ export const loginUser = async (userName, password) => {
             see: false,
             id: "obj2",
           },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj1",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj2",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj1",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj2",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj1",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj2",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj1",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj2",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj1",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj2",
+          },
         ],
         id: "guiman1",
       },

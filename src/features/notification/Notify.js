@@ -5,6 +5,7 @@ import {
   Box,
   Card,
   CardActions,
+  Container,
   CardContent,
   Button,
   Typography,
@@ -18,10 +19,12 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
+  maxHeight: 600,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  overflowY: "auto",
+  p: 5,
 };
 
 export const Notify = ({ onHandleClose, open, notify }) => {
@@ -50,7 +53,7 @@ export const Notify = ({ onHandleClose, open, notify }) => {
       >
         <Box sx={style}>
           {notify?.map((value, key) => (
-            <Card key={key} sx={{ minWidth: 275, mb: 1 }}>
+            <Card key={key} sx={{ minWidth: 275, mb: 2 }}>
               <CardContent>
                 <Typography
                   sx={{ fontSize: 14 }}

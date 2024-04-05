@@ -48,13 +48,7 @@ const ShareCalendar = () => {
           </Button>
         </Grid>
       </Grid>
-      <Grid
-        container
-        spacing={1}
-        alignItems="center"
-        justifyContent="center"
-        sx={{ mt: 4 }}
-      ></Grid>
+
       <ModalEvent
         open={openNewEvent}
         handleClose={handleCloseNewEvent}

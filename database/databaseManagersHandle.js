@@ -72,7 +72,9 @@ async function addNotifyManagers({ typeNotify, obj }) {
   console.log("NOTIFY", typeNotify, obj);
 
   const newNotify = {
-    notify: `${obj.createdBy} ha creato un nuovo ${obj.eventType} con titolo ${obj.title} `,
+    notify: `${obj.createdBy} ha creato un nuovo ${typeNotify} con titolo ${
+      typeNotify === "topic" ? obj.topicArgument : obj.title
+    } `,
     see: false,
     id: obj.id,
   };
