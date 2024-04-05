@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "@mui/material/Modal";
+import useEventsStore from "../../store/EventDataContext";
 import {
   Box,
   Card,
@@ -8,6 +9,8 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+
+import { deleteNotifyFromDb } from "../../store/userReducer";
 
 const style = {
   position: "absolute",
@@ -22,9 +25,21 @@ const style = {
 };
 
 export const Notify = ({ onHandleClose, open, notify }) => {
+  const { user, deleteNotify } = useEventsStore();
+
+  const handleCancelNotify = async (e, notifyId) => {
+    console.log(notifyId, user);
+    const newNotify = await deleteNotifyFromDb(notifyId, user.user.id);
+    console.log(
+      "array notifiche aggiornato è tornato a Notify cosi",
+      newNotify
+    );
+    deleteNotify(newNotify);
+    console.log("user aggiornato", user);
+  };
+
   return (
     <>
-      ciao
       <Modal
         open={open}
         onClose={() => {
@@ -35,7 +50,7 @@ export const Notify = ({ onHandleClose, open, notify }) => {
       >
         <Box sx={style}>
           {notify?.map((value, key) => (
-            <Card sx={{ minWidth: 275, mb: 1 }}>
+            <Card key={key} sx={{ minWidth: 275, mb: 1 }}>
               <CardContent>
                 <Typography
                   sx={{ fontSize: 14 }}
@@ -47,7 +62,13 @@ export const Notify = ({ onHandleClose, open, notify }) => {
 
                 <Typography>{value.notify}</Typography>
                 <CardActions>
-                  <Button size="small">Learn More</Button>
+                  <Button
+                    onClick={(e) => handleCancelNotify(e, value.id)}
+                    size="small"
+                    color="secondary"
+                  >
+                    chiudi
+                  </Button>
                 </CardActions>
               </CardContent>
             </Card>

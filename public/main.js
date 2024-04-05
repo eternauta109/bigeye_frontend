@@ -8,6 +8,7 @@ const {
   getManagerByCredentials,
   getAllManagersName,
   addNotifyManagers,
+  deleteThisNotify,
 } = require("../database/databaseManagersHandle");
 const {
   createDbEvents,
@@ -128,6 +129,21 @@ ipcMain.on("send:managersName", async (event, args) => {
   const managers = await getAllManagersName();
   /*  console.log("managers in main dopo chiamata al db", managers); */
   await mainWindow.webContents.send("managersName", managers);
+});
+
+//icp che restituisce un array di notifiche aggiornate dopo aver cancellato
+//quella appena letta
+ipcMain.on("send:notifyToDelete", async (event, args) => {
+  console.log(
+    "sono in main e mando questa notifica da cancellare al lla funzione che gestisce il db manager",
+    args
+  );
+  const newNotify = await deleteThisNotify(args);
+  console.log(
+    "main: dopo eliminazione di una notifica ritorna questo array",
+    newNotify
+  );
+  await mainWindow.webContents.send("return:notifyToDelete", newNotify);
 });
 
 //ICP PER GESTIRE GLI EVENTI

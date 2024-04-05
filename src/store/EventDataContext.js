@@ -28,6 +28,14 @@ export const EventStoreContext = ({ children }) => {
     });
   };
 
+  const deleteNotify = (newArrayNotify) => {
+    console.log("EDC riceve array notify", newArrayNotify);
+    userDispatch({
+      type: "SET_NOTIFICATION",
+      payload: newArrayNotify,
+    });
+  };
+
   //Topic ACTION
   const setTopics = (args) => {
     console.log("SET TOPICS EDC: ", args);
@@ -151,7 +159,7 @@ export const EventStoreContext = ({ children }) => {
     //USER
     user: userState,
     setUser,
-
+    deleteNotify,
     //TOPICS
     totalTopics: topicState.totalTopics,
     emptyTopic: initialTopic.newTopic,

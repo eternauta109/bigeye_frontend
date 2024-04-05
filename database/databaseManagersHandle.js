@@ -58,8 +58,8 @@ function createDbUser() {
     } else {
       console.log("db managers esistente");
       try {
-        /* await connect();
-        await readAll(); */
+        await connect();
+        await readAll();
       } catch (error) {
         console.log("try catch", error);
       }
@@ -107,7 +107,7 @@ async function populateDatabase() {
       password: "109",
       isAuth: false,
       cinema: "guidonia",
-
+      id: "guiman1",
       notification: [],
     },
     {
@@ -116,7 +116,7 @@ async function populateDatabase() {
       password: "110",
       isAuth: false,
       cinema: "guidonia",
-
+      id: "guiman2",
       notification: [],
     },
     {
@@ -125,7 +125,7 @@ async function populateDatabase() {
       password: "111",
       isAuth: false,
       cinema: "guidonia",
-
+      id: "guiman3",
       notification: [],
     },
     {
@@ -134,7 +134,7 @@ async function populateDatabase() {
       password: "113",
       isAuth: false,
       cinema: "guidonia",
-
+      id: "guiman4",
       notification: [],
     },
     {
@@ -143,17 +143,52 @@ async function populateDatabase() {
       password: "114",
       isAuth: false,
       cinema: "guidonia",
-
+      id: "guiman5",
       notification: [],
     },
   ];
 
   // Inserisci i manager nel database (assumendo che dbMan sia l'istanza del database creato)
   for (const manager of managers) {
-    await db.put(manager.userName, manager);
+    await db.put(manager.id, manager);
   }
   await close();
   console.log("Database manager popolato con successo!");
+}
+
+//qui ricevo un notyfy e la eleimino dall'arrayt notify del manager
+async function deleteThisNotify(args) {
+  console.log("managerDB Deleting notify id: ", args);
+  const user = await query(args.userName);
+  // Cerca la notifica nell'array di notifiche
+  const index = user.notification.findIndex(
+    (notify) => notify.id === args.notifyId
+  );
+
+  try {
+    await connect(); // Connessione al database
+    // Se trovi la notifica, rimuovila dall'array
+    if (index !== -1) {
+      user.notification.splice(index, 1);
+    } else {
+      console.log("Notifica non trovata per l'utente con ID:", args.userName);
+      return null; // Notifica non trovata
+    }
+
+    // Aggiorna l'utente nel database con l'array di notifiche modificato
+    await db.put(args.userName, user);
+
+    console.log(
+      "Notifica eliminata con successo per l'utente con ID:",
+      args.userName
+    );
+    return user.notification; // Restituisci l'utente aggiornato
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    throw error; // Gestione dell'errore
+  } finally {
+    await close(); // Chiusura della connessione al database
+  }
 }
 
 //funzione che restituisce un array contenente
@@ -244,4 +279,5 @@ module.exports = {
   getAllManagersName,
   addNotifyManagers,
   insertNewManager,
+  deleteThisNotify,
 };

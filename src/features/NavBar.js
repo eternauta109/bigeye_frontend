@@ -32,28 +32,7 @@ function NavBar() {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
-  /* const { user } = useEventsStore(); */
-  const user = {
-    user: {
-      userName: "fabioc",
-      password: "109",
-      isAuth: true,
-      role: "tm",
-      cinema: "guidonia",
-      notification: [
-        {
-          notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
-          see: false,
-          id: "obj.id",
-        },
-        {
-          notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
-          see: false,
-          id: "obj.id",
-        },
-      ],
-    },
-  };
+  const { user } = useEventsStore();
 
   const settings = [`name: ${user.user.userName}`, `rule: ${user.user.role}`];
 

@@ -6,7 +6,34 @@ export const initialUser = {
     notification: [],
     password: null,
     isAuth: false,
+    id: null,
   },
+};
+
+//funzione che va gestire la cancellazione di una notifica dall array notify
+// nel db managers
+export const deleteNotifyFromDb = async (notifyId, userName) => {
+  console.log(
+    "sono in userReducer e sto cancelladno una notifica",
+    notifyId,
+    userName
+  );
+  if (process.env.NODE_ENV === "development") {
+    return [{ notify: "ritorno", see: true, id: "id di ritorno" }];
+  } else {
+    return new Promise((resolve, reject) => {
+      const { ipcRenderer } = window.require("electron");
+      try {
+        ipcRenderer.send("send:notifyToDelete", { notifyId, userName });
+        ipcRenderer.on("return:notifyToDelete", (e, args) => {
+          console.log("return:notifyToDelete da user reducers", args);
+          resolve(args);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 };
 
 //funzione che restiruisce un oggetto manager/user con tutti i nomi dei colleghi
@@ -23,7 +50,19 @@ export const loginUser = async (userName, password) => {
         isAuth: true,
         role: "tm",
         cinema: "guidonia",
-        notification: [],
+        notification: [
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj1",
+          },
+          {
+            notify: `uno ha creato un nuovo un coso con titolo stocazzo `,
+            see: false,
+            id: "obj2",
+          },
+        ],
+        id: "guiman1",
       },
       managersName: [
         "fabioc",
@@ -67,6 +106,13 @@ const userReducer = (state, action) => {
   switch (action.type) {
     case "SET_USER":
       return action.payload;
+    case "SET_NOTIFICATION":
+      console.log("SET_NOTIFICATION", action.payload);
+
+      return {
+        ...state,
+        user: { ...state.user, notification: [...action.payload] },
+      };
     default:
       throw new Error(`Azione non gestita: ${action.type}`);
   }
