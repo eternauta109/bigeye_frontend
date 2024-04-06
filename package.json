@@ -28,7 +28,8 @@
     "react-dom": "18.2.0",
     "react-router-dom": "^6.10.0",
     "react-scripts": "^5.0.1",
-    "react-trello": "^2.2.11"
+    "react-trello": "^2.2.11",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -76,8 +77,15 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "big_eye"
+            "name": "bigEye"
           }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ],
+          "config": {}
         }
       ],
       "publishers": []

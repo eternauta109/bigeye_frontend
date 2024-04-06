@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import ToggleEvent from "./ToggleEvent";
+import { v4 as uuidv4 } from "uuid";
 
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import "@wojtekmaj/react-datetimerange-picker/dist/DateTimeRangePicker.css";
@@ -68,7 +69,7 @@ function NewEvent({ handleClose, upDate }) {
     } else {
       if (event.manager !== "") {
         const newTask = {
-          id: "task" + totalTasks,
+          id: "task-" + uuidv4(),
           createdBy: user.user.userName,
           title: event.title,
           start: new Date(),
@@ -84,7 +85,7 @@ function NewEvent({ handleClose, upDate }) {
       const prepareEvent = {
         ...event,
         createdBy: user.user.userName,
-        id: "event" + totalEvent,
+        id: "event-" + uuidv4(),
       };
       addEvent(prepareEvent);
       initEvent();

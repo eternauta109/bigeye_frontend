@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-
+import { v4 as uuidv4 } from "uuid";
 import useEventsStore from "../../store/EventDataContext";
 import {
   FormControl,
@@ -27,7 +27,7 @@ const NewTaskForm = ({ manager, onHandleClose }) => {
       start: new Date(),
       label: user.user.userName,
       laneId: `lane-${manager}`,
-      id: "task" + totalTasks,
+      id: "task-" + uuidv4(),
     };
     console.log("task to save!", sendNewTaskInStore, totalTasks);
     addTask(sendNewTaskInStore);
