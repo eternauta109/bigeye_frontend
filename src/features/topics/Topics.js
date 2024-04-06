@@ -170,6 +170,24 @@ const Topics = () => {
     }
   };
 
+  // Funzione per gestire il clic su un link nella cella del datagrid
+  const handleLinkClick = (event, rowData) => {
+    event.preventDefault(); // Impedisci il comportamento predefinito del link
+    console.log(rowData);
+    if (
+      rowData.value.startsWith("http://") ||
+      rowData.value.startsWith("https://")
+    ) {
+      const { shell } = window.require("electron");
+      // Se il link è un URL Internet, aprilo in un browser esterno
+      shell.openExternal(rowData.value);
+    } else {
+      const { shell } = window.require("electron");
+      // Se il link è un percorso di file locale, apri il file
+      shell.openPath(rowData.value);
+    }
+  };
+
   // COLUMNS ================================================
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -242,6 +260,13 @@ const Topics = () => {
       //type: 'number',
       width: 110,
       editable: true,
+      renderCell: (params) => (
+        <Typography component="div">
+          <a href="#" onClick={(event) => handleLinkClick(event, params)}>
+            go to link
+          </a>
+        </Typography>
+      ),
     },
 
     ...user.managersName.map((manager, index) => ({
