@@ -7,6 +7,7 @@ import Topics from "./features/topics/Topics";
 import ShareCalendar from "./features/calendar/ShareCalendar";
 import Login from "./features/Login";
 import useEventsStore from "./store/EventDataContext";
+import Dashboard from "./features/dashboard/Dashboard";
 
 export default function App() {
   const { user } = useEventsStore();
@@ -20,6 +21,9 @@ export default function App() {
           <Route path="/calendar" element={<ShareCalendar />} />
           <Route path="/topics" element={<Topics />} />
           <Route path="/kanban" element={<Kanban />} />
+          {user?.user.role === "tm" ? (
+            <Route path="/dashboard" element={<Dashboard />} />
+          ) : null}
         </Routes>
       </div>
     </>

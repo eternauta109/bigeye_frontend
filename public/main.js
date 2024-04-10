@@ -9,6 +9,8 @@ const {
   getAllManagersName,
   addNotifyManagers,
   deleteThisNotify,
+  getAllManagers,
+  addNewUser,
 } = require("../database/databaseManagersHandle");
 const {
   createDbEvents,
@@ -111,6 +113,20 @@ app.on("window-all-closed", function () {
 });
 
 //ICP PER GESTIRE I MANAGERS
+
+//icp per creare un nuovo user
+ipcMain.on("send:newUser", async (event, args) => {
+  const returnNames = await addNewUser({ ...args });
+  console.log("main ritorno add new user ", returnNames);
+  await mainWindow.webContents.send("return:newUser", returnNames);
+});
+
+//icp per prendere tutti i managers che appartengono al cinema
+ipcMain.on("send:getAllManagers", async (event, args) => {
+  const allManagers = await getAllManagers(args);
+  console.log("main ritorno di tutti i mangers", allManagers);
+  await mainWindow.webContents.send("return:getAllManagers", allManagers);
+});
 
 //icp per cercare sul db managers chi si sta loggando
 ipcMain.on("login", async (event, args) => {

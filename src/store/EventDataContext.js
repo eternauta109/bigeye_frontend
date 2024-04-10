@@ -3,12 +3,14 @@ import eventsReducer, { initialEvents } from "./eventsReducer";
 import taskReducer, { initialTask } from "./taskReducer";
 import topicsReducer, { initialTopic } from "./topicsReducer";
 import userReducer, { initialUser } from "./userReducer";
+import optionsReducer, { initialOption } from "./optionsReducer";
 
 export const initialDataContext = {
   events: initialEvents,
   tasks: initialTask,
   topics: initialTopic,
   user: initialUser,
+  option: initialOption,
 };
 
 export const EventDataContext = createContext(initialDataContext);
@@ -18,6 +20,10 @@ export const EventStoreContext = ({ children }) => {
   const [taskState, taskDispatch] = useReducer(taskReducer, initialTask);
   const [topicState, topicDispatch] = useReducer(topicsReducer, initialTopic);
   const [userState, userDispatch] = useReducer(userReducer, initialUser);
+  const [optionsState, optionDispatch] = useReducer(
+    optionsReducer,
+    initialOption
+  );
 
   //USER ACTION
   const setUser = (args) => {
@@ -25,6 +31,14 @@ export const EventStoreContext = ({ children }) => {
     userDispatch({
       type: "SET_USER",
       payload: { ...args },
+    });
+  };
+
+  const setUsersName = (usersName) => {
+    console.log("ricevo userNames: ", usersName);
+    userDispatch({
+      type: "SET_NAMES",
+      payload: [...usersName],
     });
   };
 
@@ -156,9 +170,12 @@ export const EventStoreContext = ({ children }) => {
   };
 
   const value = {
+    //options
+    options: optionsState,
     //USER
     user: userState,
     setUser,
+    setUsersName,
     deleteNotify,
     //TOPICS
     totalTopics: topicState.totalTopics,

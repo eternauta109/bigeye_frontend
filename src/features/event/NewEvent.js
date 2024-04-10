@@ -25,6 +25,8 @@ import {
 import { addNewEvent, deleteEventFromDb } from "../../store/eventsReducer";
 import { addNewTask } from "../../store/taskReducer";
 import useEventsStore from "../../store/EventDataContext";
+import { getOptions } from "../../store/optionsReducer";
+import { set } from "date-fns";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -39,6 +41,7 @@ const MenuProps = {
 
 function NewEvent({ handleClose, upDate }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const [optionsState, setOptionsState] = useState({});
   const {
     addTask,
     addEvent,
@@ -55,6 +58,13 @@ function NewEvent({ handleClose, upDate }) {
   const [event, setEvent] = useState(
     upDate ? { ...eventToUpdate } : { ...emptyEvent }
   );
+
+  const options = async () => {
+    const getOpt = await getOptions();
+    console.log(getOpt);
+    setOptionsState({ ...getOpt });
+    return getOpt;
+  };
 
   //funzione di submit. qua succedono un sacco di cose.
   //primo: se event è nuov lo aggiungo sia sllo store EDC che al db
@@ -107,35 +117,16 @@ function NewEvent({ handleClose, upDate }) {
   //gestisco i cambiamenti del valore della divsions e aggiorno sia
   // lo stato che il colore relativo
   const handleDivisionChange = (e) => {
-    let color;
-    console.log(e.target.value);
-    switch (e.target.value) {
-      case "marketing":
-        color = "#F39C12";
-        break;
-      case "operations":
-        color = "#7DCEA0";
-        break;
-      case "pricing":
-        color = "#BB8FCE";
-        break;
-      case "facilities":
-        color = "#AAB7B8";
-        break;
-      case "screencontent":
-        color = "#448AFF";
-        break;
-      case "actionpoint":
-        color = "#EF5350";
-        break;
-      case "brief":
-        color = "#90A4AE";
-        break;
-      default:
-        color = "#7B68EE";
-    }
-
-    setEvent({ ...event, division: e.target.value, colorDivision: color });
+    console.log("selected div", e.target.value);
+    const division = optionsState?.divisions?.find(
+      (division) => division.nameDivision === e.target.value
+    );
+    console.log("selected divobj", division);
+    setEvent({
+      ...event,
+      division: e.target.value,
+      colorDivision: division.color,
+    });
   };
 
   //funzione che stampa event a pogni modifica
@@ -143,6 +134,7 @@ function NewEvent({ handleClose, upDate }) {
 
   useEffect(() => {
     console.log("UPDATE", upDate);
+    options();
     console.log("user in new events useeffect", user);
     if (upDate) {
       console.log("evento.id esistente questo è l evento da aggiornare", event);
@@ -237,27 +229,27 @@ function NewEvent({ handleClose, upDate }) {
           value={upDate ? [event.start, event.end] : dateRange}
         />
 
-        <FormControl fullWidth sx={{ mt: 2 }}>
-          <InputLabel id="division">Division</InputLabel>
-          <Select
-            labelId="division"
-            name="division"
-            input={<OutlinedInput label="division" />}
-            id="demo-simple-select"
-            value={event?.division ? event.division : ""}
-            onChange={(e) => handleDivisionChange(e)}
-            fullWidth
-          >
-            <MenuItem value={""}>none</MenuItem>
-            <MenuItem value={"marketing"}>marketing</MenuItem>
-            <MenuItem value={"operations"}>operations</MenuItem>
-            <MenuItem value={"pricing"}>pricing</MenuItem>
-            <MenuItem value={"facilities"}>facilities</MenuItem>
-            <MenuItem value={"screencontent"}>screen conten</MenuItem>
-            <MenuItem value={"actionpoint"}>action point</MenuItem>
-            <MenuItem value={"brief"}>new brief</MenuItem>
-          </Select>
-        </FormControl>
+        {optionsState?.divisions && (
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="division">Division</InputLabel>
+            <Select
+              labelId="division"
+              name="division"
+              input={<OutlinedInput label="division" />}
+              id="demo-simple-select"
+              value={event?.division ? event.division : ""}
+              onChange={(e) => handleDivisionChange(e)}
+              fullWidth
+            >
+              <MenuItem value={""}>none</MenuItem>
+              {optionsState?.divisions?.map((division, key) => (
+                <MenuItem value={division.nameDivision} key={key}>
+                  {division.nameDivision}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
 
         <TextField
           fullWidth

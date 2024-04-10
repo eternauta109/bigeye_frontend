@@ -67,6 +67,38 @@ function createDbUser() {
   });
 }
 
+//funzione che restituisce tutto i manager che appartengono al determinato cinema
+async function getAllManagers() {
+  const allManagers = [];
+
+  try {
+    await connect();
+    for await (const [key, value] of db.iterator()) {
+      if (key !== "totalEvents") {
+        allManagers.push(value);
+      }
+    }
+  } catch (error) {
+    console.log("errore durante il recupero dei dai dal db mangers", error);
+  } finally {
+    await close();
+  }
+  return allManagers;
+}
+
+//funzione che inserisce un nuovo manager
+async function addNewUser(newUser) {
+  console.log(
+    "sono nel db manager e devo inserire questo nuovo user:",
+    newUser
+  );
+  await connect();
+  await db.put(newUser.id, newUser);
+  managersName = await getAllManagersName(newUser.cinema);
+  await close();
+  return [...managersName];
+}
+
 //funzione che aggiunge una notifica nel db managers
 async function addNotifyManagers({ typeNotify, obj }) {
   console.log("NOTIFY", typeNotify, obj);
@@ -287,10 +319,12 @@ function close() {
 
 module.exports = {
   createDbUser,
+  addNewUser,
   populateDatabase,
   getManagerByCredentials,
   getAllManagersName,
   addNotifyManagers,
   insertNewManager,
   deleteThisNotify,
+  getAllManagers,
 };

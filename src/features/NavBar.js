@@ -24,7 +24,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import useEventsStore from "../store/EventDataContext";
 import { Link, useNavigate } from "react-router-dom";
 
-const pages = ["ShareCalendar", "KanBanBoard", "topics"];
+const pages = ["ShareCalendar", "KanBanBoard", "topics", "dashboard"];
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -34,7 +34,7 @@ function NavBar() {
   const handleCloseModal = () => setOpenModal(false);
   const { user } = useEventsStore();
 
-  const settings = [`name: ${user.user.userName}`, `rule: ${user.user.role}`];
+  const settings = [`name: ${user.user.userName}`, `role: ${user.user.role}`];
 
   const navigate = useNavigate();
 
@@ -57,7 +57,9 @@ function NavBar() {
       case "ShareCalendar":
         navigate("/calendar");
         break;
-
+      case "dashboard":
+        navigate("/dashboard");
+        break;
       default:
         break;
     }
@@ -66,6 +68,28 @@ function NavBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const MenuElement = ({ page }) => {
+    switch (page) {
+      case "dashboard":
+        if (user.user.role === "tm") {
+          return (
+            <MenuItem onClick={(e) => handleCloseNavMenu(e, page)}>
+              <ListItemText primary={page} />
+            </MenuItem>
+          );
+        }
+
+        break;
+      // Gestisci tutti gli altri casi
+      default:
+        return (
+          <MenuItem onClick={(e) => handleCloseNavMenu(e, page)}>
+            <ListItemText primary={page} />
+          </MenuItem>
+        );
+    }
   };
 
   return (
@@ -128,12 +152,7 @@ function NavBar() {
               }}
             >
               {pages.map((page, key) => (
-                <MenuItem
-                  key={key}
-                  onClick={(e) => handleCloseNavMenu(e, page)}
-                >
-                  <ListItemText primary={page} key={key} />
-                </MenuItem>
+                <MenuElement page={page} key={key} />
               ))}
             </Menu>
           </Box>
@@ -160,9 +179,7 @@ function NavBar() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page, key) => (
-              <MenuItem key={key} onClick={(e) => handleCloseNavMenu(e, page)}>
-                <ListItemText primary={page} key={key} />
-              </MenuItem>
+              <MenuElement page={page} key={key} />
             ))}
           </Box>
 

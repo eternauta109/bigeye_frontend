@@ -7,7 +7,101 @@ export const initialUser = {
     password: null,
     isAuth: false,
     id: null,
+    cinema: null,
   },
+};
+
+//aggiunge un manager al db managers
+export const addNewUser = async (newUser) => {
+  console.log(
+    "sono in addNewUser in userReducer e sto mandando quensto nuovo user",
+    newUser
+  );
+  if (process.env.NODE_ENV !== "production") {
+    const newArrayNames = ["marap", "carlos", "robertod", "valentinao"];
+    return newArrayNames;
+  } else {
+    return new Promise((resolve, reject) => {
+      const { ipcRenderer } = window.require("electron");
+      try {
+        ipcRenderer.send("send:newUser", newUser);
+        ipcRenderer.on("return:newUser", (e, args) => {
+          console.log("userReducer add new user", args);
+          resolve(args);
+        });
+      } catch (error) {
+        reject(err);
+      }
+    });
+  }
+};
+
+//aggiunge un manager al db managers
+export const getAllManagers = async () => {
+  console.log("sono in getAllManager in userReducer");
+
+  if (process.env.NODE_ENV !== "production") {
+    return [
+      {
+        userName: "fabioc",
+        role: "tm",
+        password: "109",
+        isAuth: false,
+        cinema: "guidonia",
+        id: "guiman1",
+        notification: [],
+      },
+      {
+        userName: "robertod",
+        role: "am",
+        password: "110",
+        isAuth: false,
+        cinema: "guidonia",
+        id: "guiman2",
+        notification: [],
+      },
+      {
+        userName: "carlos",
+        role: "am",
+        password: "111",
+        isAuth: false,
+        cinema: "guidonia",
+        id: "guiman3",
+        notification: [],
+      },
+      {
+        userName: "marap",
+        role: "am",
+        password: "113",
+        isAuth: false,
+        cinema: "guidonia",
+        id: "guiman4",
+        notification: [],
+      },
+      {
+        userName: "valentinad",
+        role: "am",
+        password: "114",
+        isAuth: false,
+        cinema: "guidonia",
+        id: "guiman5",
+        notification: [],
+      },
+    ];
+  } else {
+    return new Promise((resolve, reject) => {
+      const { ipcRenderer } = window.require("electron");
+      try {
+        ipcRenderer.send("send:getAllManagers");
+        ipcRenderer.on("return:getAllManagers", (e, args) => {
+          console.log("userReducer add new user", args);
+          resolve(args);
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
 };
 
 //funzione che va gestire la cancellazione di una notifica dall array notify
@@ -156,6 +250,11 @@ const userReducer = (state, action) => {
   switch (action.type) {
     case "SET_USER":
       return action.payload;
+    case "SET_NAMES":
+      return {
+        ...state,
+        managersName: action.payload,
+      };
     case "SET_NOTIFICATION":
       console.log("SET_NOTIFICATION", action.payload);
 
