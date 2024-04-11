@@ -20,6 +20,8 @@ function createDbOptions() {
         await connect();
       } catch (error) {
         console.log(error);
+      } finally {
+        await populateDatabase();
       }
     } else {
       console.log("db tasks esistente lo leggo");
@@ -141,8 +143,9 @@ async function getAllOptions() {
 
   try {
     const value = await db.get("config");
+    console.log("config nel db", value);
     return value;
-  } catch (error) {
+  } catch (err) {
     throw new Error("estr5aggo options", err);
   } finally {
     await close();
