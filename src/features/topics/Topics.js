@@ -238,13 +238,19 @@ const Topics = () => {
       //type: 'number',
       width: 110,
       editable: true,
-      renderCell: (params) => (
-        <Typography component="div">
-          <a href="#" onClick={(event) => handleLinkClick(event, params)}>
-            go to link
-          </a>
-        </Typography>
-      ),
+      renderCell: (params) =>
+        params.row.link !== "" ? (
+          <Typography component="div">
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => handleLinkClick(event, params)}
+            >
+              go to link
+            </a>
+          </Typography>
+        ) : null,
     },
 
     ...user.managersName.map((manager, index) => ({
