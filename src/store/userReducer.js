@@ -39,7 +39,6 @@ export const addNewUser = async (newUser) => {
 //aggiunge un manager al db managers
 export const getAllManagers = async () => {
   console.log("sono in getAllManager in userReducer");
-
   if (process.env.NODE_ENV !== "production") {
     return [
       {
@@ -94,7 +93,33 @@ export const getAllManagers = async () => {
       try {
         ipcRenderer.send("send:getAllManagers");
         ipcRenderer.on("return:getAllManagers", (e, args) => {
-          console.log("userReducer add new user", args);
+          console.log("userReducer get all manager", args);
+          resolve(args);
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+};
+
+//eleimina un manager al db managers
+export const deleteManager = async (manager) => {
+  console.log(
+    "sono in deleteManager in userReducer e sto cancellando",
+    manager
+  );
+
+  if (process.env.NODE_ENV !== "production") {
+    const newArrayNames = ["marap", "carlos", "robertod", "cancellato"];
+    return newArrayNames;
+  } else {
+    return new Promise((resolve, reject) => {
+      const { ipcRenderer } = window.require("electron");
+      try {
+        ipcRenderer.send("send:deleteManager", manager);
+        ipcRenderer.on("return:deleteManager", (e, args) => {
+          console.log("userReducer delete  user", args);
           resolve(args);
         });
       } catch (err) {

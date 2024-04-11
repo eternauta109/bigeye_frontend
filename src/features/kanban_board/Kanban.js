@@ -191,7 +191,7 @@ const Kanban = () => {
             </Button>
           </Box>
           <Board
-            style={{ height: "500px", marginTop: "20px" }}
+            style={{ height: "500px", marginTop: "20px", overflowY: "auto" }}
             data={data} // Passa direttamente l'oggetto data
             handleDragEnd={onhandleDragEnd}
             onCardDelete={onHandleCardDelete}

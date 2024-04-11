@@ -11,6 +11,7 @@ const {
   deleteThisNotify,
   getAllManagers,
   addNewUser,
+  deleteThisManager,
 } = require("../database/databaseManagersHandle");
 const {
   createDbEvents,
@@ -119,6 +120,13 @@ ipcMain.on("send:newUser", async (event, args) => {
   const returnNames = await addNewUser({ ...args });
   console.log("main ritorno add new user ", returnNames);
   await mainWindow.webContents.send("return:newUser", returnNames);
+});
+
+//icp per cancellare user
+ipcMain.on("send:deleteManager", async (event, args) => {
+  const returnNames = await deleteThisManager(args);
+  console.log("main ritorno delete new user ", returnNames);
+  await mainWindow.webContents.send("return:deleteManager", returnNames);
 });
 
 //icp per prendere tutti i managers che appartengono al cinema

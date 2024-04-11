@@ -10,13 +10,19 @@ import {
   Stack,
   List,
   Select,
+  IconButton,
   MenuItem,
   InputLabel,
   OutlinedInput,
 } from "@mui/material";
 import useEventsStore from "../../store/EventDataContext";
 import { v4 as uuidv4 } from "uuid";
-import { addNewUser, getAllManagers } from "../../store/userReducer";
+import {
+  addNewUser,
+  getAllManagers,
+  deleteManager,
+} from "../../store/userReducer";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Dashboard = () => {
   const [newUser, setNewUser] = useState({
@@ -33,15 +39,15 @@ const Dashboard = () => {
   const { user, setUsersName } = useEventsStore();
 
   const onHandleSubmit = async (e) => {
+    e.preventDefault();
     const insertNewUser = {
       ...newUser,
       id: `manager-${uuidv4()}`,
       cinema: user.user.cinema,
     };
-    e.preventDefault();
-    console.log(insertNewUser);
+    console.log("onHandleSubmit new manager", insertNewUser);
     const cinemaNamesReturn = await addNewUser(insertNewUser);
-
+    setManagersList([...cinemaNamesReturn]);
     setUsersName(cinemaNamesReturn);
   };
 
@@ -55,8 +61,18 @@ const Dashboard = () => {
     setManagersList([...managersList]);
   };
 
+  const onHandleDeleteUser = async (e, manager) => {
+    e.preventDefault();
+    console.log(manager);
+    const arrayNames = await deleteManager(manager);
+    console.log("dashboard lista managers", arrayNames);
+    setManagersList([...arrayNames]);
+    setUsersName(arrayNames);
+  };
+
   useEffect(() => {
     awaytGetAllManagers();
+    console.log("useEffect");
 
     return () => {};
   }, [managersList.length]);
@@ -65,64 +81,87 @@ const Dashboard = () => {
     <Container
       sx={{
         height: "600px",
+        display: "flex",
+
         padding: 2,
         justifyContent: "center",
       }}
     >
-      <form onSubmit={onHandleSubmit}>
-        <Stack spacing={3} sx={{ width: "300px" }}>
-          <Typography>Inserisci un manager</Typography>
+      <Stack spacing={2} direction="row">
+        <Stack spacing={2}>
+          <form onSubmit={onHandleSubmit}>
+            <Stack spacing={3} sx={{ width: "300px" }}>
+              <Typography>Inserisci un manager</Typography>
 
-          <TextField
-            label="user name"
-            variant="outlined"
-            name="useName"
-            value={newUser.userName}
-            onChange={(user) =>
-              setNewUser({ ...newUser, userName: user.target.value })
-            }
-            helperText="nome+iniziale cognome. Es marioc, francof, iolandar"
-          />
-          <FormControl>
-            <InputLabel id="role">Ruolo</InputLabel>
-            <Select
-              labelId="role"
-              name="role"
-              input={<OutlinedInput label="role" />}
-              value={newUser?.role ? newUser.role : ""}
-              onChange={(role) =>
-                setNewUser({ ...newUser, role: role.target.value })
-              }
-            >
-              <MenuItem value={""}>none</MenuItem>
-              <MenuItem value="am">am</MenuItem>
-              <MenuItem value="jm">jm</MenuItem>
-              <MenuItem value="tl">tl</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            label="pin"
-            variant="outlined"
-            name="password"
-            value={newUser.password}
-            onChange={(psw) =>
-              setNewUser({ ...newUser, password: psw.target.value })
-            }
-            helperText="consiglio: 4 cifre sono piu che sufficenti"
-          />
-          <TextField disabled label="cinema" value={user.user.cinema} />
-          <Button variant="outlined" type="submit" color="secondary">
-            Inserisci user
-          </Button>
+              <TextField
+                required
+                label="user name"
+                variant="outlined"
+                name="useName"
+                value={newUser.userName}
+                onChange={(user) =>
+                  setNewUser({ ...newUser, userName: user.target.value })
+                }
+                helperText="nome+iniziale cognome. Es marioc, francof, iolandar"
+              />
+              <FormControl required>
+                <InputLabel id="role">Ruolo</InputLabel>
+                <Select
+                  labelId="role"
+                  name="role"
+                  input={<OutlinedInput label="role" />}
+                  value={newUser?.role ? newUser.role : ""}
+                  onChange={(role) =>
+                    setNewUser({ ...newUser, role: role.target.value })
+                  }
+                >
+                  <MenuItem value={""}>none</MenuItem>
+                  <MenuItem value="am">am</MenuItem>
+                  <MenuItem value="jm">jm</MenuItem>
+                  <MenuItem value="tl">tl</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                required
+                label="pin"
+                variant="outlined"
+                name="password"
+                value={newUser.password}
+                onChange={(psw) =>
+                  setNewUser({ ...newUser, password: psw.target.value })
+                }
+                helperText="consiglio: 4 cifre sono piu che sufficenti"
+              />
+              <TextField disabled label="cinema" value={user.user.cinema} />
+              <Button variant="outlined" type="submit" color="secondary">
+                Inserisci user
+              </Button>
+            </Stack>
+          </form>
         </Stack>
-      </form>
-      <List>
-        {managersList?.map((manager, key) => (
-          <ListItem value={manager.userName} key={key}>
-            {manager.userName}
-          </ListItem>
-        ))}
-      </List>
+        <Stack sx={{ width: 300 }}>
+          <Typography>Manager attivi</Typography>
+          <List>
+            {managersList?.map((manager, key) => (
+              <ListItem
+                value={manager.userName}
+                key={key}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={(e) => onHandleDeleteUser(e, manager)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                {manager.userName}
+              </ListItem>
+            ))}
+          </List>
+        </Stack>
+      </Stack>
     </Container>
   );
 };

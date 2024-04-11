@@ -92,11 +92,17 @@ async function addNewUser(newUser) {
     "sono nel db manager e devo inserire questo nuovo user:",
     newUser
   );
-  await connect();
-  await db.put(newUser.id, newUser);
-  managersName = await getAllManagersName(newUser.cinema);
-  await close();
-  return [...managersName];
+  try {
+    await connect();
+    await db.put(newUser.id, newUser);
+    managersName = await getAllManagersName(newUser.cinema);
+
+    return [...managersName];
+  } catch (error) {
+    throw new Error("addnew user:", error);
+  } finally {
+    await close();
+  }
 }
 
 //funzione che aggiunge una notifica nel db managers
@@ -137,6 +143,22 @@ async function addNotifyManagers({ typeNotify, obj }) {
     }
   } catch (error) {
     console.log("errore nell'inserimento nuova notifica", error);
+  } finally {
+    await close();
+  }
+}
+
+async function deleteThisManager(user) {
+  console.log("in db manger devo cancellre questo user:", user);
+  try {
+    await connect();
+    // Rimuovi l'elemento dal database usando il metodo del
+    await db.del(user.id);
+    const managersName = await getAllManagersName(user.cinema);
+
+    return [...managersName];
+  } catch (error) {
+    throw new Error("db delete user:", error);
   } finally {
     await close();
   }
@@ -327,4 +349,5 @@ module.exports = {
   insertNewManager,
   deleteThisNotify,
   getAllManagers,
+  deleteThisManager,
 };
