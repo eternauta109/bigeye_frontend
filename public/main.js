@@ -32,6 +32,7 @@ const {
   getAllTopics,
   deleteThisTopic,
 } = require("../database/topicsDB");
+const { getAllOptions, createDbOptions } = require("../database/optionsDB");
 const { add } = require("date-fns");
 
 /* const express = require("express");
@@ -60,6 +61,7 @@ createDbUser();
 createDbEvents();
 createDbTasks();
 createDbTopics();
+createDbOptions();
 /* getAllManagersName(); */
 
 //inizializzo mainWindow per esposrla in tutta la funzione
@@ -248,5 +250,16 @@ ipcMain.on("send:topicToDelete", async (event, topicId) => {
   await deleteThisTopic(topicId);
   const stateTopics = await getAllTopics();
   await mainWindow.webContents.send("return:topicToDelete", stateTopics);
+  /* await readAllTopics(); */
+});
+
+//ICP PER OPZIONI
+//icp che restituisce tutti le opt.
+//viene letta dal reducers options
+ipcMain.on("send:getOptions", async (event, args) => {
+  console.log("argomenti di send:getOptions", args);
+  const stateOptions = await getAllOptions();
+
+  await mainWindow.webContents.send("return:getOptions", stateOptions);
   /* await readAllTopics(); */
 });

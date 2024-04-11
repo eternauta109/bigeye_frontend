@@ -21,43 +21,14 @@ import {
 } from "../../store/topicsReducer";
 
 import useEventsStore from "../../store/EventDataContext";
-
+import { getOptions } from "../../store/optionsReducer";
 import ManagerCheckbox from "./ManagerCheckBox";
-
-// qui creo la struttura delle selct
-const topicTypes = [
-  { value: "none", label: "none" },
-  { value: "cascading", label: "cascading" },
-  { value: "suggest", label: "abitudini" },
-  { value: "tutorial", label: "Tutorial" },
-  { value: "procedur", label: "procedura interna" },
-  { value: "brief", label: "brief" },
-  { value: "internalComunication", label: "comunicazione da sede" },
-];
-
-const docTypes = [
-  { value: "none", label: "none" },
-  { value: "presentazione", label: "presentazione" },
-  { value: "pdf", label: "pdf" },
-  { value: "office", label: "office" },
-];
 
 const priorityTypes = [
   { value: "none", label: "none" },
   { value: "high", label: "high" },
   { value: "low", label: "low" },
   { value: "medium", label: "medium" },
-];
-
-const officeTypes = [
-  { value: "none", label: "none" },
-  { value: "marketing", label: "marketing" },
-  { value: "hr", label: "hr" },
-  { value: "operations", label: "operations" },
-  { value: "pricing", label: "pricing" },
-  { value: "filmcontent", label: "Film Content" },
-  { value: "it", label: "it" },
-  { value: "finance", label: "finance" },
 ];
 
 function EditToolbar(props) {
@@ -105,8 +76,15 @@ function EditToolbar(props) {
 const Topics = () => {
   const { topics, upDateTopic, deleteTopic, setTopics, user, totalTopics } =
     useEventsStore();
-
+  const [optionsState, setOptionsState] = useState({});
   const [rowModesModel, setRowModesModel] = useState({});
+
+  const options = async () => {
+    const getOpt = await getOptions();
+    console.log(getOpt);
+    setOptionsState({ ...getOpt });
+    return getOpt;
+  };
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -203,7 +181,7 @@ const Topics = () => {
       field: "topicType",
       headerName: "topic type",
       type: "singleSelect",
-      valueOptions: topicTypes,
+      valueOptions: optionsState.topicType,
       width: 110,
       editable: true,
     },
@@ -232,7 +210,7 @@ const Topics = () => {
       width: 110,
       editable: true,
       type: "singleSelect",
-      valueOptions: officeTypes,
+      valueOptions: optionsState.officeTypes,
     },
 
     {
@@ -242,7 +220,7 @@ const Topics = () => {
       width: 110,
       editable: true,
       type: "singleSelect",
-      valueOptions: docTypes,
+      valueOptions: optionsState.docTypes,
     },
 
     {
@@ -380,6 +358,12 @@ const Topics = () => {
   useMemo(() => {
     console.log("usememo di topics", topics, rowModesModel);
     getTopicsFromDb();
+  }, []);
+
+  useEffect(() => {
+    options();
+
+    return () => {};
   }, []);
 
   return (
