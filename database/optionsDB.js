@@ -18,7 +18,6 @@ function createDbOptions() {
 
       try {
         await connect();
-        await populateDatabase();
       } catch (error) {
         console.log(error);
       }
@@ -28,6 +27,8 @@ function createDbOptions() {
         /* await readAllTasks(); */
       } catch (error) {
         console.log("try catch", error);
+      } finally {
+        await populateDatabase();
       }
     }
   });
@@ -101,14 +102,16 @@ async function populateDatabase() {
       { value: "tutorial", label: "Tutorial" },
       { value: "procedur", label: "procedura interna" },
       { value: "brief", label: "brief" },
+      { value: "module", label: "modulo" },
       { value: "internalComunication", label: "comunicazione da sede" },
     ],
     docTypes: [
       { value: "none", label: "none" },
       { value: "presentazione", label: "presentazione" },
       { value: "pdf", label: "pdf" },
-      { value: "office", label: "office" },
+      { value: "mail", label: "mail" },
       { value: "excel", label: "excel" },
+      { value: "word", label: "word" },
     ],
     officeTypes: [
       { value: "none", label: "none" },

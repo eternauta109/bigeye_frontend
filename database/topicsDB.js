@@ -73,7 +73,7 @@ async function getAllTopics() {
         alltopics.push(parsedtopic);
       }
     }
-    console.log("cosa sto manadando da getAllTopics", alltopics, tottopics);
+    /* console.log("cosa sto manadando da getAllTopics", alltopics, tottopics); */
     return { topics: alltopics, totalTopics: tottopics };
   } catch (error) {
     console.log("errore durante il recupero dei dai dal db topics", error);

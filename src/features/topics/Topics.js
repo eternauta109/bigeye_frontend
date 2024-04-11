@@ -81,7 +81,7 @@ const Topics = () => {
 
   const options = async () => {
     const getOpt = await getOptions();
-    console.log(getOpt);
+    console.log("options funcvtion loading", getOpt);
     setOptionsState({ ...getOpt });
     return getOpt;
   };
