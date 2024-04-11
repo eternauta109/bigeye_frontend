@@ -56,7 +56,7 @@ const Dashboard = () => {
   }, [newUser]);
 
   const awaytGetAllManagers = async () => {
-    const managersList = await getAllManagers();
+    const managersList = await getAllManagers(user);
     console.log("dashboard lista managers", managersList);
     setManagersList([...managersList]);
   };
@@ -80,7 +80,7 @@ const Dashboard = () => {
   return (
     <Container
       sx={{
-        height: "600px",
+        height: 500,
         display: "flex",
 
         padding: 2,
@@ -141,7 +141,7 @@ const Dashboard = () => {
         </Stack>
         <Stack sx={{ width: 300 }}>
           <Typography>Manager attivi</Typography>
-          <List>
+          <List sx={{ overflowY: "auto" }}>
             {managersList?.map((manager, key) => (
               <ListItem
                 value={manager.userName}

@@ -68,16 +68,18 @@ function createDbUser() {
 }
 
 //funzione che restituisce tutto i manager che appartengono al determinato cinema
-async function getAllManagers() {
+async function getAllManagers(user) {
   const allManagers = [];
-
+  console.log("prendo tutti i colleghi di :", user);
   try {
     await connect();
     for await (const [key, value] of db.iterator()) {
-      if (key !== "totalEvents") {
+      console.log("value??", key, value);
+      if (user.user.cinema === value.cinema) {
         allManagers.push(value);
       }
     }
+    console.log("db colleghi di ritorno", allManagers);
   } catch (error) {
     console.log("errore durante il recupero dei dai dal db mangers", error);
   } finally {

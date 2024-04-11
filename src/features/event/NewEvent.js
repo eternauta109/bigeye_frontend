@@ -195,6 +195,7 @@ function NewEvent({ handleClose, upDate }) {
         )}
 
         <TextField
+          required
           fullWidth
           label="title"
           variant="outlined"

@@ -37,8 +37,8 @@ export const addNewUser = async (newUser) => {
 };
 
 //aggiunge un manager al db managers
-export const getAllManagers = async () => {
-  console.log("sono in getAllManager in userReducer");
+export const getAllManagers = async (user) => {
+  console.log("sono in getAllManager in userReducer", user);
   if (process.env.NODE_ENV !== "production") {
     return [
       {
@@ -91,7 +91,7 @@ export const getAllManagers = async () => {
     return new Promise((resolve, reject) => {
       const { ipcRenderer } = window.require("electron");
       try {
-        ipcRenderer.send("send:getAllManagers");
+        ipcRenderer.send("send:getAllManagers", user);
         ipcRenderer.on("return:getAllManagers", (e, args) => {
           console.log("userReducer get all manager", args);
           resolve(args);

@@ -68,6 +68,7 @@ const NewTaskForm = ({ manager, onHandleClose }) => {
               sx={{ mb: 2 }}
             />
             <TextField
+              required
               fullWidth
               label="title"
               variant="outlined"
