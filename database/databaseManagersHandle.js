@@ -198,12 +198,12 @@ async function populateDatabase() {
       notification: [],
     },
     {
-      userName: "donatov",
+      userName: "luigif",
       role: "tm",
       password: "0106",
       isAuth: false,
-      cinema: "bari",
-      id: "barman1",
+      cinema: "catanzaro",
+      id: "catman1",
       notification: [],
     },
   ];
